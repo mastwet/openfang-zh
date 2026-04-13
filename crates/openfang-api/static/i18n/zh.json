@@ -160,7 +160,9 @@
   "toasts.mcp_connected": "MCP 已连接",
   "toasts.session_deleted": "会话已删除",
 
+  "overview.title": "概览",
   "overview.welcome": "欢迎使用 OpenFang",
+  "overview.welcome_desc": "通过向导快速开始，或手动进行配置：",
   "overview.getting_started": "快速开始",
   "overview.setup_wizard": "设置向导",
   "overview.steps_completed": "/ 5 步已完成",

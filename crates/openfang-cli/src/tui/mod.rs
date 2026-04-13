@@ -1759,7 +1759,7 @@ impl App {
         });
         self.chat.push_message(
             chat::Role::System,
-            "/help for commands \u{2022} /exit to quit".to_string(),
+            "输入 /help 查看命令 \u{2022} 输入 /exit 退出".to_string(),
         );
         self.active_tab = Tab::Chat;
     }
@@ -1785,7 +1785,7 @@ impl App {
         });
         self.chat.push_message(
             chat::Role::System,
-            "/help for commands \u{2022} /exit to quit".to_string(),
+            "输入 /help 查看命令 \u{2022} 输入 /exit 退出".to_string(),
         );
         self.active_tab = Tab::Chat;
     }
@@ -1941,13 +1941,13 @@ impl App {
                             }
                             self.chat.push_message(
                                 chat::Role::System,
-                                format!("Switched to {model_id}"),
+                                format!("已切换到 {model_id}"),
                             );
                         }
                         _ => {
                             self.chat.push_message(
                                 chat::Role::System,
-                                format!("Failed to switch to {model_id}"),
+                                format!("切换到 {model_id} 失败"),
                             );
                         }
                     }
@@ -1982,19 +1982,19 @@ impl App {
                             self.chat.model_label = format!("{prov_label}/{model_id}");
                             self.chat.push_message(
                                 chat::Role::System,
-                                format!("Switched to {model_id}"),
+                                format!("已切换到 {model_id}"),
                             );
                         }
                         Err(e) => {
                             self.chat
-                                .push_message(chat::Role::System, format!("Switch failed: {e}"));
+                                .push_message(chat::Role::System, format!("切换失败: {e}"));
                         }
                     }
                 }
             }
             _ => {
                 self.chat
-                    .push_message(chat::Role::System, "No backend connected.".to_string());
+                    .push_message(chat::Role::System, "未连接后端。".to_string());
             }
         }
     }
@@ -2009,14 +2009,14 @@ impl App {
                 self.chat.push_message(
                     chat::Role::System,
                     [
-                        "/help         \u{2014} show this help",
-                        "/model        \u{2014} open model picker (Ctrl+M)",
-                        "/model <name> \u{2014} switch to model directly",
-                        "/status       \u{2014} connection & agent info",
-                        "/agents       \u{2014} list running agents",
-                        "/clear        \u{2014} clear chat history",
-                        "/kill         \u{2014} kill the current agent",
-                        "/exit         \u{2014} end chat session",
+                        "/help         \u{2014} 显示此帮助",
+                        "/model        \u{2014} 打开模型选择器 (Ctrl+M)",
+                        "/model <name> \u{2014} 直接切换模型",
+                        "/status       \u{2014} 连接和智能体信息",
+                        "/agents       \u{2014} 列出运行中的智能体",
+                        "/clear        \u{2014} 清除聊天历史",
+                        "/kill         \u{2014} 终止当前智能体",
+                        "/exit         \u{2014} 结束聊天会话",
                     ]
                     .join("\n"),
                 );
@@ -2025,19 +2025,19 @@ impl App {
                 let mut s = Vec::new();
                 match &self.backend {
                     Backend::Daemon { base_url } => {
-                        s.push(format!("Mode: daemon ({base_url})"));
+                        s.push(format!("模式: 守护进程 ({base_url})"));
                         if let Some(ref t) = self.chat_target {
-                            s.push(format!("Agent: {}", t.agent_name));
+                            s.push(format!("智能体: {}", t.agent_name));
                         }
                     }
                     Backend::InProcess { kernel } => {
-                        s.push("Mode: in-process".to_string());
-                        s.push(format!("Agents: {}", kernel.registry.count()));
+                        s.push("模式: 进程内".to_string());
+                        s.push(format!("智能体数量: {}", kernel.registry.count()));
                         if let Some(ref t) = self.chat_target {
-                            s.push(format!("Agent: {}", t.agent_name));
+                            s.push(format!("智能体: {}", t.agent_name));
                         }
                     }
-                    Backend::None => s.push("Mode: disconnected".to_string()),
+                    Backend::None => s.push("模式: 已断开".to_string()),
                 }
                 self.chat.push_message(chat::Role::System, s.join("\n"));
             }
@@ -2072,7 +2072,7 @@ impl App {
                     Backend::None => {}
                 }
                 let msg = if lines.is_empty() {
-                    "No agents running.".to_string()
+                    "没有运行中的智能体。".to_string()
                 } else {
                     lines.join("\n")
                 };
@@ -2087,7 +2087,7 @@ impl App {
                 self.chat.model_label = model;
                 self.chat.mode_label = mode;
                 self.chat
-                    .push_message(chat::Role::System, "Chat history cleared.".to_string());
+                    .push_message(chat::Role::System, "聊天记录已清除。".to_string());
             }
             "/kill" => {
                 if let Some(ref target) = self.chat_target {
@@ -2101,13 +2101,13 @@ impl App {
                                     Ok(r) if r.status().is_success() => {
                                         self.chat.push_message(
                                             chat::Role::System,
-                                            format!("Agent \"{name}\" killed."),
+                                            format!("智能体 \"{name}\" 已终止。"),
                                         );
                                     }
                                     _ => {
                                         self.chat.push_message(
                                             chat::Role::System,
-                                            format!("Failed to kill agent \"{name}\"."),
+                                            format!("终止智能体 \"{name}\" 失败。"),
                                         );
                                     }
                                 }
@@ -2119,13 +2119,13 @@ impl App {
                                     Ok(()) => {
                                         self.chat.push_message(
                                             chat::Role::System,
-                                            format!("Agent \"{name}\" killed."),
+                                            format!("智能体 \"{name}\" 已终止。"),
                                         );
                                     }
                                     Err(e) => {
                                         self.chat.push_message(
                                             chat::Role::System,
-                                            format!("Kill failed: {e}"),
+                                            format!("终止失败: {e}"),
                                         );
                                     }
                                 }
@@ -2134,7 +2134,7 @@ impl App {
                         Backend::None => {
                             self.chat.push_message(
                                 chat::Role::System,
-                                "No backend connected.".to_string(),
+                                "未连接后端。".to_string(),
                             );
                         }
                     }
@@ -2152,21 +2152,21 @@ impl App {
                 Backend::InProcess { kernel } => {
                     let defs = kernel.hand_registry.list_definitions();
                     let instances = kernel.hand_registry.list_instances();
-                    let mut msg = format!("Available hands ({}):\n", defs.len());
+                    let mut msg = format!("可用工具包 ({}):\n", defs.len());
                     for d in &defs {
                         let reqs_met = kernel
                             .hand_registry
                             .check_requirements(&d.id)
                             .map(|r| r.iter().all(|(_, ok)| *ok))
                             .unwrap_or(false);
-                        let badge = if reqs_met { "Ready" } else { "Setup" };
+                        let badge = if reqs_met { "就绪" } else { "待设置" };
                         msg.push_str(&format!(
                             "  {} {} — {} [{}]\n",
                             d.icon, d.name, d.description, badge
                         ));
                     }
                     if !instances.is_empty() {
-                        msg.push_str(&format!("\nActive hands ({}):\n", instances.len()));
+                        msg.push_str(&format!("\n运行中工具包 ({}):\n", instances.len()));
                         for i in &instances {
                             msg.push_str(&format!(
                                 "  {} — {} ({})\n",
@@ -2179,8 +2179,7 @@ impl App {
                 _ => {
                     self.chat.push_message(
                         chat::Role::System,
-                        "Hands info requires in-process mode. Use the Hands tab instead."
-                            .to_string(),
+                        "查看工具包信息需要进程内模式。请使用“工具包”标签页。".to_string(),
                     );
                 }
             },

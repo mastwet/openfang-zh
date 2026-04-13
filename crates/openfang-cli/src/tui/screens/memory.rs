@@ -262,7 +262,7 @@ impl MemoryState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut MemoryState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Memory ",
+            " 记忆 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -289,7 +289,7 @@ fn draw_agent_select(f: &mut Frame, area: Rect, state: &mut MemoryState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  Select an agent to browse its memory:",
+            "  选择一个智能体以浏览其记忆:",
             Style::default()
                 .fg(theme::CYAN)
                 .add_modifier(Modifier::BOLD),
@@ -302,13 +302,13 @@ fn draw_agent_select(f: &mut Frame, area: Rect, state: &mut MemoryState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading agents\u{2026}", theme::dim_style()),
+                Span::styled("正在加载智能体\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.agents.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No agents available.", theme::dim_style())),
+            Paragraph::new(Span::styled("  无可用智能体。", theme::dim_style())),
             chunks[1],
         );
     } else {
@@ -339,7 +339,7 @@ fn draw_agent_select(f: &mut Frame, area: Rect, state: &mut MemoryState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Navigate  [Enter] Browse KV  [r] Refresh",
+            "  [\u{2191}\u{2193}] 导航  [Enter] 浏览 KV  [r] 刷新",
             theme::hint_style(),
         )])),
         chunks[2],
@@ -364,18 +364,18 @@ fn draw_kv_browser(f: &mut Frame, area: Rect, state: &mut MemoryState) {
         Paragraph::new(vec![
             Line::from(vec![
                 Span::styled(
-                    format!("  Memory: {agent_name}"),
+                    format!("  记忆: {agent_name}"),
                     Style::default()
                         .fg(theme::CYAN)
                         .add_modifier(Modifier::BOLD),
                 ),
                 Span::styled(
-                    format!("  ({} pairs)", state.kv_pairs.len()),
+                    format!("  ({} 条记录)", state.kv_pairs.len()),
                     theme::dim_style(),
                 ),
             ]),
             Line::from(vec![Span::styled(
-                format!("  {:<24} {}", "Key", "Value"),
+                format!("  {:<24} {}", "键", "值"),
                 theme::table_header(),
             )]),
         ]),
@@ -387,14 +387,14 @@ fn draw_kv_browser(f: &mut Frame, area: Rect, state: &mut MemoryState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading\u{2026}", theme::dim_style()),
+                Span::styled("正在加载\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.kv_pairs.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No key-value pairs. Press [a] to add one.",
+                "  尚无键值对。按 [a] 添加一个。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -428,7 +428,7 @@ fn draw_kv_browser(f: &mut Frame, area: Rect, state: &mut MemoryState) {
     if state.confirm_delete {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  Delete this key? [y] Yes  [any] Cancel",
+                "  确定删除此键吗？ [y] 是  [其他] 取消",
                 Style::default().fg(theme::YELLOW),
             )])),
             chunks[2],
@@ -436,7 +436,7 @@ fn draw_kv_browser(f: &mut Frame, area: Rect, state: &mut MemoryState) {
     } else {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  [\u{2191}\u{2193}] Navigate  [a] Add  [e] Edit  [d] Delete  [Esc] Back  [r] Refresh",
+                "  [\u{2191}\u{2193}] 导航  [a] 添加  [e] 编辑  [d] 删除  [Esc] 返回  [r] 刷新",
                 theme::hint_style(),
             )])),
             chunks[2],
@@ -457,9 +457,9 @@ fn draw_edit(f: &mut Frame, area: Rect, state: &MemoryState) {
     .split(area);
 
     let title = if state.sub == MemorySub::AddKey {
-        "Add Key-Value Pair"
+        "添加键值对"
     } else {
-        "Edit Value"
+        "编辑值"
     };
 
     f.render_widget(
@@ -480,11 +480,11 @@ fn draw_edit(f: &mut Frame, area: Rect, state: &MemoryState) {
         theme::dim_style()
     };
     f.render_widget(
-        Paragraph::new(Line::from(vec![Span::styled("  Key: ", key_label_style)])),
+        Paragraph::new(Line::from(vec![Span::styled("  键: ", key_label_style)])),
         chunks[2],
     );
     let key_display = if state.key_buf.is_empty() {
-        "enter key..."
+        "输入键..."
     } else {
         &state.key_buf
     };
@@ -512,11 +512,11 @@ fn draw_edit(f: &mut Frame, area: Rect, state: &MemoryState) {
         theme::dim_style()
     };
     f.render_widget(
-        Paragraph::new(Line::from(vec![Span::styled("  Value: ", val_label_style)])),
+        Paragraph::new(Line::from(vec![Span::styled("  值: ", val_label_style)])),
         chunks[4],
     );
     let val_display = if state.value_buf.is_empty() {
-        "enter value..."
+        "输入值..."
     } else {
         &state.value_buf
     };
@@ -538,7 +538,7 @@ fn draw_edit(f: &mut Frame, area: Rect, state: &MemoryState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [Tab] Switch field  [Enter] Save  [Esc] Cancel",
+            "  [Tab] 切换字段  [Enter] 保存  [Esc] 取消",
             theme::hint_style(),
         )])),
         chunks[6],

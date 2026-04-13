@@ -324,7 +324,7 @@ impl CommsState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut CommsState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Comms ",
+            " 通信 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -349,7 +349,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut CommsState) {
         Paragraph::new(vec![
             Line::from(vec![Span::styled(
                 format!(
-                    "  Agent Topology  ({} agents, {} edges)",
+                    "  智能体拓扑  ({} 智能体, {} 连接)",
                     state.nodes.len(),
                     state.edges.len()
                 ),
@@ -376,9 +376,9 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut CommsState) {
 
     // Separator
     let event_label = if state.focus == CommsFocus::EventList {
-        "  \u{25b6} Live Event Feed"
+        "  \u{25b6} 实时事件流"
     } else {
-        "    Live Event Feed"
+        "    实时事件流"
     };
     f.render_widget(
         Paragraph::new(Line::from(vec![
@@ -389,7 +389,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut CommsState) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                format!("  ({} events)", state.events.len()),
+                format!("  ({} 个事件)", state.events.len()),
                 theme::dim_style(),
             ),
         ])),
@@ -402,11 +402,11 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut CommsState) {
     // Status message or hints
     let hint_text = if !state.status_msg.is_empty() {
         format!(
-            "  {} | [s]end  [t]ask  [r]efresh  [Tab] focus  [\u{2191}\u{2193}] scroll",
+            "  {} | [s]发送  [t]任务  [r]刷新  [Tab]切换焦点  [\u{2191}\u{2193}]滚动",
             state.status_msg
         )
     } else {
-        "  [s]end  [t]ask  [r]efresh  [Tab] focus  [\u{2191}\u{2193}] scroll".to_string()
+        "  [s]发送  [t]任务  [r]刷新  [Tab]切换焦点  [\u{2191}\u{2193}]滚动".to_string()
     };
     f.render_widget(
         Paragraph::new(Line::from(Span::styled(hint_text, theme::hint_style()))),
@@ -428,7 +428,7 @@ fn draw_topology(f: &mut Frame, area: Rect, state: &CommsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading topology\u{2026}", theme::dim_style()),
+                Span::styled("正在加载拓扑\u{2026}", theme::dim_style()),
             ])),
             area,
         );
@@ -437,7 +437,7 @@ fn draw_topology(f: &mut Frame, area: Rect, state: &CommsState) {
 
     if state.nodes.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No agents running.", theme::dim_style())),
+            Paragraph::new(Span::styled("  没有运行中的智能体。", theme::dim_style())),
             area,
         );
         return;
@@ -500,7 +500,7 @@ fn draw_event_list(f: &mut Frame, area: Rect, state: &mut CommsState) {
     if state.events.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No inter-agent events yet.",
+                "  暂无智能体间事件。",
                 theme::dim_style(),
             )),
             area,
@@ -549,7 +549,7 @@ fn draw_send_modal(f: &mut Frame, area: Rect, state: &CommsState) {
     f.render_widget(Clear, modal);
 
     let block = Block::default()
-        .title(Span::styled(" Send Message ", theme::title_style()))
+        .title(Span::styled(" 发送消息 ", theme::title_style()))
         .borders(Borders::ALL)
         .border_style(Style::default().fg(theme::ACCENT))
         .padding(Padding::uniform(1));
@@ -578,7 +578,7 @@ fn draw_send_modal(f: &mut Frame, area: Rect, state: &CommsState) {
     };
 
     f.render_widget(
-        Paragraph::new(Span::styled("From (agent ID):", field_style(0))),
+        Paragraph::new(Span::styled("发送方 (智能体 ID):", field_style(0))),
         rows[0],
     );
     f.render_widget(
@@ -589,7 +589,7 @@ fn draw_send_modal(f: &mut Frame, area: Rect, state: &CommsState) {
         rows[1],
     );
     f.render_widget(
-        Paragraph::new(Span::styled("To (agent ID):", field_style(1))),
+        Paragraph::new(Span::styled("接收方 (智能体 ID):", field_style(1))),
         rows[2],
     );
     f.render_widget(
@@ -600,7 +600,7 @@ fn draw_send_modal(f: &mut Frame, area: Rect, state: &CommsState) {
         rows[3],
     );
     f.render_widget(
-        Paragraph::new(Span::styled("Message:", field_style(2))),
+        Paragraph::new(Span::styled("消息:", field_style(2))),
         rows[4],
     );
     f.render_widget(
@@ -612,7 +612,7 @@ fn draw_send_modal(f: &mut Frame, area: Rect, state: &CommsState) {
     );
     f.render_widget(
         Paragraph::new(Span::styled(
-            "[Tab] field  [Enter] send  [Esc] cancel",
+            "[Tab] 字段  [Enter] 发送  [Esc] 取消",
             theme::hint_style(),
         )),
         rows[6],
@@ -624,7 +624,7 @@ fn draw_task_modal(f: &mut Frame, area: Rect, state: &CommsState) {
     f.render_widget(Clear, modal);
 
     let block = Block::default()
-        .title(Span::styled(" Post Task ", theme::title_style()))
+        .title(Span::styled(" 发布任务 ", theme::title_style()))
         .borders(Borders::ALL)
         .border_style(Style::default().fg(theme::ACCENT))
         .padding(Padding::uniform(1));
@@ -653,7 +653,7 @@ fn draw_task_modal(f: &mut Frame, area: Rect, state: &CommsState) {
     };
 
     f.render_widget(
-        Paragraph::new(Span::styled("Title:", field_style(0))),
+        Paragraph::new(Span::styled("标题:", field_style(0))),
         rows[0],
     );
     f.render_widget(
@@ -664,7 +664,7 @@ fn draw_task_modal(f: &mut Frame, area: Rect, state: &CommsState) {
         rows[1],
     );
     f.render_widget(
-        Paragraph::new(Span::styled("Description:", field_style(1))),
+        Paragraph::new(Span::styled("描述:", field_style(1))),
         rows[2],
     );
     f.render_widget(
@@ -676,7 +676,7 @@ fn draw_task_modal(f: &mut Frame, area: Rect, state: &CommsState) {
     );
     f.render_widget(
         Paragraph::new(Span::styled(
-            "Assign to (agent ID, optional):",
+            "指派给 (智能体 ID, 可选):",
             field_style(2),
         )),
         rows[4],
@@ -690,7 +690,7 @@ fn draw_task_modal(f: &mut Frame, area: Rect, state: &CommsState) {
     );
     f.render_widget(
         Paragraph::new(Span::styled(
-            "[Tab] field  [Enter] post  [Esc] cancel",
+            "[Tab] 字段  [Enter] 发布  [Esc] 取消",
             theme::hint_style(),
         )),
         rows[6],
@@ -722,12 +722,12 @@ fn kind_color(kind: &str) -> Style {
 
 fn kind_short(kind: &str) -> &str {
     match kind {
-        "agent_message" => "MSG",
-        "agent_spawned" => "SPAWNED",
-        "agent_terminated" => "KILLED",
-        "task_posted" => "TASK+",
-        "task_claimed" => "CLAIM",
-        "task_completed" => "DONE",
+        "agent_message" => "消息",
+        "agent_spawned" => "已派生",
+        "agent_terminated" => "已杀死",
+        "task_posted" => "新任务",
+        "task_claimed" => "已认领",
+        "task_completed" => "已完成",
         _ => kind,
     }
 }

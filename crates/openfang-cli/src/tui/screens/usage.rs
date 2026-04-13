@@ -160,7 +160,7 @@ impl UsageState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut UsageState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Usage ",
+            " 用量 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -195,7 +195,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut UsageState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [1] Summary  [2] By Model  [3] By Agent  [r] Refresh",
+            "  [1] 总览  [2] 按模型  [3] 按智能体  [r] 刷新",
             theme::hint_style(),
         )])),
         chunks[3],
@@ -204,9 +204,9 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut UsageState) {
 
 fn draw_sub_tabs(f: &mut Frame, area: Rect, active: UsageSub) {
     let tabs = [
-        (UsageSub::Summary, "1 Summary"),
-        (UsageSub::ByModel, "2 By Model"),
-        (UsageSub::ByAgent, "3 By Agent"),
+        (UsageSub::Summary, "1 总览"),
+        (UsageSub::ByModel, "2 按模型"),
+        (UsageSub::ByAgent, "3 按智能体"),
     ];
     let mut spans = vec![Span::raw("  ")];
     for (sub, label) in &tabs {
@@ -227,7 +227,7 @@ fn draw_summary(f: &mut Frame, area: Rect, state: &UsageState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading usage data\u{2026}", theme::dim_style()),
+                Span::styled("正在加载用量数据\u{2026}", theme::dim_style()),
             ])),
             area,
         );
@@ -245,28 +245,28 @@ fn draw_summary(f: &mut Frame, area: Rect, state: &UsageState) {
     draw_stat_card(
         f,
         cols[0],
-        "Input Tokens",
+        "输入 Token",
         &format_tokens(state.summary.total_input_tokens),
         theme::BLUE,
     );
     draw_stat_card(
         f,
         cols[1],
-        "Output Tokens",
+        "输出 Token",
         &format_tokens(state.summary.total_output_tokens),
         theme::GREEN,
     );
     draw_stat_card(
         f,
         cols[2],
-        "Total Cost",
+        "总费用",
         &format!("${:.4}", state.summary.total_cost_usd),
         theme::YELLOW,
     );
     draw_stat_card(
         f,
         cols[3],
-        "API Calls",
+        "API 调用次数",
         &format_tokens(state.summary.total_calls),
         theme::CYAN,
     );
@@ -308,7 +308,7 @@ fn draw_by_model(f: &mut Frame, area: Rect, state: &mut UsageState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<28} {:<14} {:<14} {:<10} {}",
-                "Model", "Input Tokens", "Output Tokens", "Cost", "Calls"
+                "模型", "输入 Token", "输出 Token", "费用", "调用次数"
             ),
             theme::table_header(),
         )])),
@@ -320,13 +320,13 @@ fn draw_by_model(f: &mut Frame, area: Rect, state: &mut UsageState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading\u{2026}", theme::dim_style()),
+                Span::styled("正在加载\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.by_model.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No usage data.", theme::dim_style())),
+            Paragraph::new(Span::styled("  无用量数据。", theme::dim_style())),
             chunks[1],
         );
     } else {
@@ -374,7 +374,7 @@ fn draw_by_agent(f: &mut Frame, area: Rect, state: &mut UsageState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<24} {:<16} {:<12} {}",
-                "Agent", "Total Tokens", "Cost", "Tool Calls"
+                "智能体", "总 Token", "费用", "工具调用"
             ),
             theme::table_header(),
         )])),
@@ -386,13 +386,13 @@ fn draw_by_agent(f: &mut Frame, area: Rect, state: &mut UsageState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading\u{2026}", theme::dim_style()),
+                Span::styled("正在加载\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.by_agent.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No usage data.", theme::dim_style())),
+            Paragraph::new(Span::styled("  无用量数据。", theme::dim_style())),
             chunks[1],
         );
     } else {
@@ -424,6 +424,7 @@ fn draw_by_agent(f: &mut Frame, area: Rect, state: &mut UsageState) {
         f.render_stateful_widget(list, chunks[1], &mut state.agent_list);
     }
 }
+
 
 fn format_tokens(n: u64) -> String {
     if n >= 1_000_000 {

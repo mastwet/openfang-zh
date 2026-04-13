@@ -282,7 +282,7 @@ impl ExtensionsState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Extensions ",
+            " 扩展 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -316,9 +316,9 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
 
 fn draw_sub_tabs(f: &mut Frame, area: Rect, state: &ExtensionsState) {
     let tabs = [
-        (ExtSub::Browse, "1 Browse"),
-        (ExtSub::Installed, "2 Installed"),
-        (ExtSub::Health, "3 Health"),
+        (ExtSub::Browse, "1 浏览"),
+        (ExtSub::Installed, "2 已安装"),
+        (ExtSub::Health, "3 健康"),
     ];
     let mut spans = vec![Span::raw("  ")];
     for (sub, label) in &tabs {
@@ -334,7 +334,7 @@ fn draw_sub_tabs(f: &mut Frame, area: Rect, state: &ExtensionsState) {
     // Show search query if active
     if state.searching {
         spans.push(Span::raw("  "));
-        spans.push(Span::styled("Search: ", Style::default().fg(theme::YELLOW)));
+        spans.push(Span::styled("搜索: ", Style::default().fg(theme::YELLOW)));
         spans.push(Span::styled(
             format!("{}_", state.search_query),
             theme::input_style(),
@@ -347,13 +347,13 @@ fn draw_sub_tabs(f: &mut Frame, area: Rect, state: &ExtensionsState) {
 fn status_badge(status: &str) -> (String, Style) {
     let lower = status.to_lowercase();
     if lower.contains("ready") || lower.contains("connected") {
-        ("[Ready]".to_string(), Style::default().fg(theme::GREEN))
+        ("[就绪]".to_string(), Style::default().fg(theme::GREEN))
     } else if lower.contains("setup") {
-        ("[Setup]".to_string(), Style::default().fg(theme::YELLOW))
+        ("[设置]".to_string(), Style::default().fg(theme::YELLOW))
     } else if lower.contains("error") {
-        ("[Error]".to_string(), Style::default().fg(theme::RED))
+        ("[错误]".to_string(), Style::default().fg(theme::RED))
     } else if lower.contains("disabled") {
-        ("[Off]".to_string(), theme::dim_style())
+        ("[关闭]".to_string(), theme::dim_style())
     } else {
         ("".to_string(), theme::dim_style())
     }
@@ -371,7 +371,7 @@ fn draw_browse(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<3} {:<18} {:<12} {:<10} {}",
-                "", "Name", "Category", "Status", "Description"
+                "", "名称", "类别", "状态", "描述"
             ),
             theme::table_header(),
         )])),
@@ -383,14 +383,14 @@ fn draw_browse(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading integrations\u{2026}", theme::dim_style()),
+                Span::styled("正在加载集成\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.all_extensions.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No integrations loaded. Press r to refresh.",
+                "  未加载任何集成。按 r 刷新。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -402,9 +402,9 @@ fn draw_browse(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
             .iter()
             .map(|ext| {
                 let (badge, badge_style) = if ext.installed {
-                    ("[Installed]".to_string(), Style::default().fg(theme::GREEN))
+                    ("[已安装]".to_string(), Style::default().fg(theme::GREEN))
                 } else {
-                    ("[Available]".to_string(), theme::dim_style())
+                    ("[可用]".to_string(), theme::dim_style())
                 };
                 ListItem::new(Line::from(vec![
                     Span::raw("  "),
@@ -425,9 +425,9 @@ fn draw_browse(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
     }
 
     let hints = if state.searching {
-        "  Type to search \u{2022} Esc cancel \u{2022} Enter confirm"
+        "  输入以搜索 \u{2022} Esc 取消 \u{2022} Enter 确认"
     } else {
-        "  j/k navigate \u{2022} Enter install \u{2022} / search \u{2022} r refresh"
+        "  j/k 导航 \u{2022} Enter 安装 \u{2022} / 搜索 \u{2022} r 刷新"
     };
     f.render_widget(
         Paragraph::new(Span::styled(hints, theme::hint_style())),
@@ -447,7 +447,7 @@ fn draw_installed(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<3} {:<18} {:<12} {:<10} {}",
-                "", "Name", "Category", "Status", "ID"
+                "", "名称", "类别", "状态", "ID"
             ),
             theme::table_header(),
         )])),
@@ -478,7 +478,7 @@ fn draw_installed(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
     if items.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No integrations installed. Browse tab to add.",
+                "  未安装任何集成。请在浏览选项卡中添加。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -489,9 +489,9 @@ fn draw_installed(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
     }
 
     let hints = if state.confirm_remove {
-        "  Press y to confirm removal, any other key to cancel"
+        "  按 y 确认移除，按其他任意键取消"
     } else {
-        "  j/k navigate \u{2022} d remove \u{2022} r refresh"
+        "  j/k 导航 \u{2022} d 移除 \u{2022} r 刷新"
     };
     f.render_widget(
         Paragraph::new(Span::styled(hints, theme::hint_style())),
@@ -511,7 +511,7 @@ fn draw_health(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<18} {:<10} {:<6} {:<12} {:<6} {}",
-                "Server", "Status", "Tools", "Connected", "Fails", "Last Error"
+                "服务器", "状态", "工具", "已连接", "失败", "最后错误"
             ),
             theme::table_header(),
         )])),
@@ -521,7 +521,7 @@ fn draw_health(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
     if state.health_entries.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No MCP health data. Install integrations first.",
+                "  无 MCP 健康数据。请先安装集成。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -581,7 +581,7 @@ fn draw_health(f: &mut Frame, area: Rect, state: &mut ExtensionsState) {
 
     f.render_widget(
         Paragraph::new(Span::styled(
-            "  j/k navigate \u{2022} r/Enter reconnect \u{2022} auto-reconnect active",
+            "  j/k 导航 \u{2022} r/Enter 重新连接 \u{2022} 自动重连已激活",
             theme::hint_style(),
         )),
         chunks[2],

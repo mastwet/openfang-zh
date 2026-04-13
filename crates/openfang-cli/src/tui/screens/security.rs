@@ -28,9 +28,9 @@ pub enum SecuritySection {
 impl SecuritySection {
     fn label(self) -> &'static str {
         match self {
-            Self::Core => "Core Security",
-            Self::Configurable => "Configurable",
-            Self::Monitoring => "Monitoring",
+            Self::Core => "核心安全",
+            Self::Configurable => "可配置",
+            Self::Monitoring => "监控",
         }
     }
 }
@@ -41,99 +41,100 @@ fn builtin_features() -> Vec<SecurityFeature> {
     vec![
         // Core (8)
         SecurityFeature {
-            name: "Path Traversal Prevention".into(),
+            name: "路径遍历防护".into(),
             active: true,
-            description: "safe_resolve_path blocks ../../ attacks".into(),
+            description: "safe_resolve_path 阻止 ../../ 攻击".into(),
             section: SecuritySection::Core,
         },
         SecurityFeature {
-            name: "SSRF Protection".into(),
+            name: "SSRF 防护".into(),
             active: true,
-            description: "Blocks private IPs and metadata endpoints in HTTP fetches".into(),
+            description: "在 HTTP 获取中阻止私有 IP 和元数据端点".into(),
             section: SecuritySection::Core,
         },
         SecurityFeature {
-            name: "Subprocess Isolation".into(),
+            name: "子进程隔离".into(),
             active: true,
-            description: "env_clear() + selective vars on child processes".into(),
+            description: "对子进程执行 env_clear() + 选择性变量分配".into(),
             section: SecuritySection::Core,
         },
         SecurityFeature {
-            name: "WASM Dual Metering".into(),
+            name: "WASM 双重计量".into(),
             active: true,
-            description: "Fuel + epoch interruption with watchdog thread".into(),
+            description: "Fuel + epoch 中断与看门狗线程".into(),
             section: SecuritySection::Core,
         },
         SecurityFeature {
-            name: "Capability Inheritance".into(),
+            name: "能力继承验证".into(),
             active: true,
-            description: "validate_capability_inheritance prevents privilege escalation".into(),
+            description: "validate_capability_inheritance 防止提权".into(),
             section: SecuritySection::Core,
         },
         SecurityFeature {
-            name: "Secret Zeroization".into(),
+            name: "密钥清零".into(),
             active: true,
-            description: "Zeroizing<String> auto-wipes API keys from memory".into(),
+            description: "Zeroizing<String> 自动从内存中擦除 API 密钥".into(),
             section: SecuritySection::Core,
         },
         SecurityFeature {
-            name: "Ed25519 Manifest Signing".into(),
+            name: "Ed25519 清单签名".into(),
             active: true,
-            description: "Signed agent manifests with Ed25519 verification".into(),
+            description: "使用 Ed25519 验证已签名的智能体清单".into(),
             section: SecuritySection::Core,
         },
         SecurityFeature {
-            name: "Taint Tracking".into(),
+            name: "污点追踪".into(),
             active: true,
-            description: "Information flow tracking across tool boundaries".into(),
+            description: "跨工具边界的信息流追踪".into(),
             section: SecuritySection::Core,
         },
         // Configurable (4)
         SecurityFeature {
-            name: "OFP Wire Auth".into(),
+            name: "OFP 线路认证".into(),
             active: true,
-            description: "HMAC-SHA256 mutual authentication with nonce".into(),
+            description: "带有 Nonce 的 HMAC-SHA256 双向认证".into(),
             section: SecuritySection::Configurable,
         },
         SecurityFeature {
-            name: "RBAC Multi-User".into(),
+            name: "RBAC 多用户".into(),
             active: true,
-            description: "Role-based access control with user hierarchy".into(),
+            description: "带有用户层级的基于角色的访问控制".into(),
             section: SecuritySection::Configurable,
         },
         SecurityFeature {
-            name: "Rate Limiting".into(),
+            name: "速率限制".into(),
             active: true,
-            description: "GCRA rate limiter with cost-aware tokens".into(),
+            description: "具有成本感知的 GCRA 速率限制器".into(),
             section: SecuritySection::Configurable,
         },
         SecurityFeature {
-            name: "Security Headers".into(),
+            name: "安全响应头".into(),
             active: true,
-            description: "CSP, X-Frame-Options, HSTS middleware".into(),
+            description: "CSP, X-Frame-Options, HSTS 中间件".into(),
             section: SecuritySection::Configurable,
         },
         // Monitoring (3)
         SecurityFeature {
-            name: "Merkle Audit Trail".into(),
+            name: "Merkle 审计追踪".into(),
             active: true,
-            description: "Hash chain audit log with tamper detection".into(),
+            description: "具有篡改检测功能的哈希链审计日志".into(),
             section: SecuritySection::Monitoring,
         },
         SecurityFeature {
-            name: "Heartbeat Monitor".into(),
+            name: "心跳监控".into(),
             active: true,
-            description: "Background health checks with restart limits".into(),
+            description: "带有重启限制的后台健康检查".into(),
             section: SecuritySection::Monitoring,
         },
         SecurityFeature {
-            name: "Prompt Injection Scanner".into(),
+            name: "提示词注入扫描".into(),
             active: true,
-            description: "Detects override attempts and data exfiltration".into(),
+            description: "检测覆盖尝试和数据外泄".into(),
             section: SecuritySection::Monitoring,
         },
     ]
 }
+
 
 // ── State ───────────────────────────────────────────────────────────────────
 
@@ -198,7 +199,7 @@ impl SecurityState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut SecurityState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Security ",
+            " 安全 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -237,9 +238,9 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SecurityState) {
         }
 
         let (badge, badge_style) = if feat.active {
-            ("\u{2714} Active", Style::default().fg(theme::GREEN))
+            ("\u{2714} 已开启", Style::default().fg(theme::GREEN))
         } else {
-            ("\u{25cb} Inactive", Style::default().fg(theme::RED))
+            ("\u{25cb} 已关闭", Style::default().fg(theme::RED))
         };
 
         lines.push(Line::from(vec![
@@ -269,14 +270,14 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SecurityState) {
                 f.render_widget(
                     Paragraph::new(Line::from(vec![
                         Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                        Span::styled("Verifying audit chain\u{2026}", theme::dim_style()),
+                        Span::styled("正在验证审计链\u{2026}", theme::dim_style()),
                     ])),
                     chunks[1],
                 );
             } else {
                 f.render_widget(
                     Paragraph::new(Line::from(vec![Span::styled(
-                        "  Press [v] to verify audit chain integrity",
+                        "  按 [v] 键验证审计链完整性",
                         theme::dim_style(),
                     )])),
                     chunks[1],
@@ -287,7 +288,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SecurityState) {
             f.render_widget(
                 Paragraph::new(vec![
                     Line::from(vec![Span::styled(
-                        "  \u{2714} Audit chain verified",
+                        "  \u{2714} 审计链验证成功",
                         Style::default().fg(theme::GREEN),
                     )]),
                     Line::from(vec![Span::styled(
@@ -302,7 +303,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SecurityState) {
             f.render_widget(
                 Paragraph::new(vec![
                     Line::from(vec![Span::styled(
-                        "  \u{2718} Audit chain verification failed",
+                        "  \u{2718} 审计链验证失败",
                         Style::default().fg(theme::RED),
                     )]),
                     Line::from(vec![Span::styled(
@@ -318,9 +319,10 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SecurityState) {
     // ── Hints ──
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Scroll  [v] Verify Chain  [r] Refresh",
+            "  [\u{2191}\u{2193}] 滚动  [v] 验证链  [r] 刷新",
             theme::hint_style(),
         )])),
         chunks[2],
     );
 }
+

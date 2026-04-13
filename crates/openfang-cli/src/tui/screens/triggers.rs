@@ -20,12 +20,12 @@ pub struct TriggerInfo {
 }
 
 const PATTERN_TYPES: &[(&str, &str)] = &[
-    ("Lifecycle", "Agent lifecycle events (start, stop, error)"),
-    ("AgentSpawned", "Fires when a new agent is spawned"),
-    ("ContentMatch", "Match on message content (regex)"),
-    ("Schedule", "Cron-like schedule trigger"),
-    ("Webhook", "HTTP webhook trigger"),
-    ("ChannelMessage", "Message received on a channel"),
+    ("生命周期", "智能体生命周期事件 (启动、停止、错误)"),
+    ("智能体生成", "新智能体生成时触发"),
+    ("内容匹配", "匹配消息内容 (正则)"),
+    ("计划任务", "类似 Cron 的计划触发器"),
+    ("Webhook", "HTTP Webhook 触发器"),
+    ("频道消息", "在频道上收到消息"),
 ];
 
 // ── State ───────────────────────────────────────────────────────────────────
@@ -253,7 +253,7 @@ impl TriggerState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut TriggerState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Triggers ",
+            " 触发器 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -281,7 +281,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut TriggerState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<14} {:<20} {:<8} {}",
-                "Agent", "Pattern", "Fires", "Enabled"
+                "智能体", "模式", "触发次数", "是否启用"
             ),
             theme::table_header(),
         )])),
@@ -293,7 +293,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut TriggerState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading triggers\u{2026}", theme::dim_style()),
+                Span::styled("正在加载触发器\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
@@ -324,7 +324,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut TriggerState) {
             .collect();
 
         items.push(ListItem::new(Line::from(vec![Span::styled(
-            "  + Create new trigger",
+            "  + 创建新触发器",
             Style::default()
                 .fg(theme::GREEN)
                 .add_modifier(Modifier::BOLD),
@@ -354,7 +354,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut TriggerState) {
     }
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "  [\u{2191}\u{2193}] Navigate  [Enter] Create  [d] Delete  [r] Refresh",
+        "  [\u{2191}\u{2193}] 导航  [Enter] 创建  [d] 删除  [r] 刷新",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[2]);
@@ -372,7 +372,7 @@ fn draw_create(f: &mut Frame, area: Rect, state: &mut TriggerState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  Create New Trigger",
+            "  创建新触发器",
             Style::default()
                 .fg(theme::CYAN)
                 .add_modifier(Modifier::BOLD),
@@ -390,7 +390,7 @@ fn draw_create(f: &mut Frame, area: Rect, state: &mut TriggerState) {
         0 => draw_text_field(
             f,
             chunks[2],
-            "Agent ID:",
+            "智能体 ID:",
             &state.create_agent_id,
             "agent-uuid",
         ),
@@ -399,26 +399,26 @@ fn draw_create(f: &mut Frame, area: Rect, state: &mut TriggerState) {
             f,
             chunks[2],
             &format!(
-                "Pattern param for {}:",
+                "{} 的模式参数:",
                 PATTERN_TYPES
                     .get(state.create_pattern_type)
                     .map(|(n, _)| *n)
                     .unwrap_or("?")
             ),
             &state.create_pattern_param,
-            "e.g. .*error.*",
+            "例如 .*error.*",
         ),
         3 => draw_text_field(
             f,
             chunks[2],
-            "Prompt template:",
+            "提示词模板:",
             &state.create_prompt,
-            "Handle this: {{event}}",
+            "处理此事件: {{event}}",
         ),
         4 => draw_text_field(
             f,
             chunks[2],
-            "Max fires (0 = unlimited):",
+            "最大触发次数 (0 = 无限制):",
             &state.create_max_fires,
             "0",
         ),
@@ -427,18 +427,18 @@ fn draw_create(f: &mut Frame, area: Rect, state: &mut TriggerState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  Step {} of 6", state.create_step + 1),
+            format!("  第 {} 步 (共 6 步)", state.create_step + 1),
             theme::dim_style(),
         )])),
         chunks[3],
     );
 
     let hint_text = if state.create_step == 5 {
-        "  [Enter] Create  [Esc] Back"
+        "  [Enter] 创建  [Esc] 返回"
     } else if state.create_step == 1 {
-        "  [\u{2191}\u{2193}] Navigate  [Enter] Select  [Esc] Back"
+        "  [\u{2191}\u{2193}] 导航  [Enter] 选择  [Esc] 返回"
     } else {
-        "  [Enter] Next  [Esc] Back"
+        "  [Enter] 下一步  [Esc] 返回"
     };
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
@@ -513,32 +513,32 @@ fn draw_trigger_review(f: &mut Frame, area: Rect, state: &TriggerState) {
         .map(|(n, _)| *n)
         .unwrap_or("?");
     let max_fires = if state.create_max_fires.is_empty() {
-        "unlimited"
+        "无限制"
     } else {
         &state.create_max_fires
     };
 
     let lines = vec![
         Line::from(vec![
-            Span::raw("  Agent:   "),
+            Span::raw("  智能体:   "),
             Span::styled(&state.create_agent_id, Style::default().fg(theme::CYAN)),
         ]),
         Line::from(vec![
-            Span::raw("  Pattern: "),
+            Span::raw("  模式:     "),
             Span::styled(pattern_name, Style::default().fg(theme::YELLOW)),
             Span::raw(format!(" ({})", state.create_pattern_param)),
         ]),
         Line::from(vec![
-            Span::raw("  Prompt:  "),
+            Span::raw("  提示词:   "),
             Span::styled(&state.create_prompt, theme::dim_style()),
         ]),
         Line::from(vec![
-            Span::raw("  Max:     "),
+            Span::raw("  最大次数: "),
             Span::styled(max_fires, Style::default().fg(theme::GREEN)),
         ]),
         Line::from(""),
         Line::from(vec![Span::styled(
-            "  Press Enter to create this trigger.",
+            "  按 Enter 创建此触发器。",
             theme::dim_style(),
         )]),
     ];

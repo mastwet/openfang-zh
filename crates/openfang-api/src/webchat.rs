@@ -144,6 +144,8 @@ const WEBCHAT_HTML: &str = concat!(
     "\n</script>\n",
     // App code
     "<script nonce=\"__NONCE__\">\n",
+    include_str!("../static/i18n/i18n.js"),
+    "\n",
     include_str!("../static/js/api.js"),
     "\n",
     include_str!("../static/js/app.js"),

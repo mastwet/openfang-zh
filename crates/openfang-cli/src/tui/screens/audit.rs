@@ -32,12 +32,12 @@ pub enum AuditFilter {
 impl AuditFilter {
     fn label(self) -> &'static str {
         match self {
-            Self::All => "All",
-            Self::AgentSpawn => "Agent Created",
-            Self::AgentKill => "Agent Killed",
-            Self::ToolInvoke => "Tool Used",
-            Self::NetworkAccess => "Network",
-            Self::ShellExec => "Shell Exec",
+            Self::All => "全部",
+            Self::AgentSpawn => "创建智能体",
+            Self::AgentKill => "杀死智能体",
+            Self::ToolInvoke => "使用工具",
+            Self::NetworkAccess => "网络",
+            Self::ShellExec => "终端执行",
         }
     }
     fn next(self) -> Self {
@@ -94,13 +94,13 @@ impl AuditFilter {
 /// Map raw action names to friendly display names.
 fn friendly_action(action: &str) -> &str {
     match action {
-        "AgentSpawn" | "AgentSpawned" => "Agent Created",
-        "AgentKill" | "AgentKilled" => "Agent Killed",
-        "ToolInvoke" | "ToolInvocation" => "Tool Used",
-        "NetworkAccess" | "NetFetch" => "Network Access",
-        "ShellExec" | "ShellCommand" => "Shell Exec",
-        "CapabilityDenied" => "Access Denied",
-        "ConfigChange" => "Config Changed",
+        "AgentSpawn" | "AgentSpawned" => "创建智能体",
+        "AgentKill" | "AgentKilled" => "杀死智能体",
+        "ToolInvoke" | "ToolInvocation" => "使用工具",
+        "NetworkAccess" | "NetFetch" => "网络访问",
+        "ShellExec" | "ShellCommand" => "终端执行",
+        "CapabilityDenied" => "访问被拒绝",
+        "ConfigChange" => "配置已更改",
         other => other,
     }
 }
@@ -195,7 +195,7 @@ impl AuditState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut AuditState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Audit Trail ",
+            " 审计追踪 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -216,7 +216,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut AuditState) {
     f.render_widget(
         Paragraph::new(vec![
             Line::from(vec![
-                Span::styled("  Filter: ", theme::dim_style()),
+                Span::styled("  过滤器: ", theme::dim_style()),
                 Span::styled(
                     format!("[{}]", state.action_filter.label()),
                     Style::default()
@@ -224,14 +224,14 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut AuditState) {
                         .add_modifier(Modifier::BOLD),
                 ),
                 Span::styled(
-                    format!("  ({} entries)", state.filtered.len()),
+                    format!("  ({} 条记录)", state.filtered.len()),
                     theme::dim_style(),
                 ),
             ]),
             Line::from(vec![Span::styled(
                 format!(
                     "  {:<20} {:<16} {:<14} {:<10} {}",
-                    "Timestamp", "Action", "Agent", "Hash", "Detail"
+                    "时间戳", "操作", "智能体", "哈希", "详情"
                 ),
                 theme::table_header(),
             )]),
@@ -245,14 +245,14 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut AuditState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading audit trail\u{2026}", theme::dim_style()),
+                Span::styled("正在加载审计日志\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.filtered.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No audit entries match the current filter.",
+                "  没有符合当前过滤条件的审计记录。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -309,15 +309,15 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut AuditState) {
     // ── Chain status + hints ──
     let chain_line = match state.chain_verified {
         None => Line::from(vec![Span::styled(
-            "  Chain: not verified",
+            "  链: 未验证",
             theme::dim_style(),
         )]),
         Some(true) => Line::from(vec![Span::styled(
-            "  Chain: \u{2714} Verified",
+            "  链: \u{2714} 已验证",
             Style::default().fg(theme::GREEN),
         )]),
         Some(false) => Line::from(vec![Span::styled(
-            "  Chain: \u{2718} Verification failed",
+            "  链: \u{2718} 验证失败",
             Style::default().fg(theme::RED),
         )]),
     };
@@ -329,7 +329,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut AuditState) {
         )])
     } else {
         Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Navigate  [f] Filter  [v] Verify Chain  [r] Refresh",
+            "  [\u{2191}\u{2193}] 导航  [f] 过滤器  [v] 验证链  [r] 刷新",
             theme::hint_style(),
         )])
     };

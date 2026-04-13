@@ -53,9 +53,9 @@ pub enum ClawHubSort {
 impl ClawHubSort {
     fn label(self) -> &'static str {
         match self {
-            Self::Trending => "trending",
-            Self::Popular => "popular",
-            Self::Recent => "recent",
+            Self::Trending => "趋势",
+            Self::Popular => "热门",
+            Self::Recent => "最新",
         }
     }
     fn next(self) -> Self {
@@ -318,9 +318,9 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SkillsState) {
 
 fn draw_sub_tabs(f: &mut Frame, area: Rect, active: SkillsSub) {
     let tabs = [
-        (SkillsSub::Installed, "1 Installed"),
-        (SkillsSub::ClawHub, "2 ClawHub"),
-        (SkillsSub::Mcp, "3 MCP Servers"),
+        (SkillsSub::Installed, "1 已安装"),
+        (SkillsSub::ClawHub, "2 市场"),
+        (SkillsSub::Mcp, "3 MCP 服务器"),
     ];
     let mut spans = vec![Span::raw("  ")];
     for (sub, label) in &tabs {
@@ -347,7 +347,7 @@ fn draw_installed(f: &mut Frame, area: Rect, state: &mut SkillsState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<20} {:<8} {:<12} {}",
-                "Name", "Runtime", "Source", "Description"
+                "名称", "运行时", "来源", "描述"
             ),
             theme::table_header(),
         )])),
@@ -359,14 +359,14 @@ fn draw_installed(f: &mut Frame, area: Rect, state: &mut SkillsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading skills\u{2026}", theme::dim_style()),
+                Span::styled("正在加载技能\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.installed.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No skills installed. Press [2] to browse ClawHub.",
+                "  未安装任何技能。按 [2] 浏览市场。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -418,7 +418,7 @@ fn draw_installed(f: &mut Frame, area: Rect, state: &mut SkillsState) {
     if state.confirm_uninstall {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  Uninstall this skill? [y] Yes  [any] Cancel",
+                "  确定卸载此技能吗？ [y] 是  [其他] 取消",
                 Style::default().fg(theme::YELLOW),
             )])),
             chunks[2],
@@ -434,7 +434,7 @@ fn draw_installed(f: &mut Frame, area: Rect, state: &mut SkillsState) {
     } else {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  [\u{2191}\u{2193}] Navigate  [u] Uninstall  [r] Refresh",
+                "  [\u{2191}\u{2193}] 导航  [u] 卸载  [r] 刷新",
                 theme::hint_style(),
             )])),
             chunks[2],
@@ -470,12 +470,12 @@ fn draw_clawhub(f: &mut Frame, area: Rect, state: &mut SkillsState) {
                 Span::styled(
                     format!(
                         "  {:<24} {:<10} {:<10} {}",
-                        "Name", "Downloads", "Runtime", "Description"
+                        "名称", "下载量", "运行时", "描述"
                     ),
                     theme::table_header(),
                 ),
                 Span::styled(
-                    format!("  Sort: {}", state.sort.label()),
+                    format!("  排序: {}", state.sort.label()),
                     Style::default().fg(theme::YELLOW),
                 ),
             ])),
@@ -488,14 +488,14 @@ fn draw_clawhub(f: &mut Frame, area: Rect, state: &mut SkillsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Searching ClawHub\u{2026}", theme::dim_style()),
+                Span::styled("正在搜索市场\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.clawhub_results.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No results. Press [/] to search or [s] to change sort.",
+                "  没有结果。按 [/] 搜索或 [s] 更改排序。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -532,7 +532,7 @@ fn draw_clawhub(f: &mut Frame, area: Rect, state: &mut SkillsState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Navigate  [i] Install  [/] Search  [s] Sort  [r] Refresh",
+            "  [\u{2191}\u{2193}] 导航  [i] 安装  [/] 搜索  [s] 排序  [r] 刷新",
             theme::hint_style(),
         )])),
         chunks[2],
@@ -549,7 +549,7 @@ fn draw_mcp(f: &mut Frame, area: Rect, state: &mut SkillsState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  {:<20} {:<14} {}", "Server", "Status", "Tools"),
+            format!("  {:<20} {:<14} {}", "服务器", "状态", "工具"),
             theme::table_header(),
         )])),
         chunks[0],
@@ -560,14 +560,14 @@ fn draw_mcp(f: &mut Frame, area: Rect, state: &mut SkillsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading MCP servers\u{2026}", theme::dim_style()),
+                Span::styled("正在加载 MCP 服务器\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.mcp_servers.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No MCP servers configured.",
+                "  未配置 MCP 服务器。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -578,9 +578,9 @@ fn draw_mcp(f: &mut Frame, area: Rect, state: &mut SkillsState) {
             .iter()
             .map(|s| {
                 let (badge, style) = if s.connected {
-                    ("\u{2714} Connected", Style::default().fg(theme::GREEN))
+                    ("\u{2714} 已连接", Style::default().fg(theme::GREEN))
                 } else {
-                    ("\u{2718} Disconnected", Style::default().fg(theme::RED))
+                    ("\u{2718} 已断开", Style::default().fg(theme::RED))
                 };
                 ListItem::new(Line::from(vec![
                     Span::styled(
@@ -601,7 +601,7 @@ fn draw_mcp(f: &mut Frame, area: Rect, state: &mut SkillsState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Navigate  [r] Refresh",
+            "  [\u{2191}\u{2193}] 导航  [r] 刷新",
             theme::hint_style(),
         )])),
         chunks[2],

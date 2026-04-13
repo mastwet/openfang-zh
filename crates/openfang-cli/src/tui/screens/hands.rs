@@ -200,7 +200,7 @@ impl HandsState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut HandsState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Hands ",
+            " 工具包 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -234,8 +234,8 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut HandsState) {
 
 fn draw_sub_tabs(f: &mut Frame, area: Rect, active: HandsSub) {
     let tabs = [
-        (HandsSub::Marketplace, "1 Marketplace"),
-        (HandsSub::Active, "2 Active"),
+        (HandsSub::Marketplace, "1 市场"),
+        (HandsSub::Active, "2 活跃"),
     ];
     let mut spans = vec![Span::raw("  ")];
     for (sub, label) in &tabs {
@@ -262,7 +262,7 @@ fn draw_marketplace(f: &mut Frame, area: Rect, state: &mut HandsState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<4} {:<16} {:<14} {:<6} {}",
-                "", "Name", "Category", "Ready", "Description"
+                "", "名称", "类别", "就绪", "描述"
             ),
             theme::table_header(),
         )])),
@@ -274,13 +274,13 @@ fn draw_marketplace(f: &mut Frame, area: Rect, state: &mut HandsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading hands\u{2026}", theme::dim_style()),
+                Span::styled("正在加载工具包\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.definitions.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No hands available.", theme::dim_style())),
+            Paragraph::new(Span::styled("  没有可用的工具包。", theme::dim_style())),
             chunks[1],
         );
     } else {
@@ -289,16 +289,16 @@ fn draw_marketplace(f: &mut Frame, area: Rect, state: &mut HandsState) {
             .iter()
             .map(|h| {
                 let ready_badge = if h.requirements_met {
-                    Span::styled(" Ready ", Style::default().fg(theme::GREEN))
+                    Span::styled(" 就绪 ", Style::default().fg(theme::GREEN))
                 } else {
-                    Span::styled(" Setup ", Style::default().fg(theme::YELLOW))
+                    Span::styled(" 设置 ", Style::default().fg(theme::YELLOW))
                 };
-                let category_style = match h.category.as_str() {
-                    "Content" => Style::default().fg(theme::PURPLE),
-                    "Security" => Style::default().fg(theme::RED),
-                    "Development" => Style::default().fg(theme::BLUE),
-                    "Productivity" => Style::default().fg(theme::GREEN),
-                    _ => Style::default().fg(theme::CYAN),
+                let (cat_name, category_style) = match h.category.as_str() {
+                    "Content" => ("内容", Style::default().fg(theme::PURPLE)),
+                    "Security" => ("安全", Style::default().fg(theme::RED)),
+                    "Development" => ("开发", Style::default().fg(theme::BLUE)),
+                    "Productivity" => ("生产力", Style::default().fg(theme::GREEN)),
+                    _ => (h.category.as_str(), Style::default().fg(theme::CYAN)),
                 };
                 ListItem::new(Line::from(vec![
                     Span::raw(format!("  {:<4}", &h.icon)),
@@ -306,7 +306,7 @@ fn draw_marketplace(f: &mut Frame, area: Rect, state: &mut HandsState) {
                         format!("{:<16}", truncate(&h.name, 15)),
                         Style::default().fg(theme::CYAN),
                     ),
-                    Span::styled(format!("{:<14}", truncate(&h.category, 13)), category_style),
+                    Span::styled(format!("{:<14}", truncate(cat_name, 13)), category_style),
                     ready_badge,
                     Span::styled(
                         format!(" {}", truncate(&h.description, 40)),
@@ -333,7 +333,7 @@ fn draw_marketplace(f: &mut Frame, area: Rect, state: &mut HandsState) {
     } else {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  [\u{2191}\u{2193}] Navigate  [a/Enter] Activate  [r] Refresh",
+                "  [\u{2191}\u{2193}] 导航  [a/Enter] 激活  [r] 刷新",
                 theme::hint_style(),
             )])),
             chunks[2],
@@ -353,7 +353,7 @@ fn draw_active(f: &mut Frame, area: Rect, state: &mut HandsState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<16} {:<10} {:<20} {}",
-                "Agent", "Status", "Hand", "Since"
+                "智能体", "状态", "工具包", "自"
             ),
             theme::table_header(),
         )])),
@@ -365,14 +365,14 @@ fn draw_active(f: &mut Frame, area: Rect, state: &mut HandsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading active hands\u{2026}", theme::dim_style()),
+                Span::styled("正在加载活跃工具包\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.instances.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No active hands. Press [1] to browse the marketplace.",
+                "  没有活跃的工具包。按 [1] 浏览市场。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -382,17 +382,17 @@ fn draw_active(f: &mut Frame, area: Rect, state: &mut HandsState) {
             .instances
             .iter()
             .map(|i| {
-                let status_style = match i.status.as_str() {
-                    "Active" => Style::default().fg(theme::GREEN),
-                    "Paused" => Style::default().fg(theme::YELLOW),
-                    _ => Style::default().fg(theme::RED),
+                let (status_text, status_style) = match i.status.as_str() {
+                    "Active" => ("活跃", Style::default().fg(theme::GREEN)),
+                    "Paused" => ("暂停", Style::default().fg(theme::YELLOW)),
+                    _ => (i.status.as_str(), Style::default().fg(theme::RED)),
                 };
                 ListItem::new(Line::from(vec![
                     Span::styled(
                         format!("  {:<16}", truncate(&i.agent_name, 15)),
                         Style::default().fg(theme::CYAN),
                     ),
-                    Span::styled(format!("{:<10}", &i.status), status_style),
+                    Span::styled(format!("{:<10}", status_text), status_style),
                     Span::styled(
                         format!("{:<20}", truncate(&i.hand_id, 19)),
                         theme::dim_style(),
@@ -414,7 +414,7 @@ fn draw_active(f: &mut Frame, area: Rect, state: &mut HandsState) {
     if state.confirm_deactivate {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  Deactivate this hand? [y] Yes  [any] Cancel",
+                "  停用此工具包？ [y] 是  [其他] 取消",
                 Style::default().fg(theme::YELLOW),
             )])),
             chunks[2],
@@ -430,7 +430,7 @@ fn draw_active(f: &mut Frame, area: Rect, state: &mut HandsState) {
     } else {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  [\u{2191}\u{2193}] Navigate  [p] Pause/Resume  [d] Deactivate  [r] Refresh",
+                "  [\u{2191}\u{2193}] 导航  [p] 暂停/恢复  [d] 停用  [r] 刷新",
                 theme::hint_style(),
             )])),
             chunks[2],

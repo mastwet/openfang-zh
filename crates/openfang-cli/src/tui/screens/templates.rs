@@ -29,72 +29,72 @@ pub struct ProviderAuth {
 
 const BUILTIN_TEMPLATES: &[(&str, &str, &str, &str, &str)] = &[
     (
-        "General Assistant",
-        "Versatile AI assistant for everyday tasks",
-        "General",
+        "通用助手",
+        "多才多艺的 AI 助手，处理日常任务",
+        "通用",
         "anthropic",
         "claude-sonnet-4-20250514",
     ),
     (
-        "Code Helper",
-        "Programming assistant with code review and debugging",
-        "Development",
+        "代码助手",
+        "编程助手，支持代码审查和调试",
+        "开发",
         "anthropic",
         "claude-sonnet-4-20250514",
     ),
     (
-        "Researcher",
-        "Deep research and analysis with web search",
-        "Research",
+        "研究员",
+        "深度研究和网络搜索分析",
+        "研究",
         "anthropic",
         "claude-sonnet-4-20250514",
     ),
     (
-        "Writer",
-        "Creative and technical writing assistant",
-        "Writing",
+        "作家",
+        "创意和技术写作助手",
+        "写作",
         "anthropic",
         "claude-sonnet-4-20250514",
     ),
     (
-        "Data Analyst",
-        "Data analysis, visualization, and SQL queries",
-        "Development",
+        "数据分析师",
+        "数据分析、可视化和 SQL 查询",
+        "开发",
         "gemini",
         "gemini-2.5-flash",
     ),
     (
-        "DevOps Engineer",
-        "Infrastructure, CI/CD, and deployment assistance",
-        "Development",
+        "DevOps 工程师",
+        "基础设施、CI/CD 和部署协助",
+        "开发",
         "groq",
         "llama-3.3-70b-versatile",
     ),
     (
-        "Customer Support",
-        "Professional customer service agent",
-        "Business",
+        "客户支持",
+        "专业客户服务智能体",
+        "商务",
         "groq",
         "llama-3.3-70b-versatile",
     ),
     (
-        "Tutor",
-        "Patient educational assistant for learning any subject",
-        "General",
+        "导师",
+        "耐心的教育助手，学习任何科目",
+        "通用",
         "gemini",
         "gemini-2.5-flash",
     ),
     (
-        "API Designer",
-        "REST/GraphQL API design and documentation",
-        "Development",
+        "API 设计师",
+        "REST/GraphQL API 设计和文档",
+        "开发",
         "anthropic",
         "claude-sonnet-4-20250514",
     ),
     (
-        "Meeting Notes",
-        "Meeting transcription, summary, and action items",
-        "Business",
+        "会议纪要",
+        "会议转录、摘要和行动项",
+        "商务",
         "groq",
         "llama-3.3-70b-versatile",
     ),
@@ -103,12 +103,12 @@ const BUILTIN_TEMPLATES: &[(&str, &str, &str, &str, &str)] = &[
 // ── Categories ──────────────────────────────────────────────────────────────
 
 const CATEGORIES: &[&str] = &[
-    "All",
-    "General",
-    "Development",
-    "Research",
-    "Writing",
-    "Business",
+    "全部",
+    "通用",
+    "开发",
+    "研究",
+    "写作",
+    "商务",
 ];
 
 // ── State ───────────────────────────────────────────────────────────────────
@@ -163,7 +163,7 @@ impl TemplatesState {
 
     fn refilter(&mut self) {
         let cat = CATEGORIES[self.category_filter];
-        if cat == "All" {
+        if cat == "全部" {
             self.filtered = (0..self.templates.len()).collect();
         } else {
             self.filtered = self
@@ -214,7 +214,7 @@ impl TemplatesState {
                         let t = &self.templates[idx];
                         if !self.provider_configured(&t.provider) && !self.providers.is_empty() {
                             self.status_msg = format!(
-                                "Provider '{}' not configured. Set API key in Settings first.",
+                                "供应商 '{}' 未配置。请先在设置中设置 API 密钥。",
                                 t.provider
                             );
                             return TemplatesAction::Continue;
@@ -239,7 +239,7 @@ impl TemplatesState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut TemplatesState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Templates ",
+            " 模板 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -280,7 +280,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut TemplatesState) {
             Line::from(vec![Span::styled(
                 format!(
                     "  {:<22} {:<14} {:<16} {}",
-                    "Template", "Category", "Provider/Model", "Description"
+                    "模板", "分类", "供应商/模型", "描述"
                 ),
                 theme::table_header(),
             )]),
@@ -294,14 +294,14 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut TemplatesState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading templates\u{2026}", theme::dim_style()),
+                Span::styled("正在加载模板\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.filtered.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No templates in this category.",
+                "  此分类下无模板。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -366,7 +366,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut TemplatesState) {
                         Span::styled(&t.description, theme::dim_style()),
                     ]),
                     Line::from(vec![Span::styled(
-                        format!("  Provider: {}/{}  ", t.provider, t.model),
+                        format!("  供应商: {}/{}  ", t.provider, t.model),
                         Style::default().fg(theme::BLUE),
                     )]),
                 ]),
@@ -387,7 +387,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut TemplatesState) {
     } else {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  [\u{2191}\u{2193}] Navigate  [Enter] Spawn Agent  [f] Filter Category  [r] Refresh",
+                "  [\u{2191}\u{2193}] 导航  [Enter] 生成智能体  [f] 过滤分类  [r] 刷新",
                 theme::hint_style(),
             )])),
             chunks[3],

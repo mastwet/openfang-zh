@@ -88,7 +88,7 @@ impl PeersState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut PeersState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Peers ",
+            " 节点 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -109,7 +109,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut PeersState) {
     f.render_widget(
         Paragraph::new(vec![
             Line::from(vec![Span::styled(
-                format!("  OFP Peer Network  ({} peers)", state.peers.len()),
+                format!("  OFP 节点网络  ({} 个节点)", state.peers.len()),
                 Style::default()
                     .fg(theme::CYAN)
                     .add_modifier(Modifier::BOLD),
@@ -117,7 +117,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut PeersState) {
             Line::from(vec![Span::styled(
                 format!(
                     "  {:<14} {:<16} {:<20} {:<14} {:<8} {}",
-                    "Node ID", "Name", "Address", "State", "Agents", "Protocol"
+                    "节点 ID", "名称", "地址", "状态", "智能体", "协议"
                 ),
                 theme::table_header(),
             )]),
@@ -131,14 +131,14 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut PeersState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Discovering peers\u{2026}", theme::dim_style()),
+                Span::styled("正在发现节点\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.peers.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No peers connected. Configure [network] in config.toml to enable OFP.",
+                "  未连接任何节点。在 config.toml 中配置 [network] 以启用 OFP。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -155,13 +155,13 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut PeersState) {
                 };
                 let (state_badge, state_style) = match p.state.to_lowercase().as_str() {
                     "connected" | "active" => {
-                        ("\u{2714} Connected", Style::default().fg(theme::GREEN))
+                        ("\u{2714} 已连接", Style::default().fg(theme::GREEN))
                     }
                     "disconnected" | "inactive" => {
-                        ("\u{2718} Disconnected", Style::default().fg(theme::RED))
+                        ("\u{2718} 已断开", Style::default().fg(theme::RED))
                     }
                     "connecting" | "pending" => {
-                        ("\u{25cb} Connecting", Style::default().fg(theme::YELLOW))
+                        ("\u{25cb} 连接中", Style::default().fg(theme::YELLOW))
                     }
                     _ => (&*p.state, theme::dim_style()),
                 };
@@ -197,12 +197,13 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut PeersState) {
     // Hints
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Navigate  [r] Refresh  (auto-refreshes every 15s)",
+            "  [\u{2191}\u{2193}] 导航  [r] 刷新  (每 15 秒自动刷新)",
             theme::hint_style(),
         )])),
         chunks[2],
     );
 }
+
 
 fn truncate(s: &str, max: usize) -> String {
     if s.len() <= max {

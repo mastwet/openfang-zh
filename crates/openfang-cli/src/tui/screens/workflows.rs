@@ -281,7 +281,7 @@ impl WorkflowState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Workflows ",
+            " 工作流 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -310,7 +310,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  {:<12} {:<24} {:<8} {}", "ID", "Name", "Steps", "Created"),
+            format!("  {:<12} {:<24} {:<8} {}", "ID", "名称", "步骤数", "创建时间"),
             theme::table_header(),
         )])),
         chunks[0],
@@ -321,7 +321,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading workflows\u{2026}", theme::dim_style()),
+                Span::styled("正在加载工作流\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
@@ -349,7 +349,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
             .collect();
 
         items.push(ListItem::new(Line::from(vec![Span::styled(
-            "  + Create new workflow",
+            "  + 创建新工作流",
             Style::default()
                 .fg(theme::GREEN)
                 .add_modifier(Modifier::BOLD),
@@ -362,7 +362,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
     }
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "  [\u{2191}\u{2193}] Navigate  [Enter] View runs  [x] Run  [r] Refresh",
+        "  [\u{2191}\u{2193}] 导航  [Enter] 查看运行记录  [x] 运行  [r] 刷新",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[2]);
@@ -385,7 +385,7 @@ fn draw_runs(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  Runs for: {wf_name}"),
+            format!("  运行记录: {wf_name}"),
             Style::default()
                 .fg(theme::CYAN)
                 .add_modifier(Modifier::BOLD),
@@ -397,7 +397,7 @@ fn draw_runs(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<12} {:<12} {:<12} {}",
-                "Run ID", "State", "Duration", "Output"
+                "运行 ID", "状态", "耗时", "输出预览"
             ),
             theme::table_header(),
         )])),
@@ -407,7 +407,7 @@ fn draw_runs(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
     if state.runs.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No runs yet. Press [x] from the list to run.",
+                "  尚无运行记录。从列表中按 [x] 运行。",
                 theme::dim_style(),
             )),
             chunks[2],
@@ -443,7 +443,7 @@ fn draw_runs(f: &mut Frame, area: Rect, state: &mut WorkflowState) {
     }
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "  [\u{2191}\u{2193}] Navigate  [r] Refresh  [Esc] Back",
+        "  [\u{2191}\u{2193}] 导航  [r] 刷新  [Esc] 返回",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[3]);
@@ -463,7 +463,7 @@ fn draw_create(f: &mut Frame, area: Rect, state: &WorkflowState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  Create New Workflow",
+            "  创建新工作流",
             Style::default()
                 .fg(theme::CYAN)
                 .add_modifier(Modifier::BOLD),
@@ -478,19 +478,19 @@ fn draw_create(f: &mut Frame, area: Rect, state: &WorkflowState) {
     );
 
     let (label, value, placeholder) = match state.create_step {
-        0 => ("Workflow name:", &state.create_name, "my-workflow"),
+        0 => ("工作流名称:", &state.create_name, "my-workflow"),
         1 => (
-            "Description:",
+            "描述:",
             &state.create_desc,
-            "What this workflow does",
+            "此工作流的作用",
         ),
         2 => (
-            "Steps (JSON array):",
+            "步骤 (JSON 数组):",
             &state.create_steps,
             "[{\"action\":\"...\"}]",
         ),
         _ => (
-            "Review \u{2014} press Enter to create",
+            "预览 \u{2014} 按 Enter 创建",
             &state.create_name,
             "",
         ),
@@ -530,11 +530,11 @@ fn draw_create(f: &mut Frame, area: Rect, state: &WorkflowState) {
         f.render_widget(
             Paragraph::new(vec![
                 Line::from(vec![
-                    Span::raw("  Name: "),
+                    Span::raw("  名称: "),
                     Span::styled(&state.create_name, Style::default().fg(theme::CYAN)),
                 ]),
                 Line::from(vec![
-                    Span::raw("  Desc: "),
+                    Span::raw("  描述: "),
                     Span::styled(&state.create_desc, theme::dim_style()),
                 ]),
             ]),
@@ -544,16 +544,16 @@ fn draw_create(f: &mut Frame, area: Rect, state: &WorkflowState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  Step {} of 4", state.create_step + 1),
+            format!("  第 {} 步 (共 4 步)", state.create_step + 1),
             theme::dim_style(),
         )])),
         chunks[4],
     );
 
     let hint_text = if state.create_step == 3 {
-        "  [Enter] Create  [Esc] Back"
+        "  [Enter] 创建  [Esc] 返回"
     } else {
-        "  [Enter] Next  [Esc] Back"
+        "  [Enter] 下一步  [Esc] 返回"
     };
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
@@ -583,7 +583,7 @@ fn draw_run_input(f: &mut Frame, area: Rect, state: &WorkflowState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  Run: {wf_name}"),
+            format!("  运行: {wf_name}"),
             Style::default()
                 .fg(theme::CYAN)
                 .add_modifier(Modifier::BOLD),
@@ -598,12 +598,12 @@ fn draw_run_input(f: &mut Frame, area: Rect, state: &WorkflowState) {
     );
 
     f.render_widget(
-        Paragraph::new(Line::from(vec![Span::raw("  Input (JSON or text):")])),
+        Paragraph::new(Line::from(vec![Span::raw("  输入 (JSON 或文本):")])),
         chunks[2],
     );
 
     let display = if state.run_input.is_empty() {
-        "enter workflow input..."
+        "输入工作流参数..."
     } else {
         &state.run_input
     };
@@ -628,7 +628,7 @@ fn draw_run_input(f: &mut Frame, area: Rect, state: &WorkflowState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [Enter] Run  [Esc] Cancel",
+            "  [Enter] 运行  [Esc] 取消",
             theme::hint_style(),
         )])),
         chunks[5],
@@ -645,7 +645,7 @@ fn draw_run_result(f: &mut Frame, area: Rect, state: &WorkflowState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  Workflow Run Result",
+            "  工作流运行结果",
             Style::default()
                 .fg(theme::CYAN)
                 .add_modifier(Modifier::BOLD),
@@ -658,7 +658,7 @@ fn draw_run_result(f: &mut Frame, area: Rect, state: &WorkflowState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Running workflow\u{2026}", theme::dim_style()),
+                Span::styled("正在运行工作流\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
@@ -667,7 +667,7 @@ fn draw_run_result(f: &mut Frame, area: Rect, state: &WorkflowState) {
             Paragraph::new(vec![
                 Line::from(vec![
                     Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                    Span::raw("Complete"),
+                    Span::raw("完成"),
                 ]),
                 Line::from(""),
                 Line::from(vec![Span::styled(
@@ -679,14 +679,14 @@ fn draw_run_result(f: &mut Frame, area: Rect, state: &WorkflowState) {
         );
     } else {
         f.render_widget(
-            Paragraph::new(Span::styled("  No result.", theme::dim_style())),
+            Paragraph::new(Span::styled("  无结果。", theme::dim_style())),
             chunks[1],
         );
     }
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [Enter/Esc] Back",
+            "  [Enter/Esc] 返回",
             theme::hint_style(),
         )])),
         chunks[2],

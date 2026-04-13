@@ -325,11 +325,11 @@ struct ModelEntry {
     cost: String,
 }
 
-const ROUTING_TIER_NAMES: [&str; 3] = ["Fast", "Balanced", "Frontier"];
+const ROUTING_TIER_NAMES: [&str; 3] = ["快速", "均衡", "最强"];
 const ROUTING_TIER_DESC: [&str; 3] = [
-    "quick lookups, greetings, simple Q&A",
-    "standard conversation, general tasks",
-    "multi-step reasoning, code generation",
+    "快速查询、打招呼、简单问答",
+    "标准对话、通用任务",
+    "多步推理、代码生成",
 ];
 
 struct State {
@@ -465,14 +465,14 @@ impl State {
 
     fn step_label(&self) -> &'static str {
         match self.step {
-            Step::Welcome => "1 of 7",
-            Step::Migration => "2 of 7",
-            Step::Provider => "3 of 7",
-            Step::CopilotAuth => "4 of 7",
-            Step::ApiKey => "4 of 7",
-            Step::Model => "5 of 7",
-            Step::Routing => "6 of 7",
-            Step::Complete => "7 of 7",
+            Step::Welcome => "第 1 步 (共 7 步)",
+            Step::Migration => "第 2 步 (共 7 步)",
+            Step::Provider => "第 3 步 (共 7 步)",
+            Step::CopilotAuth => "第 4 步 (共 7 步)",
+            Step::ApiKey => "第 4 步 (共 7 步)",
+            Step::Model => "第 5 步 (共 7 步)",
+            Step::Routing => "第 6 步 (共 7 步)",
+            Step::Complete => "第 7 步 (共 7 步)",
         }
     }
 
@@ -617,12 +617,12 @@ impl State {
 
 fn tier_label(tier: ModelTier) -> &'static str {
     match tier {
-        ModelTier::Frontier => "frontier",
-        ModelTier::Smart => "smart",
-        ModelTier::Balanced => "balanced",
-        ModelTier::Fast => "fast",
-        ModelTier::Local => "local",
-        ModelTier::Custom => "custom",
+        ModelTier::Frontier => "最强",
+        ModelTier::Smart => "智能",
+        ModelTier::Balanced => "均衡",
+        ModelTier::Fast => "快速",
+        ModelTier::Local => "本地",
+        ModelTier::Custom => "自定义",
     }
 }
 
@@ -1390,7 +1390,7 @@ fn draw(f: &mut Frame, area: Rect, state: &mut State) {
                 .fg(theme::ACCENT)
                 .add_modifier(Modifier::BOLD),
         ),
-        Span::styled(" Init", Style::default().fg(theme::TEXT_PRIMARY)),
+        Span::styled(" 初始化向导", Style::default().fg(theme::TEXT_PRIMARY)),
         Span::styled(format!("  {}", state.step_label()), theme::dim_style()),
     ]);
     f.render_widget(Paragraph::new(header), chunks[1]);
@@ -1447,7 +1447,7 @@ fn draw_welcome(f: &mut Frame, area: Rect) {
     f.render_widget(logo, chunks[1]);
 
     let tagline = Paragraph::new(Line::from(vec![Span::styled(
-        "Agent Operating System",
+        "智能体操作系统 (Agent Operating System)",
         theme::dim_style(),
     )]))
     .alignment(Alignment::Center);
@@ -1461,25 +1461,25 @@ fn draw_welcome(f: &mut Frame, area: Rect) {
 
     let sec1 = Paragraph::new(Line::from(vec![
         Span::styled("  \u{1f6e1} ", Style::default().fg(theme::GREEN)),
-        Span::raw("Sandboxed execution, WASM isolation, SSRF protection"),
+        Span::raw("沙箱执行, WASM 隔离, SSRF 防护"),
     ]));
     f.render_widget(sec1, chunks[5]);
 
     let sec2 = Paragraph::new(Line::from(vec![
         Span::styled("  \u{1f512} ", Style::default().fg(theme::GREEN)),
-        Span::raw("Signed manifests, audit trail, taint tracking"),
+        Span::raw("签名清单, 审计追踪, 污点追踪"),
     ]));
     f.render_widget(sec2, chunks[6]);
 
     let sec3 = Paragraph::new(Line::from(vec![
         Span::styled("  \u{1f50d} ", Style::default().fg(theme::GREEN)),
-        Span::raw("RBAC, capability checks, secret zeroization"),
+        Span::raw("RBAC 权限控制, 能力检查, 密钥清零"),
     ]));
     f.render_widget(sec3, chunks[7]);
 
     let sec4 = Paragraph::new(Line::from(vec![
         Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-        Span::raw("API keys never logged, 0600 file permissions"),
+        Span::raw("API 密钥从不记录日志, 0600 文件权限"),
     ]));
     f.render_widget(sec4, chunks[8]);
 
@@ -1490,25 +1490,25 @@ fn draw_welcome(f: &mut Frame, area: Rect) {
     f.render_widget(sep2, chunks[10]);
 
     let resp1 = Paragraph::new(Line::from(vec![Span::styled(
-        "  Agents can execute code, access the network, and act",
+        "  智能体可以执行代码、访问网络并代表您进行操作。",
         Style::default().fg(theme::TEXT_SECONDARY),
     )]));
     f.render_widget(resp1, chunks[12]);
 
     let resp2 = Paragraph::new(Line::from(vec![
         Span::styled(
-            "  on your behalf. ",
+            "  ",
             Style::default().fg(theme::TEXT_SECONDARY),
         ),
         Span::styled(
-            "You are responsible for what they do.",
+            "您对它们的行为负全部责任。",
             Style::default().fg(theme::YELLOW),
         ),
     ]));
     f.render_widget(resp2, chunks[13]);
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "  [Enter] I understand    [Esc] Cancel",
+        "  [Enter] 我明白    [Esc] 取消",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[15]);
@@ -1536,7 +1536,7 @@ fn draw_migration_detecting(f: &mut Frame, area: Rect, state: &State) {
         Paragraph::new(Line::from(vec![
             Span::raw("  "),
             Span::styled(spinner, Style::default().fg(theme::ACCENT)),
-            Span::raw(" Checking for existing installations..."),
+            Span::raw(" 正在检查现有安装..."),
         ])),
         chunks[1],
     );
@@ -1562,12 +1562,12 @@ fn draw_migration_offer(f: &mut Frame, area: Rect, state: &mut State) {
         let names_str = names.join(", ");
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-            Span::raw(format!("{} agents ({})", scan.agents.len(), names_str)),
+            Span::raw(format!("{} 个智能体 ({})", scan.agents.len(), names_str)),
         ]));
     } else {
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2500} ", theme::dim_style()),
-            Span::styled("No agents", theme::dim_style()),
+            Span::styled("无智能体", theme::dim_style()),
         ]));
     }
 
@@ -1575,45 +1575,46 @@ fn draw_migration_offer(f: &mut Frame, area: Rect, state: &mut State) {
         let chan_str = scan.channels.join(", ");
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-            Span::raw(format!("{} channels ({})", scan.channels.len(), chan_str)),
+            Span::raw(format!("{} 个频道 ({})", scan.channels.len(), chan_str)),
         ]));
     } else {
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2500} ", theme::dim_style()),
-            Span::styled("No channels", theme::dim_style()),
+            Span::styled("无频道", theme::dim_style()),
         ]));
     }
 
     if !scan.skills.is_empty() {
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-            Span::raw(format!("{} skills", scan.skills.len())),
+            Span::raw(format!("{} 个技能", scan.skills.len())),
         ]));
     } else {
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2500} ", theme::dim_style()),
-            Span::styled("No skills", theme::dim_style()),
+            Span::styled("无技能", theme::dim_style()),
         ]));
     }
 
     if scan.has_memory {
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-            Span::raw("Memory files"),
+            Span::raw("记忆文件"),
         ]));
     } else {
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2500} ", theme::dim_style()),
-            Span::styled("No memory files", theme::dim_style()),
+            Span::styled("无记忆文件", theme::dim_style()),
         ]));
     }
 
     if scan.has_config {
         content_lines.push(Line::from(vec![
             Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-            Span::raw("Configuration"),
+            Span::raw("配置文件"),
         ]));
     }
+
 
     let chunks = Layout::vertical([
         Constraint::Length(1),                          // 0: title
@@ -1631,7 +1632,7 @@ fn draw_migration_offer(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  OpenClaw Installation Detected",
+            "  检测到 OpenClaw 安装",
             Style::default()
                 .fg(theme::ACCENT)
                 .add_modifier(Modifier::BOLD),
@@ -1677,7 +1678,7 @@ fn draw_migration_offer(f: &mut Frame, area: Rect, state: &mut State) {
     );
 
     // Yes / No options
-    let options = [("Yes", "migrate settings and data"), ("No", "start fresh")];
+    let options = [("是", "迁移设置和数据"), ("否", "全新开始")];
 
     for (i, (label, desc)) in options.iter().enumerate() {
         let selected = state.migration_choice_list.selected() == Some(i);
@@ -1705,7 +1706,7 @@ fn draw_migration_offer(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Navigate  [Enter] Select  [Esc] Skip",
+            "  [\u{2191}\u{2193}] 移动  [Enter] 选择  [Esc] 跳过",
             theme::hint_style(),
         )])),
         chunks[9],
@@ -1725,7 +1726,7 @@ fn draw_migration_running(f: &mut Frame, area: Rect, state: &State) {
         Paragraph::new(Line::from(vec![
             Span::raw("  "),
             Span::styled(spinner, Style::default().fg(theme::ACCENT)),
-            Span::raw(" Migrating from OpenClaw..."),
+            Span::raw(" 正在从 OpenClaw 迁移..."),
         ])),
         chunks[1],
     );
@@ -1737,7 +1738,7 @@ fn draw_migration_done(f: &mut Frame, area: Rect, state: &State) {
     if let Some(ref error) = state.migration_error {
         lines.push(Line::from(vec![
             Span::styled("  \u{2718} ", Style::default().fg(theme::RED)),
-            Span::raw(format!("Migration failed: {}", error)),
+            Span::raw(format!("迁移失败: {}", error)),
         ]));
     } else if let Some(ref report) = state.migration_report {
         // Group imported items by kind
@@ -1778,7 +1779,7 @@ fn draw_migration_done(f: &mut Frame, area: Rect, state: &State) {
         if config_count > 0 {
             lines.push(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                Span::raw("Config migrated"),
+                Span::raw("配置文件已迁移"),
             ]));
         }
 
@@ -1786,7 +1787,7 @@ fn draw_migration_done(f: &mut Frame, area: Rect, state: &State) {
             let names = agent_items.join(", ");
             lines.push(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                Span::raw(format!("{} agents imported ({})", agent_items.len(), names)),
+                Span::raw(format!("已导入 {} 个智能体 ({})", agent_items.len(), names)),
             ]));
         }
 
@@ -1794,35 +1795,35 @@ fn draw_migration_done(f: &mut Frame, area: Rect, state: &State) {
             let names = channel_items.join(", ");
             lines.push(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                Span::raw(format!("{} channels ({})", channel_items.len(), names)),
+                Span::raw(format!("已导入 {} 个频道 ({})", channel_items.len(), names)),
             ]));
         }
 
         if memory_count > 0 {
             lines.push(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                Span::raw("Memory files copied"),
+                Span::raw("记忆文件已复制"),
             ]));
         }
 
         if skill_count > 0 {
             lines.push(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                Span::raw(format!("{} skills imported", skill_count)),
+                Span::raw(format!("已导入 {} 个技能", skill_count)),
             ]));
         }
 
         if session_count > 0 {
             lines.push(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                Span::raw(format!("{} sessions imported", session_count)),
+                Span::raw(format!("已导入 {} 个会话", session_count)),
             ]));
         }
 
         for skipped in &report.skipped {
             lines.push(Line::from(vec![
                 Span::styled("  \u{26a0} ", Style::default().fg(theme::YELLOW)),
-                Span::raw(format!("{} skipped ({})", skipped.name, skipped.reason)),
+                Span::raw(format!("已跳过 {} ({})", skipped.name, skipped.reason)),
             ]));
         }
 
@@ -1839,12 +1840,13 @@ fn draw_migration_done(f: &mut Frame, area: Rect, state: &State) {
             Style::default().fg(theme::BORDER),
         )]));
         lines.push(Line::from(vec![Span::raw(format!(
-            "  {} imported, {} skipped, {} warnings",
+            "  {} 已导入, {} 已跳过, {} 条警告",
             report.imported.len(),
             report.skipped.len(),
             report.warnings.len(),
         ))]));
     }
+
 
     let content_height = lines.len() as u16;
 
@@ -1872,8 +1874,8 @@ fn draw_migration_done(f: &mut Frame, area: Rect, state: &State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![
-            Span::styled("  [Enter] Continue  ", theme::hint_style()),
-            Span::styled("(auto-advancing...)", theme::dim_style()),
+            Span::styled("  [Enter] 继续  ", theme::hint_style()),
+            Span::styled("(自动跳转中...)", theme::dim_style()),
         ])),
         chunks[4],
     );
@@ -1887,7 +1889,7 @@ fn draw_provider(f: &mut Frame, area: Rect, state: &mut State) {
     ])
     .split(area);
 
-    let prompt = Paragraph::new(Line::from(vec![Span::raw("  Choose your LLM provider:")]));
+    let prompt = Paragraph::new(Line::from(vec![Span::raw("  选择您的 LLM 供应商:")]));
     f.render_widget(prompt, chunks[0]);
 
     let items: Vec<ListItem> = state
@@ -1906,24 +1908,24 @@ fn draw_provider(f: &mut Frame, area: Rect, state: &mut State) {
             let name_span = Span::raw(format!("{:<14}", p.display));
             let hint_text = if p.name == "claude-code" {
                 if detected {
-                    "CLI detected".to_string()
+                    "已检测到 CLI".to_string()
                 } else {
-                    "no API key needed".to_string()
+                    "无需 API 密钥".to_string()
                 }
             } else if p.name == "github-copilot" {
                 if detected {
-                    format!("{} detected", p.env_var)
+                    format!("已检测到 {}", p.env_var)
                 } else {
-                    "run set-key after init".to_string()
+                    "初始化后运行 set-key".to_string()
                 }
             } else if detected {
-                format!("{} detected", p.env_var)
+                format!("已检测到 {}", p.env_var)
             } else if !p.needs_key {
-                "local, no key needed".to_string()
+                "本地, 无需密钥".to_string()
             } else if !p.hint.is_empty() {
-                format!("requires {} ({})", p.env_var, p.hint)
+                format!("需要 {} ({})", p.env_var, p.hint)
             } else {
-                format!("requires {}", p.env_var)
+                format!("需要 {}", p.env_var)
             };
             ListItem::new(Line::from(vec![
                 icon,
@@ -1939,11 +1941,12 @@ fn draw_provider(f: &mut Frame, area: Rect, state: &mut State) {
     f.render_stateful_widget(list, chunks[1], &mut state.provider_list);
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "  [\u{2191}\u{2193}/jk] Navigate  [Enter] Select  [Esc] Cancel",
+        "  [\u{2191}\u{2193}/jk] 移动  [Enter] 选择  [Esc] 取消",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[2]);
 }
+
 
 fn draw_copilot_auth(f: &mut Frame, area: Rect, state: &mut State) {
     let chunks = Layout::vertical([
@@ -1962,7 +1965,7 @@ fn draw_copilot_auth(f: &mut Frame, area: Rect, state: &mut State) {
     .split(area);
 
     let title = Paragraph::new(Line::from(vec![
-        Span::styled("  GitHub Copilot Authentication", Style::default().fg(theme::ACCENT)),
+        Span::styled("  GitHub Copilot 身份验证", Style::default().fg(theme::ACCENT)),
     ]));
     f.render_widget(title, chunks[0]);
 
@@ -1973,7 +1976,7 @@ fn draw_copilot_auth(f: &mut Frame, area: Rect, state: &mut State) {
             let line = Paragraph::new(Line::from(vec![
                 Span::raw("  "),
                 Span::styled(spinner, Style::default().fg(theme::ACCENT)),
-                Span::raw(" Requesting device code..."),
+                Span::raw(" 正在请求设备代码..."),
             ]));
             f.render_widget(line, chunks[2]);
         }
@@ -1981,12 +1984,12 @@ fn draw_copilot_auth(f: &mut Frame, area: Rect, state: &mut State) {
             let line1 = Paragraph::new(Line::from(vec![
                 Span::raw("  "),
                 Span::styled(spinner, Style::default().fg(theme::ACCENT)),
-                Span::raw(" Waiting for authorization..."),
+                Span::raw(" 等待授权..."),
             ]));
             f.render_widget(line1, chunks[2]);
 
             let code_label = Paragraph::new(Line::from(vec![
-                Span::raw("  Enter this code:"),
+                Span::raw("  请输入此代码:"),
             ]));
             f.render_widget(code_label, chunks[5]);
 
@@ -2002,34 +2005,34 @@ fn draw_copilot_auth(f: &mut Frame, area: Rect, state: &mut State) {
             f.render_widget(code_value, chunks[6]);
 
             let url = Paragraph::new(Line::from(vec![
-                Span::raw("  at "),
+                Span::raw("  访问地址 "),
                 Span::styled(&state.copilot_verification_uri, theme::dim_style()),
             ]));
             f.render_widget(url, chunks[8]);
 
             let hint = Paragraph::new(Line::from(vec![
-                Span::styled("  [Enter] Open browser", theme::dim_style()),
+                Span::styled("  [Enter] 打开浏览器", theme::dim_style()),
             ]));
             f.render_widget(hint, chunks[10]);
         }
         CopilotAuthStatus::FetchingModels => {
             let line = Paragraph::new(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                Span::raw("Authenticated"),
+                Span::raw("已验证身份"),
             ]));
             f.render_widget(line, chunks[2]);
 
             let line2 = Paragraph::new(Line::from(vec![
                 Span::raw("  "),
                 Span::styled(spinner, Style::default().fg(theme::ACCENT)),
-                Span::raw(" Fetching available models..."),
+                Span::raw(" 正在获取可用模型..."),
             ]));
             f.render_widget(line2, chunks[3]);
         }
         CopilotAuthStatus::Done => {
             let line = Paragraph::new(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                Span::raw("Models loaded"),
+                Span::raw("模型已加载"),
             ]));
             f.render_widget(line, chunks[2]);
         }
@@ -2041,7 +2044,7 @@ fn draw_copilot_auth(f: &mut Frame, area: Rect, state: &mut State) {
             f.render_widget(line, chunks[2]);
 
             let hint = Paragraph::new(Line::from(vec![
-                Span::styled("  Esc to go back", theme::dim_style()),
+                Span::styled("  Esc 返回", theme::dim_style()),
             ]));
             f.render_widget(hint, chunks[10]);
         }
@@ -2065,7 +2068,7 @@ fn draw_api_key(f: &mut Frame, area: Rect, state: &mut State) {
     .split(area);
 
     let prompt = Paragraph::new(Line::from(vec![Span::raw(format!(
-        "  Enter your {} API key:",
+        "  输入您的 {} API 密钥:",
         p.display
     ))]));
     f.render_widget(prompt, chunks[0]);
@@ -2085,7 +2088,7 @@ fn draw_api_key(f: &mut Frame, area: Rect, state: &mut State) {
             ]));
             f.render_widget(input, chunks[1]);
             let env_hint = Paragraph::new(Line::from(vec![Span::styled(
-                format!("    Or set {} environment variable", p.env_var),
+                format!("    或者设置 {} 环境变量", p.env_var),
                 theme::dim_style(),
             )]));
             f.render_widget(env_hint, chunks[3]);
@@ -2095,7 +2098,7 @@ fn draw_api_key(f: &mut Frame, area: Rect, state: &mut State) {
             let input = Paragraph::new(Line::from(vec![
                 Span::raw("  "),
                 Span::styled(spinner, Style::default().fg(theme::ACCENT)),
-                Span::raw(" Testing API key..."),
+                Span::raw(" 正在测试 API 密钥..."),
             ]));
             f.render_widget(input, chunks[1]);
         }
@@ -2103,13 +2106,13 @@ fn draw_api_key(f: &mut Frame, area: Rect, state: &mut State) {
             f.render_widget(
                 Paragraph::new(Line::from(vec![
                     Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                    Span::raw("API key verified"),
+                    Span::raw("API 密钥验证成功"),
                 ])),
                 chunks[1],
             );
             f.render_widget(
                 Paragraph::new(Line::from(vec![Span::styled(
-                    "    Saved to ~/.openfang/.env",
+                    "    已保存至 ~/.openfang/.env",
                     theme::dim_style(),
                 )])),
                 chunks[3],
@@ -2119,13 +2122,13 @@ fn draw_api_key(f: &mut Frame, area: Rect, state: &mut State) {
             f.render_widget(
                 Paragraph::new(Line::from(vec![
                     Span::styled("  \u{26a0} ", Style::default().fg(theme::YELLOW)),
-                    Span::raw("Could not verify (may still work)"),
+                    Span::raw("无法验证 (可能仍可工作)"),
                 ])),
                 chunks[1],
             );
             f.render_widget(
                 Paragraph::new(Line::from(vec![Span::styled(
-                    "    Saved to ~/.openfang/.env",
+                    "    已保存至 ~/.openfang/.env",
                     theme::dim_style(),
                 )])),
                 chunks[3],
@@ -2135,12 +2138,13 @@ fn draw_api_key(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [Enter] Confirm  [Esc] Back",
+            "  [Enter] 确认  [Esc] 返回",
             theme::hint_style(),
         )])),
         chunks[5],
     );
 }
+
 
 fn draw_model(f: &mut Frame, area: Rect, state: &mut State) {
     let p = match state.provider() {
@@ -2157,7 +2161,7 @@ fn draw_model(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::raw(format!(
-            "  Choose default model for {}:",
+            "  选择 {} 的默认模型:",
             p.display
         ))])),
         chunks[0],
@@ -2171,7 +2175,7 @@ fn draw_model(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}/jk] Navigate  [Enter] Select  [Esc] Back    * = default",
+            "  [\u{2191}\u{2193}/jk] 移动  [Enter] 选择  [Esc] 返回    * = 默认",
             theme::hint_style(),
         )])),
         chunks[2],
@@ -2203,7 +2207,7 @@ fn draw_routing_choice(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  Smart Model Routing",
+            "  智能模型路由",
             Style::default()
                 .fg(theme::ACCENT)
                 .add_modifier(Modifier::BOLD),
@@ -2213,7 +2217,7 @@ fn draw_routing_choice(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  Automatically picks the right model per task complexity.",
+            "  根据任务复杂度自动选择合适的模型。",
             theme::dim_style(),
         )])),
         chunks[1],
@@ -2221,7 +2225,7 @@ fn draw_routing_choice(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  Simple tasks use cheap/fast models, complex tasks use",
+            "  简单任务使用廉价/快速模型，复杂任务使用",
             theme::dim_style(),
         )])),
         chunks[2],
@@ -2229,7 +2233,7 @@ fn draw_routing_choice(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  frontier models. Saves cost without sacrificing quality.",
+            "  最强模型。在不牺牲质量的前提下节省成本。",
             theme::dim_style(),
         )])),
         chunks[3],
@@ -2244,8 +2248,8 @@ fn draw_routing_choice(f: &mut Frame, area: Rect, state: &mut State) {
     );
 
     let options = [
-        ("Yes", "pick 3 models (fast / balanced / frontier)"),
-        ("No", "use one model for everything"),
+        ("是", "选择 3 个模型 (快速 / 均衡 / 最强)"),
+        ("否", "所有任务使用同一个模型"),
     ];
 
     for (i, (label, desc)) in options.iter().enumerate() {
@@ -2274,7 +2278,7 @@ fn draw_routing_choice(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Navigate  [Enter] Select  [Esc] Back",
+            "  [\u{2191}\u{2193}] 移动  [Enter] 选择  [Esc] 返回",
             theme::hint_style(),
         )])),
         chunks[10],
@@ -2300,12 +2304,12 @@ fn draw_routing_pick(f: &mut Frame, area: Rect, state: &mut State, tier: usize) 
 
     f.render_widget(
         Paragraph::new(Line::from(vec![
-            Span::raw("  Pick "),
+            Span::raw("  选择 "),
             Span::styled(
                 ROUTING_TIER_NAMES[tier],
                 Style::default().fg(tier_color).add_modifier(Modifier::BOLD),
             ),
-            Span::raw(format!(" model ({}/3):", tier + 1)),
+            Span::raw(format!(" 模型 ({}/3):", tier + 1)),
         ])),
         chunks[0],
     );
@@ -2360,12 +2364,13 @@ fn draw_routing_pick(f: &mut Frame, area: Rect, state: &mut State, tier: usize) 
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}/jk] Navigate  [Enter] Select  [Esc] Back",
+            "  [\u{2191}\u{2193}/jk] 移动  [Enter] 选择  [Esc] 返回",
             theme::hint_style(),
         )])),
         chunks[4],
     );
 }
+
 
 /// Build list items for the model picker (shared between Model and Routing steps).
 fn build_model_list_items<'a>(
@@ -2455,7 +2460,7 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
             Paragraph::new(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
                 Span::styled(
-                    "Setup complete \u{2014} daemon running",
+                    "设置完成 \u{2014} 守护进程运行中",
                     Style::default()
                         .fg(theme::GREEN)
                         .add_modifier(Modifier::BOLD),
@@ -2468,7 +2473,7 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
             Paragraph::new(Line::from(vec![
                 Span::styled("  \u{26a0} ", Style::default().fg(theme::YELLOW)),
                 Span::styled(
-                    "Setup complete \u{2014} ",
+                    "设置完成 \u{2014} ",
                     Style::default()
                         .fg(theme::GREEN)
                         .add_modifier(Modifier::BOLD),
@@ -2482,7 +2487,7 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
             Paragraph::new(Line::from(vec![
                 Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
                 Span::styled(
-                    "Setup complete!",
+                    "设置完成!",
                     Style::default()
                         .fg(theme::GREEN)
                         .add_modifier(Modifier::BOLD),
@@ -2498,7 +2503,7 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![
-            Span::styled("  Provider:    ", kv_style),
+            Span::styled("  供应商:    ", kv_style),
             Span::styled(p.display, val_style),
         ])),
         chunks[3],
@@ -2506,18 +2511,18 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![
-            Span::styled("  Model:       ", kv_style),
+            Span::styled("  模型:      ", kv_style),
             Span::styled(model, val_style),
         ])),
         chunks[4],
     );
 
     let daemon_text = if state.daemon_started {
-        format!("running at {}", state.daemon_url)
+        format!("运行于 {}", state.daemon_url)
     } else if !state.daemon_error.is_empty() {
-        "not running".to_string()
+        "未运行".to_string()
     } else {
-        "pending".to_string()
+        "等待中".to_string()
     };
     let daemon_color = if state.daemon_started {
         theme::GREEN
@@ -2526,7 +2531,7 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
     };
     f.render_widget(
         Paragraph::new(Line::from(vec![
-            Span::styled("  Daemon:      ", kv_style),
+            Span::styled("  守护进程:  ", kv_style),
             Span::styled(daemon_text, Style::default().fg(daemon_color)),
         ])),
         chunks[5],
@@ -2544,7 +2549,7 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
     // ── Question ──
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  How do you want to use OpenFang?",
+            "  您想如何使用 OpenFang?",
             Style::default()
                 .fg(theme::ACCENT)
                 .add_modifier(Modifier::BOLD),
@@ -2554,15 +2559,15 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
 
     // ── Options ──
     let desktop_hint = if has_desktop {
-        "native window with system tray"
+        "带系统托盘的原生窗口"
     } else {
-        "not installed"
+        "未安装"
     };
 
     let options: [(&str, &str, &str); 3] = [
-        ("Desktop app", "(recommended)", desktop_hint),
-        ("Web dashboard", "", "opens in your default browser"),
-        ("Terminal chat", "", "interactive chat right here"),
+        ("桌面应用", "(推荐)", desktop_hint),
+        ("Web 控制台", "", "在默认浏览器中打开"),
+        ("终端对话", "", "在此处开始交互式对话"),
     ];
 
     for (i, (label, badge, desc)) in options.iter().enumerate() {
@@ -2624,7 +2629,7 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
         f.render_widget(
             Paragraph::new(vec![
                 Line::from(vec![Span::styled(
-                    "  AWS bearer token required \u{2014} set:",
+                    "  需要 AWS 令牌 \u{2014} 请设置:",
                     Style::default().fg(theme::YELLOW),
                 )]),
                 Line::from(vec![Span::styled(
@@ -2639,9 +2644,10 @@ fn draw_complete(f: &mut Frame, area: Rect, state: &mut State) {
     // ── Bottom hints ──
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}/jk] Navigate  [Enter] Launch  [1/2/3] Quick select",
+            "  [\u{2191}\u{2193}/jk] 移动  [Enter] 启动  [1/2/3] 快速选择",
             theme::hint_style(),
         )])),
         chunks[15],
     );
 }
+

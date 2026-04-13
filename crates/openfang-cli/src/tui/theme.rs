@@ -11,16 +11,16 @@ use ratatui::style::{Color, Modifier, Style};
 pub const ACCENT: Color = Color::Rgb(59, 130, 246); // #3B82F6 — Deep Blue
 pub const ACCENT_DIM: Color = Color::Rgb(37, 99, 235); // #2563EB
 
-pub const BG_PRIMARY: Color = Color::Rgb(15, 14, 14); // #0F0E0E — dark background
-pub const BG_CARD: Color = Color::Rgb(31, 29, 28); // #1F1D1C — dark surface
-pub const BG_HOVER: Color = Color::Rgb(42, 39, 37); // #2A2725 — dark hover
-pub const BG_CODE: Color = Color::Rgb(24, 22, 21); // #181615 — dark code block
+pub const BG_PRIMARY: Color = Color::Rgb(10, 25, 47); // #0A192F — Deep Blue background
+pub const BG_CARD: Color = Color::Rgb(17, 34, 64); // #112240 — Deep Blue surface
+pub const BG_HOVER: Color = Color::Rgb(30, 41, 59); // #1E293B — Deep Blue hover
+pub const BG_CODE: Color = Color::Rgb(13, 22, 41); // #0D1629 — Deep Blue code block
 
-pub const TEXT_PRIMARY: Color = Color::Rgb(240, 239, 238); // #F0EFEE — light text on dark bg
-pub const TEXT_SECONDARY: Color = Color::Rgb(168, 162, 158); // #A8A29E — muted text
-pub const TEXT_TERTIARY: Color = Color::Rgb(120, 113, 108); // #78716C — dim text
+pub const TEXT_PRIMARY: Color = Color::Rgb(226, 232, 240); // #E2E8F0 — light slate text
+pub const TEXT_SECONDARY: Color = Color::Rgb(148, 163, 184); // #94A3B8 — slate text
+pub const TEXT_TERTIARY: Color = Color::Rgb(100, 116, 139); // #64748B — slate dim text
 
-pub const BORDER: Color = Color::Rgb(63, 59, 56); // #3F3B38 — dark border
+pub const BORDER: Color = Color::Rgb(30, 58, 138); // #1E3A8A — Deep Blue border
 
 // ── Semantic Colors (brighter variants for dark background contrast) ────────
 

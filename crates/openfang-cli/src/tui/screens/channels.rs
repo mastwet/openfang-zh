@@ -38,311 +38,311 @@ struct ChannelDef {
 }
 
 const CHANNEL_DEFS: &[ChannelDef] = &[
-    // ── Messaging (12)
+    // ── 消息 (12)
     ChannelDef {
         name: "telegram",
         display_name: "Telegram",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["TELEGRAM_BOT_TOKEN"],
-        description: "Telegram Bot API adapter",
+        description: "Telegram 机器人 API 适配器",
     },
     ChannelDef {
         name: "discord",
         display_name: "Discord",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["DISCORD_BOT_TOKEN"],
-        description: "Discord bot adapter",
+        description: "Discord 机器人适配器",
     },
     ChannelDef {
         name: "slack",
         display_name: "Slack",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["SLACK_APP_TOKEN", "SLACK_BOT_TOKEN"],
-        description: "Slack Socket Mode adapter",
+        description: "Slack Socket Mode 适配器",
     },
     ChannelDef {
         name: "whatsapp",
         display_name: "WhatsApp",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["WHATSAPP_ACCESS_TOKEN", "WHATSAPP_VERIFY_TOKEN"],
-        description: "WhatsApp Cloud API adapter",
+        description: "WhatsApp Cloud API 适配器",
     },
     ChannelDef {
         name: "signal",
         display_name: "Signal",
-        category: "Messaging",
+        category: "消息",
         env_vars: &[],
-        description: "Signal via signal-cli REST API",
+        description: "通过 signal-cli REST API 的 Signal",
     },
     ChannelDef {
         name: "matrix",
         display_name: "Matrix",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["MATRIX_ACCESS_TOKEN"],
-        description: "Matrix/Element adapter",
+        description: "Matrix/Element 适配器",
     },
     ChannelDef {
         name: "email",
         display_name: "Email",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["EMAIL_PASSWORD"],
-        description: "IMAP/SMTP email adapter",
+        description: "IMAP/SMTP 电子邮件适配器",
     },
     ChannelDef {
         name: "line",
         display_name: "LINE",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["LINE_CHANNEL_SECRET", "LINE_CHANNEL_ACCESS_TOKEN"],
-        description: "LINE Messaging API adapter",
+        description: "LINE 消息 API 适配器",
     },
     ChannelDef {
         name: "viber",
         display_name: "Viber",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["VIBER_AUTH_TOKEN"],
-        description: "Viber Bot API adapter",
+        description: "Viber 机器人 API 适配器",
     },
     ChannelDef {
         name: "messenger",
         display_name: "Messenger",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["MESSENGER_PAGE_TOKEN", "MESSENGER_VERIFY_TOKEN"],
-        description: "Facebook Messenger adapter",
+        description: "Facebook Messenger 适配器",
     },
     ChannelDef {
         name: "threema",
         display_name: "Threema",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["THREEMA_SECRET"],
-        description: "Threema Gateway adapter",
+        description: "Threema Gateway 适配器",
     },
     ChannelDef {
         name: "keybase",
         display_name: "Keybase",
-        category: "Messaging",
+        category: "消息",
         env_vars: &["KEYBASE_PAPERKEY"],
-        description: "Keybase chat adapter",
+        description: "Keybase 聊天适配器",
     },
-    // ── Social (5)
+    // ── 社交 (5)
     ChannelDef {
         name: "reddit",
         display_name: "Reddit",
-        category: "Social",
+        category: "社交",
         env_vars: &["REDDIT_CLIENT_SECRET", "REDDIT_PASSWORD"],
-        description: "Reddit API bot adapter",
+        description: "Reddit API 机器人适配器",
     },
     ChannelDef {
         name: "mastodon",
         display_name: "Mastodon",
-        category: "Social",
+        category: "社交",
         env_vars: &["MASTODON_ACCESS_TOKEN"],
-        description: "Mastodon Streaming API adapter",
+        description: "Mastodon 流式 API 适配器",
     },
     ChannelDef {
         name: "bluesky",
         display_name: "Bluesky",
-        category: "Social",
+        category: "社交",
         env_vars: &["BLUESKY_APP_PASSWORD"],
-        description: "Bluesky/AT Protocol adapter",
+        description: "Bluesky/AT 协议适配器",
     },
     ChannelDef {
         name: "linkedin",
         display_name: "LinkedIn",
-        category: "Social",
+        category: "社交",
         env_vars: &["LINKEDIN_ACCESS_TOKEN"],
-        description: "LinkedIn Messaging API adapter",
+        description: "LinkedIn 消息 API 适配器",
     },
     ChannelDef {
         name: "nostr",
         display_name: "Nostr",
-        category: "Social",
+        category: "社交",
         env_vars: &["NOSTR_PRIVATE_KEY"],
-        description: "Nostr relay protocol adapter",
+        description: "Nostr 中继协议适配器",
     },
-    // ── Enterprise (10)
+    // ── 企业 (10)
     ChannelDef {
         name: "teams",
         display_name: "Teams",
-        category: "Enterprise",
+        category: "企业",
         env_vars: &["TEAMS_APP_PASSWORD"],
-        description: "Microsoft Teams Bot Framework adapter",
+        description: "Microsoft Teams 机器人框架适配器",
     },
     ChannelDef {
         name: "mattermost",
         display_name: "Mattermost",
-        category: "Enterprise",
+        category: "企业",
         env_vars: &["MATTERMOST_TOKEN"],
-        description: "Mattermost WebSocket adapter",
+        description: "Mattermost WebSocket 适配器",
     },
     ChannelDef {
         name: "google_chat",
         display_name: "Google Chat",
-        category: "Enterprise",
+        category: "企业",
         env_vars: &["GOOGLE_CHAT_SERVICE_ACCOUNT"],
-        description: "Google Chat service account adapter",
+        description: "Google Chat 服务账号适配器",
     },
     ChannelDef {
         name: "webex",
         display_name: "Webex",
-        category: "Enterprise",
+        category: "企业",
         env_vars: &["WEBEX_BOT_TOKEN"],
-        description: "Cisco Webex bot adapter",
+        description: "Cisco Webex 机器人适配器",
     },
     ChannelDef {
         name: "feishu",
-        display_name: "Feishu/Lark",
-        category: "Enterprise",
+        display_name: "飞书/Lark",
+        category: "企业",
         env_vars: &["FEISHU_APP_SECRET"],
-        description: "Feishu/Lark Open Platform adapter",
+        description: "飞书/Lark 开放平台适配器",
     },
     ChannelDef {
         name: "dingtalk",
-        display_name: "DingTalk",
-        category: "Enterprise",
+        display_name: "钉钉",
+        category: "企业",
         env_vars: &["DINGTALK_ACCESS_TOKEN", "DINGTALK_SECRET"],
-        description: "DingTalk Robot API adapter (webhook mode)",
+        description: "钉钉机器人 API 适配器 (webhook 模式)",
     },
     ChannelDef {
         name: "dingtalk_stream",
-        display_name: "DingTalk Stream",
-        category: "Enterprise",
+        display_name: "钉钉流",
+        category: "企业",
         env_vars: &[
             "DINGTALK_APP_KEY",
             "DINGTALK_APP_SECRET",
             "DINGTALK_ROBOT_CODE",
         ],
-        description: "DingTalk Stream Mode (WebSocket long-connection)",
+        description: "钉钉流模式 (WebSocket 长连接)",
     },
     ChannelDef {
         name: "pumble",
         display_name: "Pumble",
-        category: "Enterprise",
+        category: "企业",
         env_vars: &["PUMBLE_BOT_TOKEN"],
-        description: "Pumble bot adapter",
+        description: "Pumble 机器人适配器",
     },
     ChannelDef {
         name: "flock",
         display_name: "Flock",
-        category: "Enterprise",
+        category: "企业",
         env_vars: &["FLOCK_BOT_TOKEN"],
-        description: "Flock bot adapter",
+        description: "Flock 机器人适配器",
     },
     ChannelDef {
         name: "twist",
         display_name: "Twist",
-        category: "Enterprise",
+        category: "企业",
         env_vars: &["TWIST_TOKEN"],
-        description: "Twist API v3 adapter",
+        description: "Twist API v3 适配器",
     },
     ChannelDef {
         name: "zulip",
         display_name: "Zulip",
-        category: "Enterprise",
+        category: "企业",
         env_vars: &["ZULIP_API_KEY"],
-        description: "Zulip event queue adapter",
+        description: "Zulip 事件队列适配器",
     },
-    // ── Developer (9)
+    // ── 开发 (9)
     ChannelDef {
         name: "irc",
         display_name: "IRC",
-        category: "Developer",
+        category: "开发",
         env_vars: &[],
-        description: "IRC raw TCP adapter",
+        description: "IRC 原始 TCP 适配器",
     },
     ChannelDef {
         name: "xmpp",
         display_name: "XMPP",
-        category: "Developer",
+        category: "开发",
         env_vars: &["XMPP_PASSWORD"],
-        description: "XMPP/Jabber adapter",
+        description: "XMPP/Jabber 适配器",
     },
     ChannelDef {
         name: "gitter",
         display_name: "Gitter",
-        category: "Developer",
+        category: "开发",
         env_vars: &["GITTER_TOKEN"],
-        description: "Gitter Streaming API adapter",
+        description: "Gitter 流式 API 适配器",
     },
     ChannelDef {
         name: "discourse",
         display_name: "Discourse",
-        category: "Developer",
+        category: "开发",
         env_vars: &["DISCOURSE_API_KEY"],
-        description: "Discourse forum API adapter",
+        description: "Discourse 论坛 API 适配器",
     },
     ChannelDef {
         name: "revolt",
         display_name: "Revolt",
-        category: "Developer",
+        category: "开发",
         env_vars: &["REVOLT_BOT_TOKEN"],
-        description: "Revolt bot adapter",
+        description: "Revolt 机器人适配器",
     },
     ChannelDef {
         name: "guilded",
         display_name: "Guilded",
-        category: "Developer",
+        category: "开发",
         env_vars: &["GUILDED_BOT_TOKEN"],
-        description: "Guilded bot adapter",
+        description: "Guilded 机器人适配器",
     },
     ChannelDef {
         name: "nextcloud",
         display_name: "Nextcloud",
-        category: "Developer",
+        category: "开发",
         env_vars: &["NEXTCLOUD_TOKEN"],
-        description: "Nextcloud Talk adapter",
+        description: "Nextcloud Talk 适配器",
     },
     ChannelDef {
         name: "rocketchat",
         display_name: "Rocket.Chat",
-        category: "Developer",
+        category: "开发",
         env_vars: &["ROCKETCHAT_TOKEN"],
-        description: "Rocket.Chat REST adapter",
+        description: "Rocket.Chat REST 适配器",
     },
     ChannelDef {
         name: "twitch",
         display_name: "Twitch",
-        category: "Developer",
+        category: "开发",
         env_vars: &["TWITCH_OAUTH_TOKEN"],
-        description: "Twitch IRC gateway adapter",
+        description: "Twitch IRC 网关适配器",
     },
-    // ── Notifications (4)
+    // ── 通知 (4)
     ChannelDef {
         name: "ntfy",
         display_name: "ntfy",
-        category: "Notifications",
+        category: "通知",
         env_vars: &["NTFY_TOKEN"],
-        description: "ntfy.sh pub/sub adapter",
+        description: "ntfy.sh 发布/订阅适配器",
     },
     ChannelDef {
         name: "gotify",
         display_name: "Gotify",
-        category: "Notifications",
+        category: "通知",
         env_vars: &["GOTIFY_APP_TOKEN", "GOTIFY_CLIENT_TOKEN"],
-        description: "Gotify WebSocket adapter",
+        description: "Gotify WebSocket 适配器",
     },
     ChannelDef {
         name: "webhook",
         display_name: "Webhook",
-        category: "Notifications",
+        category: "通知",
         env_vars: &["WEBHOOK_SECRET"],
-        description: "Generic webhook adapter",
+        description: "通用 Webhook 适配器",
     },
     ChannelDef {
         name: "mumble",
         display_name: "Mumble",
-        category: "Notifications",
+        category: "通知",
         env_vars: &["MUMBLE_PASSWORD"],
-        description: "Mumble text chat adapter",
+        description: "Mumble 文本聊天适配器",
     },
 ];
 
 const CATEGORIES: &[&str] = &[
-    "All",
-    "Messaging",
-    "Social",
-    "Enterprise",
-    "Developer",
-    "Notifications",
+    "全部",
+    "消息",
+    "社交",
+    "企业",
+    "开发",
+    "通知",
 ];
 
 // ── State ───────────────────────────────────────────────────────────────────
@@ -628,7 +628,7 @@ impl ChannelState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut ChannelState) {
     let ready = state.ready_count();
     let total = state.channels.len();
-    let title = format!(" Channels ({ready}/{total} ready) ");
+    let title = format!(" 渠道 ({ready}/{total} 就绪) ");
 
     let block = Block::default()
         .title(Line::from(vec![Span::styled(title, theme::title_style())]))
@@ -679,7 +679,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut ChannelState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<18} {:<14} {:<16} {}",
-                "Channel", "Category", "Status", "Env Vars"
+                "渠道", "类别", "状态", "环境变量"
             ),
             theme::table_header(),
         )])),
@@ -691,7 +691,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut ChannelState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading channels\u{2026}", theme::dim_style()),
+                Span::styled("正在加载渠道\u{2026}", theme::dim_style()),
             ])),
             chunks[2],
         );
@@ -701,9 +701,9 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut ChannelState) {
             .iter()
             .map(|ch| {
                 let (badge, badge_style) = match ch.status {
-                    ChannelStatus::Ready => ("[Ready]", theme::channel_ready()),
-                    ChannelStatus::MissingEnv => ("[Missing env]", theme::channel_missing()),
-                    ChannelStatus::NotConfigured => ("[Not configured]", theme::channel_off()),
+                    ChannelStatus::Ready => ("[就绪]", theme::channel_ready()),
+                    ChannelStatus::MissingEnv => ("[缺少环境]", theme::channel_missing()),
+                    ChannelStatus::NotConfigured => ("[未配置]", theme::channel_off()),
                 };
                 let env_summary: String = ch
                     .env_vars
@@ -737,7 +737,7 @@ fn draw_list(f: &mut Frame, area: Rect, state: &mut ChannelState) {
     }
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "  [\u{2191}\u{2193}] Navigate  [Tab] Category  [Enter] Setup  [t] Test  [e/d] Enable/Disable  [r] Refresh",
+        "  [\u{2191}\u{2193}] 导航  [Tab] 类别  [Enter] 设置  [t] 测试  [e/d] 启用/禁用  [r] 刷新",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[3]);
@@ -771,7 +771,7 @@ fn draw_setup(f: &mut Frame, area: Rect, state: &ChannelState) {
     f.render_widget(
         Paragraph::new(vec![
             Line::from(vec![Span::styled(
-                format!("  Setup: {ch_display}"),
+                format!("  设置: {ch_display}"),
                 Style::default()
                     .fg(theme::CYAN)
                     .add_modifier(Modifier::BOLD),
@@ -795,7 +795,7 @@ fn draw_setup(f: &mut Frame, area: Rect, state: &ChannelState) {
     if env_vars.is_empty() {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  This channel has no secret env vars — configure via config.toml",
+                "  此渠道没有机密环境变量 — 请通过 config.toml 配置",
                 theme::dim_style(),
             )])),
             chunks[2],
@@ -806,7 +806,7 @@ fn draw_setup(f: &mut Frame, area: Rect, state: &ChannelState) {
         let total = env_vars.len();
         f.render_widget(
             Paragraph::new(Line::from(vec![
-                Span::raw(format!("  [{field_num}/{total}] Set ")),
+                Span::raw(format!("  [{field_num}/{total}] 设置 ")),
                 Span::styled(var, Style::default().fg(theme::YELLOW)),
                 Span::raw(":"),
             ])),
@@ -816,7 +816,7 @@ fn draw_setup(f: &mut Frame, area: Rect, state: &ChannelState) {
 
     // Input
     let display = if state.setup_input.is_empty() {
-        "paste value here..."
+        "在此粘贴值..."
     } else {
         &state.setup_input
     };
@@ -841,7 +841,7 @@ fn draw_setup(f: &mut Frame, area: Rect, state: &ChannelState) {
 
     // TOML preview
     let mut toml_lines = vec![Line::from(Span::styled(
-        "  Add to config.toml:",
+        "  添加到 config.toml:",
         theme::dim_style(),
     ))];
     toml_lines.push(Line::from(Span::styled(
@@ -859,7 +859,7 @@ fn draw_setup(f: &mut Frame, area: Rect, state: &ChannelState) {
     // Hints
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [Enter] Next field / Save  [Esc] Back",
+            "  [Enter] 下一个字段 / 保存  [Esc] 返回",
             theme::hint_style(),
         )])),
         chunks[5],
@@ -888,7 +888,7 @@ fn draw_testing(f: &mut Frame, area: Rect, state: &ChannelState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  Testing {ch_name}\u{2026}"),
+            format!("  正在测试 {ch_name}\u{2026}"),
             Style::default().fg(theme::CYAN),
         )])),
         chunks[0],
@@ -900,7 +900,7 @@ fn draw_testing(f: &mut Frame, area: Rect, state: &ChannelState) {
             f.render_widget(
                 Paragraph::new(Line::from(vec![
                     Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                    Span::styled("Checking credentials\u{2026}", theme::dim_style()),
+                    Span::styled("正在检查凭据\u{2026}", theme::dim_style()),
                 ])),
                 chunks[1],
             );
@@ -910,7 +910,7 @@ fn draw_testing(f: &mut Frame, area: Rect, state: &ChannelState) {
                 Paragraph::new(vec![
                     Line::from(vec![
                         Span::styled("  \u{2714} ", Style::default().fg(theme::GREEN)),
-                        Span::raw("Test passed"),
+                        Span::raw("测试通过"),
                     ]),
                     Line::from(vec![Span::styled(format!("  {msg}"), theme::dim_style())]),
                 ]),
@@ -922,7 +922,7 @@ fn draw_testing(f: &mut Frame, area: Rect, state: &ChannelState) {
                 Paragraph::new(vec![
                     Line::from(vec![
                         Span::styled("  \u{2718} ", Style::default().fg(theme::RED)),
-                        Span::raw("Test failed"),
+                        Span::raw("测试失败"),
                     ]),
                     Line::from(vec![Span::styled(
                         format!("  {msg}"),
@@ -936,7 +936,7 @@ fn draw_testing(f: &mut Frame, area: Rect, state: &ChannelState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [Enter/Esc] Back",
+            "  [Enter/Esc] 返回",
             theme::hint_style(),
         )])),
         chunks[2],

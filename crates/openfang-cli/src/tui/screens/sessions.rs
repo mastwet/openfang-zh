@@ -176,7 +176,7 @@ impl SessionsState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut SessionsState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Sessions ",
+            " 会话 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -212,14 +212,14 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SessionsState) {
         let search_hint = if state.search_buf.is_empty() {
             String::new()
         } else {
-            format!("  (filter: \"{}\")", state.search_buf)
+            format!("  (过滤: \"{}\")", state.search_buf)
         };
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(
                     format!(
                         "  {:<20} {:<16} {:<8} {}",
-                        "Agent", "Session ID", "Msgs", "Created"
+                        "智能体", "会话 ID", "消息数", "创建时间"
                     ),
                     theme::table_header(),
                 ),
@@ -235,13 +235,13 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SessionsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading sessions\u{2026}", theme::dim_style()),
+                Span::styled("正在加载会话\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.filtered.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No sessions found.", theme::dim_style())),
+            Paragraph::new(Span::styled("  未找到会话。", theme::dim_style())),
             chunks[1],
         );
     } else {
@@ -280,7 +280,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SessionsState) {
     if state.confirm_delete {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  Delete this session? [y] Yes  [any] Cancel",
+                "  确定删除此会话吗？ [y] 是  [其他] 取消",
                 Style::default().fg(theme::YELLOW),
             )])),
             chunks[2],
@@ -296,13 +296,14 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SessionsState) {
     } else {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                "  [\u{2191}\u{2193}] Navigate  [Enter] Open in Chat  [d] Delete  [/] Search  [r] Refresh",
+                "  [\u{2191}\u{2193}] 导航  [Enter] 在聊天中打开  [d] 删除  [/] 搜索  [r] 刷新",
                 theme::hint_style(),
             )])),
             chunks[2],
         );
     }
 }
+
 
 fn truncate(s: &str, max: usize) -> String {
     if s.len() <= max {
