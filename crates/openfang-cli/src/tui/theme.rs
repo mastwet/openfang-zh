@@ -8,8 +8,8 @@ use ratatui::style::{Color, Modifier, Style};
 
 // ── Core Palette (dark mode for terminal) ───────────────────────────────────
 
-pub const ACCENT: Color = Color::Rgb(255, 92, 0); // #FF5C00 — OpenFang orange
-pub const ACCENT_DIM: Color = Color::Rgb(224, 82, 0); // #E05200
+pub const ACCENT: Color = Color::Rgb(59, 130, 246); // #3B82F6 — Deep Blue
+pub const ACCENT_DIM: Color = Color::Rgb(37, 99, 235); // #2563EB
 
 pub const BG_PRIMARY: Color = Color::Rgb(15, 14, 14); // #0F0E0E — dark background
 pub const BG_CARD: Color = Color::Rgb(31, 29, 28); // #1F1D1C — dark surface

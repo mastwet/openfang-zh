@@ -272,7 +272,7 @@ impl SettingsState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut SettingsState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Settings ",
+            " 设置 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -306,12 +306,12 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SettingsState) {
 
     // Hints
     let hint_text = match state.sub {
-        SettingsSub::Providers if state.input_mode => "  [Enter] Save  [Esc] Cancel",
+        SettingsSub::Providers if state.input_mode => "  [Enter] 保存  [Esc] 取消",
         SettingsSub::Providers => {
-            "  [\u{2191}\u{2193}] Navigate  [e] Set Key  [d] Delete Key  [t] Test  [r] Refresh"
+            "  [\u{2191}\u{2193}] 导航  [e] 设置密钥  [d] 删除密钥  [t] 测试  [r] 刷新"
         }
-        SettingsSub::Models => "  [\u{2191}\u{2193}] Navigate  [r] Refresh",
-        SettingsSub::Tools => "  [\u{2191}\u{2193}] Navigate  [r] Refresh",
+        SettingsSub::Models => "  [\u{2191}\u{2193}] 导航  [r] 刷新",
+        SettingsSub::Tools => "  [\u{2191}\u{2193}] 导航  [r] 刷新",
     };
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
@@ -324,9 +324,9 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut SettingsState) {
 
 fn draw_sub_tabs(f: &mut Frame, area: Rect, active: SettingsSub) {
     let tabs = [
-        (SettingsSub::Providers, "1 Providers"),
-        (SettingsSub::Models, "2 Models"),
-        (SettingsSub::Tools, "3 Tools"),
+        (SettingsSub::Providers, "1 供应商"),
+        (SettingsSub::Models, "2 模型"),
+        (SettingsSub::Tools, "3 工具"),
     ];
     let mut spans = vec![Span::raw("  ")];
     for (sub, label) in &tabs {
@@ -351,7 +351,7 @@ fn draw_providers(f: &mut Frame, area: Rect, state: &mut SettingsState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  {:<20} {:<20} {}", "Provider", "Status", "Env Variable"),
+            format!("  {:<20} {:<20} {}", "供应商", "状态", "环境变量"),
             theme::table_header(),
         )])),
         chunks[0],
@@ -362,14 +362,14 @@ fn draw_providers(f: &mut Frame, area: Rect, state: &mut SettingsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading providers\u{2026}", theme::dim_style()),
+                Span::styled("正在加载供应商\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.providers.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No providers available.",
+                "  无可用供应商。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -384,23 +384,23 @@ fn draw_providers(f: &mut Frame, area: Rect, state: &mut SettingsState) {
                         Some(true) => {
                             let ms = p.latency_ms.unwrap_or(0);
                             (
-                                format!("\u{2714} Online ({ms}ms)"),
+                                format!("\u{2714} 在线 ({ms}ms)"),
                                 Style::default().fg(theme::GREEN),
                             )
                         }
                         Some(false) => (
-                            "\u{2718} Offline".to_string(),
+                            "\u{2718} 离线".to_string(),
                             Style::default().fg(theme::RED),
                         ),
-                        None => ("\u{25cb} Local".to_string(), theme::dim_style()),
+                        None => ("\u{25cb} 本地".to_string(), theme::dim_style()),
                     }
                 } else if p.configured {
                     (
-                        "\u{2714} Configured".to_string(),
+                        "\u{2714} 已配置".to_string(),
                         Style::default().fg(theme::GREEN),
                     )
                 } else {
-                    ("\u{25cb} Not set".to_string(), theme::dim_style())
+                    ("\u{25cb} 未设置".to_string(), theme::dim_style())
                 };
                 ListItem::new(Line::from(vec![
                     Span::styled(
@@ -425,7 +425,7 @@ fn draw_providers(f: &mut Frame, area: Rect, state: &mut SettingsState) {
         f.render_widget(
             Paragraph::new(vec![
                 Line::from(vec![Span::styled(
-                    format!("  Enter API key for {provider_name}: "),
+                    format!("  请输入 {provider_name} 的 API 密钥: "),
                     Style::default().fg(theme::YELLOW),
                 )]),
                 Line::from(vec![
@@ -458,7 +458,7 @@ fn draw_providers(f: &mut Frame, area: Rect, state: &mut SettingsState) {
                 ]),
                 Line::from(vec![Span::styled(
                     if result.success {
-                        format!("  Latency: {}ms", result.latency_ms)
+                        format!("  延迟: {}ms", result.latency_ms)
                     } else {
                         String::new()
                     },
@@ -489,7 +489,7 @@ fn draw_models(f: &mut Frame, area: Rect, state: &mut SettingsState) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!(
                 "  {:<28} {:<14} {:<10} {:<10} {}",
-                "Model ID", "Provider", "Tier", "Context", "Cost (in/out per 1M)"
+                "模型 ID", "供应商", "级别", "上下文", "费用 (入/出 每 1M)"
             ),
             theme::table_header(),
         )])),
@@ -501,13 +501,13 @@ fn draw_models(f: &mut Frame, area: Rect, state: &mut SettingsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading models\u{2026}", theme::dim_style()),
+                Span::styled("正在加载模型\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.models.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No models available.", theme::dim_style())),
+            Paragraph::new(Span::styled("  无可用模型。", theme::dim_style())),
             chunks[1],
         );
     } else {
@@ -564,7 +564,7 @@ fn draw_tools(f: &mut Frame, area: Rect, state: &mut SettingsState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  {:<24} {}", "Tool Name", "Description"),
+            format!("  {:<24} {}", "工具名称", "描述"),
             theme::table_header(),
         )])),
         chunks[0],
@@ -572,7 +572,7 @@ fn draw_tools(f: &mut Frame, area: Rect, state: &mut SettingsState) {
 
     if state.tools.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No tools available.", theme::dim_style())),
+            Paragraph::new(Span::styled("  无可用工具。", theme::dim_style())),
             chunks[1],
         );
     } else {

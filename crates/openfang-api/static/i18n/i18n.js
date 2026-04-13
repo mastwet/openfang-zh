@@ -20,7 +20,7 @@
 
   /**
    * Load translations from a JSON file
-   * @param {string} lang - Language code (en, ru)
+   * @param {string} lang - Language code (en, ru, zh)
    * @returns {Promise<Object>} Translation object
    */
   async function loadTranslations(lang) {
@@ -139,11 +139,11 @@
 
   /**
    * Set the current language and apply translations
-   * @param {string} lang - Language code (en, ru)
+   * @param {string} lang - Language code (en, ru, zh)
    * @param {boolean} persist - Whether to save to localStorage
    */
   async function setLanguage(lang, persist = true) {
-    if (!['en', 'ru'].includes(lang)) {
+    if (!['en', 'ru', 'zh'].includes(lang)) {
       console.warn(`[i18n] Unknown language: ${lang}, defaulting to en`);
       lang = 'en';
     }
@@ -191,6 +191,8 @@
       const browserLang = navigator.language || navigator.userLanguage || '';
       if (browserLang.startsWith('ru')) {
         lang = 'ru';
+      } else if (browserLang.startsWith('zh')) {
+        lang = 'zh';
       } else {
         lang = 'en';
       }
@@ -206,7 +208,8 @@
   function getAvailableLanguages() {
     return [
       { code: 'en', name: 'English' },
-      { code: 'ru', name: 'Русский' }
+      { code: 'ru', name: 'Русский' },
+      { code: 'zh', name: '简体中文' }
     ];
   }
 

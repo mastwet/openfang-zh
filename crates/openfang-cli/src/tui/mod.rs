@@ -86,25 +86,25 @@ const TABS: &[Tab] = &[
 impl Tab {
     fn label(self) -> &'static str {
         match self {
-            Tab::Dashboard => "Dashboard",
-            Tab::Agents => "Agents",
-            Tab::Chat => "Chat",
-            Tab::Sessions => "Sessions",
-            Tab::Workflows => "Workflows",
-            Tab::Triggers => "Triggers",
-            Tab::Memory => "Memory",
-            Tab::Channels => "Channels",
-            Tab::Skills => "Skills",
-            Tab::Hands => "Hands",
-            Tab::Extensions => "Extensions",
-            Tab::Templates => "Templates",
-            Tab::Peers => "Peers",
-            Tab::Comms => "Comms",
-            Tab::Security => "Security",
-            Tab::Audit => "Audit",
-            Tab::Usage => "Usage",
-            Tab::Settings => "Settings",
-            Tab::Logs => "Logs",
+            Tab::Dashboard => "概览",
+            Tab::Agents => "智能体",
+            Tab::Chat => "聊天",
+            Tab::Sessions => "会话",
+            Tab::Workflows => "工作流",
+            Tab::Triggers => "触发器",
+            Tab::Memory => "记忆",
+            Tab::Channels => "渠道",
+            Tab::Skills => "技能",
+            Tab::Hands => "工具包",
+            Tab::Extensions => "扩展",
+            Tab::Templates => "模板",
+            Tab::Peers => "节点",
+            Tab::Comms => "通信",
+            Tab::Security => "安全",
+            Tab::Audit => "审计",
+            Tab::Usage => "用量",
+            Tab::Settings => "设置",
+            Tab::Logs => "日志",
         }
     }
 
@@ -2206,7 +2206,7 @@ impl App {
                 if self.kernel_booting {
                     let spinner =
                         theme::SPINNER_FRAMES[self.welcome.tick % theme::SPINNER_FRAMES.len()];
-                    let msg = format!(" {spinner} Booting kernel\u{2026}");
+                    let msg = format!(" {spinner} 正在启动内核\u{2026}");
                     render_toast(frame, area, &msg, theme::YELLOW);
                 }
                 if let Some(ref err) = self.kernel_boot_error {
@@ -2266,11 +2266,11 @@ impl App {
         // Reserve space for overflow indicators (2 chars each) and hint
         let indicator_width = 2; // "< " or " >"
         let hint = if self.ctrl_c_pending {
-            "Press Ctrl+C again to quit"
+            "再次按 Ctrl+C 退出"
         } else {
-            "Ctrl+C×2 quit  Tab/Ctrl+\u{2190}\u{2192} switch"
+            "Ctrl+C×2 退出  Tab/Ctrl+\u{2190}\u{2192} 切换"
         };
-        let hint_width = hint.len() + 2;
+        let hint_width = hint.chars().count() + 2; // Use chars().count() for correct width of CJK characters
         let available = width.saturating_sub(hint_width + 2);
 
         // Ensure active tab is visible by adjusting scroll offset

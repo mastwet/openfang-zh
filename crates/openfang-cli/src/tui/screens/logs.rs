@@ -81,10 +81,10 @@ pub enum LevelFilter {
 impl LevelFilter {
     fn label(self) -> &'static str {
         match self {
-            Self::All => "All",
-            Self::Error => "Error",
-            Self::Warn => "Warn",
-            Self::Info => "Info",
+            Self::All => "全部",
+            Self::Error => "错误",
+            Self::Warn => "警告",
+            Self::Info => "信息",
         }
     }
     fn next(self) -> Self {
@@ -258,7 +258,7 @@ impl LogsState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut LogsState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Logs ",
+            " 日志 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -292,7 +292,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut LogsState) {
                 Line::from(vec![Span::styled(
                     format!(
                         "  {:<20} {:<6} {:<16} {:<14} {}",
-                        "Timestamp", "Level", "Action", "Agent", "Detail"
+                        "时间戳", "级别", "操作", "智能体", "详情"
                     ),
                     theme::table_header(),
                 )]),
@@ -301,22 +301,22 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut LogsState) {
         );
     } else {
         let auto_badge = if state.auto_refresh {
-            Span::styled(" [auto-refresh ON]", Style::default().fg(theme::GREEN))
+            Span::styled(" [自动刷新 开启]", Style::default().fg(theme::GREEN))
         } else {
-            Span::styled(" [auto-refresh OFF]", theme::dim_style())
+            Span::styled(" [自动刷新 关闭]", theme::dim_style())
         };
         let search_hint = if state.search_buf.is_empty() {
             Span::raw("")
         } else {
             Span::styled(
-                format!("  filter: \"{}\"", state.search_buf),
+                format!("  过滤: \"{}\"", state.search_buf),
                 Style::default().fg(theme::YELLOW),
             )
         };
         f.render_widget(
             Paragraph::new(vec![
                 Line::from(vec![
-                    Span::styled("  Level: ", theme::dim_style()),
+                    Span::styled("  级别: ", theme::dim_style()),
                     Span::styled(
                         format!("[{}]", state.level_filter.label()),
                         Style::default()
@@ -324,7 +324,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut LogsState) {
                             .add_modifier(Modifier::BOLD),
                     ),
                     Span::styled(
-                        format!("  ({} entries)", state.filtered.len()),
+                        format!("  ({} 条记录)", state.filtered.len()),
                         theme::dim_style(),
                     ),
                     auto_badge,
@@ -333,7 +333,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut LogsState) {
                 Line::from(vec![Span::styled(
                     format!(
                         "  {:<20} {:<6} {:<16} {:<14} {}",
-                        "Timestamp", "Level", "Action", "Agent", "Detail"
+                        "时间戳", "级别", "操作", "智能体", "详情"
                     ),
                     theme::table_header(),
                 )]),
@@ -348,14 +348,14 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut LogsState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading logs\u{2026}", theme::dim_style()),
+                Span::styled("正在加载日志\u{2026}", theme::dim_style()),
             ])),
             chunks[1],
         );
     } else if state.filtered.is_empty() {
         f.render_widget(
             Paragraph::new(Span::styled(
-                "  No log entries match the current filter.",
+                "  没有符合当前过滤条件的日志记录。",
                 theme::dim_style(),
             )),
             chunks[1],
@@ -394,7 +394,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut LogsState) {
     // ── Hints ──
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [\u{2191}\u{2193}] Navigate  [f] Filter Level  [/] Search  [a] Toggle Auto-refresh  [r] Refresh",
+            "  [\u{2191}\u{2193}] 导航  [f] 过滤级别  [/] 搜索  [a] 切换自动刷新  [r] 刷新",
             theme::hint_style(),
         )])),
         chunks[2],

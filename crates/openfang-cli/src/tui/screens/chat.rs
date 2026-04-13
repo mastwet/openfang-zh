@@ -439,7 +439,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut ChatState) {
         ];
         if !state.staged_messages.is_empty() {
             spans.push(Span::styled(
-                format!("  ({} staged)", state.staged_messages.len()),
+                format!("  ({} 条暂存)", state.staged_messages.len()),
                 Style::default().fg(theme::PURPLE),
             ));
         }
@@ -460,11 +460,11 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut ChatState) {
 
     // ── Hints ────────────────────────────────────────────────────────────────
     let hints = if state.show_model_picker {
-        "    [\u{2191}\u{2193}] Navigate  [Enter] Select  [Esc] Close  [type] Filter"
+        "    [\u{2191}\u{2193}] 导航  [Enter] 选择  [Esc] 关闭  [输入] 过滤"
     } else if state.is_streaming {
-        "    [Enter] Stage  [\u{2191}\u{2193}] Scroll  [Esc] Stop"
+        "    [Enter] 暂存  [\u{2191}\u{2193}] 滚动  [Esc] 停止"
     } else {
-        "    [Enter] Send  [Ctrl+M] Models  [\u{2191}\u{2193}] Scroll  [Esc] Back"
+        "    [Enter] 发送  [Ctrl+M] 模型  [\u{2191}\u{2193}] 滚动  [Esc] 返回"
     };
     let hints = Paragraph::new(Line::from(vec![Span::styled(hints, theme::hint_style())]));
     f.render_widget(hints, chunks[3]);
@@ -493,7 +493,7 @@ fn draw_model_picker(f: &mut Frame, area: Rect, state: &ChatState) {
 
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Switch Model ",
+            " 切换模型 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -530,7 +530,7 @@ fn draw_model_picker(f: &mut Frame, area: Rect, state: &ChatState) {
     if total == 0 {
         f.render_widget(
             Paragraph::new(Line::from(vec![Span::styled(
-                " No models match",
+                " 没有匹配的模型",
                 theme::dim_style(),
             )])),
             chunks[1],
@@ -610,11 +610,11 @@ fn draw_messages(f: &mut Frame, area: Rect, state: &ChatState) {
             lines.push(Line::from(""));
         }
         lines.push(Line::from(vec![Span::styled(
-            "  Send a message to start chatting.",
+            "  发送消息开始聊天。",
             theme::dim_style(),
         )]));
         lines.push(Line::from(vec![Span::styled(
-            "  Type /help for available commands.",
+            "  输入 /help 查看可用命令。",
             theme::dim_style(),
         )]));
         let para = Paragraph::new(lines);
@@ -691,7 +691,7 @@ fn draw_messages(f: &mut Frame, area: Rect, state: &ChatState) {
                         let val = truncate_line(&info.input, max_val);
                         lines.push(Line::from(vec![
                             Span::styled("  \u{2502} ", Style::default().fg(border_color)),
-                            Span::styled("input: ", theme::dim_style()),
+                            Span::styled("输入: ", theme::dim_style()),
                             Span::raw(val),
                         ]));
                     }
@@ -703,7 +703,7 @@ fn draw_messages(f: &mut Frame, area: Rect, state: &ChatState) {
                         lines.push(Line::from(vec![
                             Span::styled("  \u{2502} ", Style::default().fg(border_color)),
                             Span::styled(
-                                format!("{spinner} running\u{2026}"),
+                                format!("{spinner} 运行中\u{2026}"),
                                 Style::default().fg(theme::CYAN),
                             ),
                         ]));
@@ -711,14 +711,14 @@ fn draw_messages(f: &mut Frame, area: Rect, state: &ChatState) {
                         let val = truncate_line(&info.result, max_val);
                         lines.push(Line::from(vec![
                             Span::styled("  \u{2502} ", Style::default().fg(border_color)),
-                            Span::styled("error: ", Style::default().fg(theme::RED)),
+                            Span::styled("错误: ", Style::default().fg(theme::RED)),
                             Span::raw(val),
                         ]));
                     } else {
                         let val = truncate_line(&info.result, max_val);
                         lines.push(Line::from(vec![
                             Span::styled("  \u{2502} ", Style::default().fg(border_color)),
-                            Span::styled("result: ", theme::dim_style()),
+                            Span::styled("结果: ", theme::dim_style()),
                             Span::raw(val),
                         ]));
                     }
@@ -754,7 +754,7 @@ fn draw_messages(f: &mut Frame, area: Rect, state: &ChatState) {
         let spinner = theme::SPINNER_FRAMES[state.spinner_frame];
         lines.push(Line::from(vec![
             Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-            Span::styled("thinking\u{2026}", Style::default().fg(theme::DIM)),
+            Span::styled("思考中\u{2026}", Style::default().fg(theme::DIM)),
         ]));
     }
 
@@ -784,7 +784,7 @@ fn draw_messages(f: &mut Frame, area: Rect, state: &ChatState) {
                 _ => String::new(),
             };
             lines.push(Line::from(vec![Span::styled(
-                format!("  [tokens: {} in / {} out{}]", input, output, cost_str),
+                format!("  [tokens: {} 入 / {} 出{}]", input, output, cost_str),
                 theme::dim_style(),
             )]));
         }

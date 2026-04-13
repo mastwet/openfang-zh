@@ -118,24 +118,24 @@ impl WelcomeState {
         self.menu_items.clear();
         if self.daemon_url.is_some() {
             self.menu_items.push(MenuItem {
-                label: "Connect to daemon",
-                hint: "talk to running agents via API",
+                label: "连接到守护进程",
+                hint: "通过 API 与运行中的智能体通信",
                 action: WelcomeAction::ConnectDaemon,
             });
         }
         self.menu_items.push(MenuItem {
-            label: "Quick in-process chat",
-            hint: "boot kernel locally, no daemon needed",
+            label: "快速进程内聊天",
+            hint: "在本地启动内核，无需守护进程",
             action: WelcomeAction::InProcess,
         });
         self.menu_items.push(MenuItem {
-            label: "Setup wizard",
-            hint: "configure providers & channels",
+            label: "设置向导",
+            hint: "配置供应商和渠道",
             action: WelcomeAction::Wizard,
         });
         self.menu_items.push(MenuItem {
-            label: "Exit",
-            hint: "quit OpenFang",
+            label: "退出",
+            hint: "退出 OpenFang",
             action: WelcomeAction::Exit,
         });
         self.menu.select(Some(0));
@@ -293,7 +293,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
     // ── Tagline + version ────────────────────────────────────────────────────
     let tagline = Line::from(vec![
         Span::styled(
-            "Agent Operating System",
+            "智能体操作系统",
             Style::default()
                 .fg(theme::TEXT_PRIMARY)
                 .add_modifier(Modifier::BOLD),
@@ -315,7 +315,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
         let spinner = theme::SPINNER_FRAMES[state.tick % theme::SPINNER_FRAMES.len()];
         let line = Line::from(vec![
             Span::styled(format!("{spinner} "), Style::default().fg(theme::YELLOW)),
-            Span::styled("Checking for daemon\u{2026}", theme::dim_style()),
+            Span::styled("正在检查守护进程\u{2026}", theme::dim_style()),
         ]);
         f.render_widget(Paragraph::new(line), chunks[4]);
     } else {
@@ -325,9 +325,8 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
         if let Some(ref url) = state.daemon_url {
             let agent_suffix = if state.daemon_agents > 0 {
                 format!(
-                    " ({} agent{})",
-                    state.daemon_agents,
-                    if state.daemon_agents == 1 { "" } else { "s" }
+                    " ({} 个智能体)",
+                    state.daemon_agents
                 )
             } else {
                 String::new()
@@ -340,7 +339,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
                         .add_modifier(Modifier::BOLD),
                 ),
                 Span::styled(
-                    format!("Daemon at {url}"),
+                    format!("守护进程运行于 {url}"),
                     Style::default().fg(theme::TEXT_PRIMARY),
                 ),
                 Span::styled(agent_suffix, Style::default().fg(theme::GREEN)),
@@ -348,7 +347,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
         } else {
             status_lines.push(Line::from(vec![
                 Span::styled("\u{25cb} ", theme::dim_style()),
-                Span::styled("No daemon running", theme::dim_style()),
+                Span::styled("未发现运行中的守护进程", theme::dim_style()),
             ]));
         }
 
@@ -362,7 +361,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
                         .add_modifier(Modifier::BOLD),
                 ),
                 Span::styled(
-                    format!("Provider: {provider}"),
+                    format!("供应商: {provider}"),
                     Style::default().fg(theme::TEXT_PRIMARY),
                 ),
                 Span::styled(format!(" ({env_var})"), theme::dim_style()),
@@ -370,10 +369,10 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
         } else {
             status_lines.push(Line::from(vec![
                 Span::styled("\u{25cb} ", Style::default().fg(theme::YELLOW)),
-                Span::styled("No API keys detected", Style::default().fg(theme::YELLOW)),
+                Span::styled("未检测到 API 密钥", Style::default().fg(theme::YELLOW)),
             ]));
             status_lines.push(Line::from(vec![Span::styled(
-                "  Run 'openfang init' to get started",
+                "  运行 'openfang init' 以开始使用",
                 theme::hint_style(),
             )]));
         }
@@ -381,7 +380,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
         // Post-wizard guidance
         if state.setup_just_completed {
             status_lines.push(Line::from(vec![Span::styled(
-                "\u{2714} Setup complete! Select 'Quick in-process chat' to try it out.",
+                "\u{2714} 设置完成！选择 '快速进程内聊天' 来尝试一下。",
                 Style::default().fg(theme::GREEN),
             )]));
         }
@@ -420,12 +419,12 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WelcomeState) {
     // ── Hints ────────────────────────────────────────────────────────────────
     let hints = if state.ctrl_c_pending {
         Line::from(vec![Span::styled(
-            "Press Ctrl+C again to exit",
+            "再次按 Ctrl+C 退出",
             Style::default().fg(theme::YELLOW),
         )])
     } else {
         Line::from(vec![Span::styled(
-            "\u{2191}\u{2193} navigate  enter select  q quit",
+            "\u{2191}\u{2193} 导航  Enter 选择  q 退出",
             theme::hint_style(),
         )])
     };

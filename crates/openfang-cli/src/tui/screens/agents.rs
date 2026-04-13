@@ -12,15 +12,15 @@ use ratatui::Frame;
 
 /// Available built-in tools for the custom agent builder.
 const TOOL_OPTIONS: &[(&str, &str)] = &[
-    ("file_read", "Read files"),
-    ("file_write", "Write files"),
-    ("file_list", "List directory contents"),
-    ("memory_store", "Store data in agent memory"),
-    ("memory_recall", "Recall data from memory"),
-    ("web_fetch", "Fetch web pages"),
-    ("shell_exec", "Execute shell commands"),
-    ("agent_send", "Send messages to other agents"),
-    ("agent_list", "List running agents"),
+    ("file_read", "读取文件"),
+    ("file_write", "写入文件"),
+    ("file_list", "列出目录内容"),
+    ("memory_store", "在智能体记忆中存储数据"),
+    ("memory_recall", "从记忆中检索数据"),
+    ("web_fetch", "获取网页内容"),
+    ("shell_exec", "执行终端命令"),
+    ("agent_send", "向其他智能体发送消息"),
+    ("agent_list", "列出运行中的智能体"),
 ];
 
 const DEFAULT_TOOLS: &[bool] = &[true, false, true, true, true, true, false, false, false];
@@ -901,15 +901,15 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut AgentSelectState) {
         | AgentSubScreen::AgentDetail
         | AgentSubScreen::EditSkills
         | AgentSubScreen::EditMcpServers => unreachable!(),
-        AgentSubScreen::CreateMethod => "Create Agent",
-        AgentSubScreen::TemplatePicker => "Templates",
-        AgentSubScreen::CustomName => "Custom \u{2014} Name",
-        AgentSubScreen::CustomDesc => "Custom \u{2014} Description",
-        AgentSubScreen::CustomPrompt => "Custom \u{2014} System Prompt",
-        AgentSubScreen::CustomTools => "Custom \u{2014} Tools",
-        AgentSubScreen::CustomSkills => "Custom \u{2014} Skills",
-        AgentSubScreen::CustomMcpServers => "Custom \u{2014} MCP Servers",
-        AgentSubScreen::Spawning => "Spawning...",
+        AgentSubScreen::CreateMethod => "创建智能体",
+        AgentSubScreen::TemplatePicker => "模板",
+        AgentSubScreen::CustomName => "自定义 \u{2014} 名称",
+        AgentSubScreen::CustomDesc => "自定义 \u{2014} 描述",
+        AgentSubScreen::CustomPrompt => "自定义 \u{2014} 系统提示词",
+        AgentSubScreen::CustomTools => "自定义 \u{2014} 工具",
+        AgentSubScreen::CustomSkills => "自定义 \u{2014} 技能",
+        AgentSubScreen::CustomMcpServers => "自定义 \u{2014} MCP 服务器",
+        AgentSubScreen::Spawning => "正在派生...",
     };
 
     // Center a card
@@ -939,28 +939,28 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut AgentSelectState) {
         AgentSubScreen::CreateMethod => draw_create_method(f, inner, state),
         AgentSubScreen::TemplatePicker => draw_template_picker(f, inner, state),
         AgentSubScreen::CustomName => {
-            draw_text_input(f, inner, "Agent name:", &state.custom_name, "my-agent")
+            draw_text_input(f, inner, "智能体名称:", &state.custom_name, "my-agent")
         }
         AgentSubScreen::CustomDesc => draw_text_input(
             f,
             inner,
-            "Description:",
+            "描述:",
             &state.custom_desc,
-            "A custom agent",
+            "一个自定义智能体",
         ),
         AgentSubScreen::CustomPrompt => draw_text_input(
             f,
             inner,
-            "System prompt:",
+            "系统提示词:",
             &state.custom_prompt,
-            "You are a helpful agent.",
+            "你是一个乐于助人的智能体。",
         ),
         AgentSubScreen::CustomTools => draw_tool_select(f, inner, state),
         AgentSubScreen::CustomSkills => draw_skill_select(f, inner, state),
         AgentSubScreen::CustomMcpServers => draw_mcp_select(f, inner, state),
         AgentSubScreen::Spawning => {
             let msg = Paragraph::new(Line::from(vec![Span::styled(
-                "  Spawning agent...",
+                "  正在派生智能体...",
                 theme::dim_style(),
             )]));
             f.render_widget(msg, inner);
@@ -973,7 +973,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut AgentSelectState) {
 fn draw_agent_list_full(f: &mut Frame, area: Rect, state: &mut AgentSelectState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Agents ",
+            " 智能体 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -1015,7 +1015,7 @@ fn draw_agent_list_full(f: &mut Frame, area: Rect, state: &mut AgentSelectState)
     // ── Table header ────────────────────────────────────────────────────────
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            format!("  {:<5} {:<18} {:<24} {}", "State", "Name", "Model", "ID"),
+            format!("  {:<5} {:<18} {:<24} {}", "状态", "名称", "模型", "ID"),
             theme::table_header(),
         )])),
         chunks[1],
@@ -1079,7 +1079,7 @@ fn draw_agent_list_full(f: &mut Frame, area: Rect, state: &mut AgentSelectState)
         .collect();
 
     items.push(ListItem::new(Line::from(vec![Span::styled(
-        "  + Create new agent",
+        "  + 创建新智能体",
         Style::default()
             .fg(theme::GREEN)
             .add_modifier(Modifier::BOLD),
@@ -1110,9 +1110,9 @@ fn draw_agent_list_full(f: &mut Frame, area: Rect, state: &mut AgentSelectState)
 
     // ── Hints ───────────────────────────────────────────────────────────────
     let hints = if state.search_active {
-        "  [Type] Filter  [Enter] Accept  [Esc] Cancel search"
+        "  [输入] 过滤  [Enter] 确认  [Esc] 取消搜索"
     } else {
-        "  [\u{2191}\u{2193}] Navigate  [Enter] Detail  [/] Search  [Esc] Back"
+        "  [\u{2191}\u{2193}] 导航  [Enter] 详情  [/] 搜索  [Esc] 返回"
     };
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(hints, theme::hint_style())])),
@@ -1124,7 +1124,7 @@ fn draw_agent_list_full(f: &mut Frame, area: Rect, state: &mut AgentSelectState)
 fn draw_detail(f: &mut Frame, area: Rect, state: &AgentSelectState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Agent Detail ",
+            " 智能体详情 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -1150,7 +1150,7 @@ fn draw_detail(f: &mut Frame, area: Rect, state: &AgentSelectState) {
                     Span::styled(&detail.id, theme::dim_style()),
                 ]),
                 Line::from(vec![
-                    Span::raw("  Name:     "),
+                    Span::raw("  名称:     "),
                     Span::styled(
                         &detail.name,
                         Style::default()
@@ -1159,41 +1159,41 @@ fn draw_detail(f: &mut Frame, area: Rect, state: &AgentSelectState) {
                     ),
                 ]),
                 Line::from(vec![
-                    Span::raw("  State:    "),
+                    Span::raw("  状态:     "),
                     Span::styled(badge, badge_style),
                     Span::styled(format!(" ({})", detail.state), theme::dim_style()),
                 ]),
                 Line::from(vec![
-                    Span::raw("  Provider: "),
+                    Span::raw("  供应商:   "),
                     Span::styled(&detail.provider, Style::default().fg(theme::YELLOW)),
                 ]),
                 Line::from(vec![
-                    Span::raw("  Model:    "),
+                    Span::raw("  模型:     "),
                     Span::styled(&detail.model, Style::default().fg(theme::YELLOW)),
                 ]),
             ];
 
             if !detail.created.is_empty() {
                 lines.push(Line::from(vec![
-                    Span::raw("  Created:  "),
+                    Span::raw("  创建时间: "),
                     Span::styled(&detail.created, theme::dim_style()),
                 ]));
             }
             if !detail.last_active.is_empty() {
                 lines.push(Line::from(vec![
-                    Span::raw("  Active:   "),
+                    Span::raw("  最后活跃: "),
                     Span::styled(&detail.last_active, theme::dim_style()),
                 ]));
             }
             if !detail.tags.is_empty() {
                 lines.push(Line::from(vec![
-                    Span::raw("  Tags:     "),
+                    Span::raw("  标签:     "),
                     Span::styled(detail.tags.join(", "), Style::default().fg(theme::CYAN)),
                 ]));
             }
             if !detail.capabilities.is_empty() {
                 lines.push(Line::from(vec![
-                    Span::raw("  Caps:     "),
+                    Span::raw("  能力:     "),
                     Span::styled(
                         detail.capabilities.join(", "),
                         Style::default().fg(theme::YELLOW),
@@ -1202,13 +1202,13 @@ fn draw_detail(f: &mut Frame, area: Rect, state: &AgentSelectState) {
             }
             if let Some(ref parent) = detail.parent {
                 lines.push(Line::from(vec![
-                    Span::raw("  Parent:   "),
+                    Span::raw("  父级:     "),
                     Span::styled(parent, theme::dim_style()),
                 ]));
             }
             if !detail.children.is_empty() {
                 lines.push(Line::from(vec![
-                    Span::raw("  Children: "),
+                    Span::raw("  子级:     "),
                     Span::styled(detail.children.join(", "), theme::dim_style()),
                 ]));
             }
@@ -1217,12 +1217,12 @@ fn draw_detail(f: &mut Frame, area: Rect, state: &AgentSelectState) {
             lines.push(Line::from(""));
             if detail.skills.is_empty() || detail.skills_mode == "all" {
                 lines.push(Line::from(vec![
-                    Span::raw("  Skills:   "),
-                    Span::styled("[All skills]", Style::default().fg(theme::GREEN)),
+                    Span::raw("  技能:     "),
+                    Span::styled("[全部技能]", Style::default().fg(theme::GREEN)),
                 ]));
             } else {
                 lines.push(Line::from(vec![
-                    Span::raw("  Skills:   "),
+                    Span::raw("  技能:     "),
                     Span::styled(detail.skills.join(", "), Style::default().fg(theme::CYAN)),
                 ]));
             }
@@ -1231,7 +1231,7 @@ fn draw_detail(f: &mut Frame, area: Rect, state: &AgentSelectState) {
             if detail.mcp_servers.is_empty() || detail.mcp_servers_mode == "all" {
                 lines.push(Line::from(vec![
                     Span::raw("  MCP:      "),
-                    Span::styled("[All servers]", Style::default().fg(theme::GREEN)),
+                    Span::styled("[全部服务器]", Style::default().fg(theme::GREEN)),
                 ]));
             } else {
                 lines.push(Line::from(vec![
@@ -1247,7 +1247,7 @@ fn draw_detail(f: &mut Frame, area: Rect, state: &AgentSelectState) {
         }
         None => {
             f.render_widget(
-                Paragraph::new(Span::styled("  No agent selected.", theme::dim_style())),
+                Paragraph::new(Span::styled("  未选择智能体。", theme::dim_style())),
                 chunks[0],
             );
         }
@@ -1255,7 +1255,7 @@ fn draw_detail(f: &mut Frame, area: Rect, state: &AgentSelectState) {
 
     f.render_widget(
         Paragraph::new(Line::from(vec![Span::styled(
-            "  [s] Edit skills  [m] Edit MCP  [c] Chat  [k] Kill  [Esc] Back",
+            "  [s] 编辑技能  [m] 编辑 MCP  [c] 聊天  [k] 杀死  [Esc] 返回",
             theme::hint_style(),
         )])),
         chunks[1],
@@ -1270,17 +1270,17 @@ fn draw_create_method(f: &mut Frame, area: Rect, state: &mut AgentSelectState) {
     ])
     .split(area);
 
-    let prompt = Paragraph::new("  How would you like to create your agent?");
+    let prompt = Paragraph::new("  你想如何创建智能体？");
     f.render_widget(prompt, chunks[0]);
 
     let items = vec![
         ListItem::new(Line::from(vec![
-            Span::raw("  Choose from templates"),
-            Span::styled("  (pre-built agents)", theme::dim_style()),
+            Span::raw("  从模板选择"),
+            Span::styled("  (预设智能体)", theme::dim_style()),
         ])),
         ListItem::new(Line::from(vec![
-            Span::raw("  Build custom agent"),
-            Span::styled("  (pick name, tools, prompt)", theme::dim_style()),
+            Span::raw("  构建自定义智能体"),
+            Span::styled("  (选择名称、工具、提示词)", theme::dim_style()),
         ])),
     ];
 
@@ -1291,7 +1291,7 @@ fn draw_create_method(f: &mut Frame, area: Rect, state: &mut AgentSelectState) {
     f.render_stateful_widget(list, chunks[1], &mut state.create_method_list);
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "    [\u{2191}\u{2193}] Navigate  [Enter] Select  [Esc] Back",
+        "    [\u{2191}\u{2193}] 导航  [Enter] 选择  [Esc] 返回",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[2]);
@@ -1322,7 +1322,7 @@ fn draw_template_picker(f: &mut Frame, area: Rect, state: &mut AgentSelectState)
     f.render_stateful_widget(list, chunks[0], &mut state.template_list);
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "    [\u{2191}\u{2193}] Navigate  [Enter] Select  [Esc] Back",
+        "    [\u{2191}\u{2193}] 导航  [Enter] 选择  [Esc] 返回",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[1]);
@@ -1362,14 +1362,14 @@ fn draw_text_input(f: &mut Frame, area: Rect, label: &str, value: &str, placehol
 
     if value.is_empty() {
         let hint = Paragraph::new(Line::from(vec![Span::styled(
-            format!("    placeholder: {placeholder}"),
+            format!("    占位符: {placeholder}"),
             theme::dim_style(),
         )]));
         f.render_widget(hint, chunks[2]);
     }
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "    [Enter] Next  [Esc] Back",
+        "    [Enter] 下一步  [Esc] 返回",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[4]);
@@ -1383,7 +1383,7 @@ fn draw_tool_select(f: &mut Frame, area: Rect, state: &AgentSelectState) {
     ])
     .split(area);
 
-    let prompt = Paragraph::new("  Select tools (Space to toggle):");
+    let prompt = Paragraph::new("  选择工具 (空格键切换):");
     f.render_widget(prompt, chunks[0]);
 
     let items: Vec<ListItem> = TOOL_OPTIONS
@@ -1410,7 +1410,7 @@ fn draw_tool_select(f: &mut Frame, area: Rect, state: &AgentSelectState) {
     f.render_widget(list, chunks[1]);
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "    [\u{2191}\u{2193}] Navigate  [Space] Toggle  [Enter] Create  [Esc] Back",
+        "    [\u{2191}\u{2193}] 导航  [空格] 切换  [Enter] 创建  [Esc] 返回",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[2]);
@@ -1420,10 +1420,10 @@ fn draw_skill_select(f: &mut Frame, area: Rect, state: &AgentSelectState) {
     draw_checkbox_list(
         f,
         area,
-        "Select skills (none checked = all skills):",
+        "选择技能 (不选 = 全部技能):",
         &state.available_skills,
         state.skill_cursor,
-        "    [\u{2191}\u{2193}] Navigate  [Space] Toggle  [Enter] Next  [Esc] Back",
+        "    [\u{2191}\u{2193}] 导航  [空格] 切换  [Enter] 下一步  [Esc] 返回",
     );
 }
 
@@ -1431,20 +1431,20 @@ fn draw_mcp_select(f: &mut Frame, area: Rect, state: &AgentSelectState) {
     draw_checkbox_list(
         f,
         area,
-        "Select MCP servers (none checked = all servers):",
+        "选择 MCP 服务器 (不选 = 全部服务器):",
         &state.available_mcp,
         state.mcp_cursor,
-        "    [\u{2191}\u{2193}] Navigate  [Space] Toggle  [Enter] Create  [Esc] Back",
+        "    [\u{2191}\u{2193}] 导航  [空格] 切换  [Enter] 创建  [Esc] 返回",
     );
 }
 
 fn draw_edit_allowlist(f: &mut Frame, area: Rect, state: &AgentSelectState) {
     let (title, items, cursor) = match state.sub {
         AgentSubScreen::EditSkills => {
-            (" Edit Skills ", &state.available_skills, state.skill_cursor)
+            (" 编辑技能 ", &state.available_skills, state.skill_cursor)
         }
         AgentSubScreen::EditMcpServers => {
-            (" Edit MCP Servers ", &state.available_mcp, state.mcp_cursor)
+            (" 编辑 MCP 服务器 ", &state.available_mcp, state.mcp_cursor)
         }
         _ => return,
     };
@@ -1461,10 +1461,10 @@ fn draw_edit_allowlist(f: &mut Frame, area: Rect, state: &AgentSelectState) {
     draw_checkbox_list(
         f,
         inner,
-        "Space to toggle, Enter to save (none checked = all):",
+        "空格键切换，Enter 键保存 (不选 = 全部):",
         items,
         cursor,
-        "    [\u{2191}\u{2193}] Navigate  [Space] Toggle  [Enter] Save  [Esc] Cancel",
+        "    [\u{2191}\u{2193}] 导航  [空格] 切换  [Enter] 保存  [Esc] 取消",
     );
 }
 
@@ -1487,7 +1487,7 @@ fn draw_checkbox_list(
     f.render_widget(prompt, chunks[0]);
 
     if items.is_empty() {
-        let msg = Paragraph::new(Span::styled("  (none available)", theme::dim_style()));
+        let msg = Paragraph::new(Span::styled("  (无可用项目)", theme::dim_style()));
         f.render_widget(msg, chunks[1]);
     } else {
         let list_items: Vec<ListItem> = items

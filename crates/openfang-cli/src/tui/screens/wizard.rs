@@ -374,7 +374,7 @@ impl WizardState {
         let p = match self.selected_provider_info() {
             Some(p) => p,
             None => {
-                self.status_msg = "No provider selected".to_string();
+                self.status_msg = "未选择供应商".to_string();
                 self.step = WizardStep::Provider;
                 return;
             }
@@ -386,7 +386,7 @@ impl WizardState {
             match dirs::home_dir() {
                 Some(h) => h.join(".openfang"),
                 None => {
-                    self.status_msg = "Could not determine home directory".to_string();
+                    self.status_msg = "无法确定主目录".to_string();
                     self.step = WizardStep::Done;
                     return;
                 }
@@ -432,11 +432,11 @@ listen_addr = "127.0.0.1:4200"
         match std::fs::write(&config_path, &config) {
             Ok(()) => {
                 crate::restrict_file_permissions(&config_path);
-                self.status_msg = format!("Config saved \u{2014} {} / {}", p.name, model);
+                self.status_msg = format!("配置已保存 \u{2014} {} / {}", p.name, model);
                 self.created_config = Some(config_path);
             }
             Err(e) => {
-                self.status_msg = format!("Failed to save config: {e}");
+                self.status_msg = format!("保存配置失败: {e}");
             }
         }
         self.step = WizardStep::Done;
@@ -457,11 +457,11 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WizardState) {
     );
 
     let step_label = match state.step {
-        WizardStep::Provider => "Step 1 of 3",
-        WizardStep::ApiKey => "Step 2 of 3",
-        WizardStep::Model => "Step 3 of 3",
-        WizardStep::Saving => "Saving...",
-        WizardStep::Done => "Complete",
+        WizardStep::Provider => "第 1 步 (共 3 步)",
+        WizardStep::ApiKey => "第 2 步 (共 3 步)",
+        WizardStep::Model => "第 3 步 (共 3 步)",
+        WizardStep::Saving => "正在保存...",
+        WizardStep::Done => "完成",
     };
 
     // Left-aligned content area
@@ -489,7 +489,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut WizardState) {
     // Header
     let header = Line::from(vec![
         Span::styled(
-            "Setup",
+            "设置",
             Style::default()
                 .fg(theme::ACCENT)
                 .add_modifier(Modifier::BOLD),
@@ -522,7 +522,7 @@ fn draw_provider(f: &mut Frame, area: Rect, state: &mut WizardState) {
     ])
     .split(area);
 
-    let prompt = Paragraph::new(Line::from(vec![Span::raw("  Choose your LLM provider:")]));
+    let prompt = Paragraph::new(Line::from(vec![Span::raw("  选择您的 LLM 供应商:")]));
     f.render_widget(prompt, chunks[0]);
 
     let items: Vec<ListItem> = state
@@ -532,16 +532,16 @@ fn draw_provider(f: &mut Frame, area: Rect, state: &mut WizardState) {
             let p = &PROVIDERS[idx];
             let hint = if p.name == "claude-code" {
                 if openfang_runtime::drivers::claude_code::claude_code_available() {
-                    "CLI detected".to_string()
+                    "检测到 CLI".to_string()
                 } else {
-                    "no API key needed".to_string()
+                    "不需要 API 密钥".to_string()
                 }
             } else if !p.needs_key {
-                "local, no key needed".to_string()
+                "本地，不需要密钥".to_string()
             } else if !p.env_var.is_empty() && std::env::var(p.env_var).is_ok() {
-                format!("{} detected", p.env_var)
+                format!("检测到 {}", p.env_var)
             } else {
-                format!("requires {}", p.env_var)
+                format!("需要 {}", p.env_var)
             };
             ListItem::new(Line::from(vec![
                 Span::raw(format!("  {:<14}", p.name)),
@@ -562,7 +562,7 @@ fn draw_provider(f: &mut Frame, area: Rect, state: &mut WizardState) {
     f.render_stateful_widget(list, chunks[1], &mut state.provider_list);
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "    [\u{2191}\u{2193}] Navigate  [Enter] Select  [Esc] Cancel",
+        "    [\u{2191}\u{2193}] 导航  [Enter] 选择  [Esc] 取消",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[2]);
@@ -584,7 +584,7 @@ fn draw_api_key(f: &mut Frame, area: Rect, state: &mut WizardState) {
     .split(area);
 
     let prompt = Paragraph::new(Line::from(vec![Span::raw(format!(
-        "  Enter your {} API key:",
+        "  输入您的 {} API 密钥:",
         p.name
     ))]));
     f.render_widget(prompt, chunks[0]);
@@ -604,13 +604,13 @@ fn draw_api_key(f: &mut Frame, area: Rect, state: &mut WizardState) {
     f.render_widget(input, chunks[1]);
 
     let env_hint = Paragraph::new(Line::from(vec![Span::styled(
-        format!("    Or set {} environment variable", p.env_var),
+        format!("    或者设置 {} 环境变量", p.env_var),
         theme::dim_style(),
     )]));
     f.render_widget(env_hint, chunks[2]);
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "    [Enter] Confirm  [Esc] Back",
+        "    [Enter] 确认  [Esc] 返回",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[4]);
@@ -631,7 +631,7 @@ fn draw_model(f: &mut Frame, area: Rect, state: &mut WizardState) {
     ])
     .split(area);
 
-    let prompt = Paragraph::new(Line::from(vec![Span::raw("  Model name:")]));
+    let prompt = Paragraph::new(Line::from(vec![Span::raw("  模型名称:")]));
     f.render_widget(prompt, chunks[0]);
 
     let display_text = if state.model_input.is_empty() {
@@ -652,13 +652,13 @@ fn draw_model(f: &mut Frame, area: Rect, state: &mut WizardState) {
     f.render_widget(input, chunks[1]);
 
     let default_hint = Paragraph::new(Line::from(vec![Span::styled(
-        format!("    default: {}", p.default_model),
+        format!("    默认: {}", p.default_model),
         theme::dim_style(),
     )]));
     f.render_widget(default_hint, chunks[2]);
 
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "    [Enter] Confirm  [Esc] Back",
+        "    [Enter] 确认  [Esc] 返回",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[4]);
@@ -683,7 +683,7 @@ fn draw_done(f: &mut Frame, area: Rect, state: &WizardState) {
 
     if state.created_config.is_some() {
         let cont = Paragraph::new(Line::from(vec![Span::styled(
-            "    Continuing...",
+            "    正在继续...",
             theme::dim_style(),
         )]));
         f.render_widget(cont, chunks[1]);

@@ -90,7 +90,7 @@ impl DashboardState {
 pub fn draw(f: &mut Frame, area: Rect, state: &mut DashboardState) {
     let block = Block::default()
         .title(Line::from(vec![Span::styled(
-            " Dashboard ",
+            " 概览 ",
             theme::title_style(),
         )]))
         .borders(Borders::ALL)
@@ -123,7 +123,7 @@ pub fn draw(f: &mut Frame, area: Rect, state: &mut DashboardState) {
 
     // ── Hints ───────────────────────────────────────────────────────────────
     let hints = Paragraph::new(Line::from(vec![Span::styled(
-        "  [r] Refresh  [a] Go to Agents  [\u{2191}\u{2193}] Scroll audit",
+        "  [r] 刷新  [a] 前往智能体页面  [\u{2191}\u{2193}] 滚动审计日志",
         theme::hint_style(),
     )]));
     f.render_widget(hints, chunks[3]);
@@ -139,7 +139,7 @@ fn draw_stat_cards(f: &mut Frame, area: Rect, state: &DashboardState) {
 
     // Agents card
     let agents_block = Block::default()
-        .title(Span::styled(" Agents ", Style::default().fg(theme::CYAN)))
+        .title(Span::styled(" 智能体 ", Style::default().fg(theme::CYAN)))
         .borders(Borders::ALL)
         .border_style(Style::default().fg(theme::DIM));
     let agents_inner = agents_block.inner(cols[0]);
@@ -153,14 +153,14 @@ fn draw_stat_cards(f: &mut Frame, area: Rect, state: &DashboardState) {
                     .fg(theme::GREEN)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" active", theme::dim_style()),
+            Span::styled(" 活跃", theme::dim_style()),
         ])),
         agents_inner,
     );
 
     // Uptime card
     let uptime_block = Block::default()
-        .title(Span::styled(" Uptime ", Style::default().fg(theme::CYAN)))
+        .title(Span::styled(" 运行时间 ", Style::default().fg(theme::CYAN)))
         .borders(Borders::ALL)
         .border_style(Style::default().fg(theme::DIM));
     let uptime_inner = uptime_block.inner(cols[1]);
@@ -178,13 +178,13 @@ fn draw_stat_cards(f: &mut Frame, area: Rect, state: &DashboardState) {
 
     // Provider card
     let provider_block = Block::default()
-        .title(Span::styled(" Provider ", Style::default().fg(theme::CYAN)))
+        .title(Span::styled(" 供应商 ", Style::default().fg(theme::CYAN)))
         .borders(Borders::ALL)
         .border_style(Style::default().fg(theme::DIM));
     let provider_inner = provider_block.inner(cols[2]);
     f.render_widget(provider_block, cols[2]);
     let provider_text = if state.provider.is_empty() {
-        "not set".to_string()
+        "未设置".to_string()
     } else {
         format!("{}/{}", state.provider, state.model)
     };
@@ -203,7 +203,7 @@ fn draw_audit_trail(f: &mut Frame, area: Rect, state: &DashboardState) {
         f.render_widget(
             Paragraph::new(Line::from(vec![
                 Span::styled(format!("  {spinner} "), Style::default().fg(theme::CYAN)),
-                Span::styled("Loading audit trail\u{2026}", theme::dim_style()),
+                Span::styled("正在加载审计日志\u{2026}", theme::dim_style()),
             ])),
             area,
         );
@@ -212,7 +212,7 @@ fn draw_audit_trail(f: &mut Frame, area: Rect, state: &DashboardState) {
 
     if state.recent_audit.is_empty() {
         f.render_widget(
-            Paragraph::new(Span::styled("  No audit entries yet.", theme::dim_style())),
+            Paragraph::new(Span::styled("  暂无审计条目。", theme::dim_style())),
             area,
         );
         return;
@@ -224,7 +224,7 @@ fn draw_audit_trail(f: &mut Frame, area: Rect, state: &DashboardState) {
     lines.push(Line::from(vec![Span::styled(
         format!(
             "  {:<20} {:<14} {:<16} {}",
-            "Timestamp", "Agent", "Action", "Detail"
+            "时间戳", "智能体", "操作", "详情"
         ),
         theme::table_header(),
     )]));
@@ -259,13 +259,13 @@ fn draw_audit_trail(f: &mut Frame, area: Rect, state: &DashboardState) {
 
 fn format_uptime(secs: u64) -> String {
     if secs < 60 {
-        format!("{secs}s")
+        format!("{secs}秒")
     } else if secs < 3600 {
-        format!("{}m {}s", secs / 60, secs % 60)
+        format!("{}分 {}秒", secs / 60, secs % 60)
     } else if secs < 86400 {
-        format!("{}h {}m", secs / 3600, (secs % 3600) / 60)
+        format!("{}小时 {}分", secs / 3600, (secs % 3600) / 60)
     } else {
-        format!("{}d {}h", secs / 86400, (secs % 86400) / 3600)
+        format!("{}天 {}小时", secs / 86400, (secs % 86400) / 3600)
     }
 }
 
