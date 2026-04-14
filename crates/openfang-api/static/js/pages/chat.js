@@ -59,10 +59,10 @@ function chatPage() {
           t('tips.commands'),
           t('tips.think'),
           t('tips.focus'),
-          'Drag files to attach',
-          '/model to switch models',
-          '/context to check usage',
-          '/verbose off to hide tool details'
+          t('chat.drop_files'),
+          '使用 /model 切换模型',
+          '使用 /context 查看上下文用量',
+          '使用 /verbose off 隐藏工具详情'
         ];
         this._tipsInitialized = true;
       }
@@ -365,15 +365,15 @@ function chatPage() {
           if (self.currentAgent) {
             OpenFangAPI.post('/api/agents/' + self.currentAgent.id + '/session/reset', {}).then(function() {
               self.messages = [];
-              OpenFangToast.success('Session reset');
-            }).catch(function(e) { OpenFangToast.error('Reset failed: ' + e.message); });
+              OpenFangToast.success('会话已重置');
+            }).catch(function(e) { OpenFangToast.error('重置失败：' + e.message); });
           }
           break;
         case '/compact':
           if (self.currentAgent) {
-            self.messages.push({ id: ++msgId, role: 'system', text: 'Compacting session...', meta: '', tools: [] });
+            self.messages.push({ id: ++msgId, role: 'system', text: '正在压缩会话...', meta: '', tools: [] });
             OpenFangAPI.post('/api/agents/' + self.currentAgent.id + '/session/compact', {}).then(function(res) {
-              self.messages.push({ id: ++msgId, role: 'system', text: res.message || 'Compaction complete', meta: '', tools: [] });
+              self.messages.push({ id: ++msgId, role: 'system', text: res.message || '压缩完成', meta: '', tools: [] });
               self.scrollToBottom();
             }).catch(function(e) { OpenFangToast.error('Compaction failed: ' + e.message); });
           }
@@ -384,13 +384,13 @@ function chatPage() {
               self.messages.push({ id: ++msgId, role: 'system', text: res.message || 'Run cancelled', meta: '', tools: [] });
               self.sending = false;
               self.scrollToBottom();
-            }).catch(function(e) { OpenFangToast.error('Stop failed: ' + e.message); });
+            }).catch(function(e) { OpenFangToast.error('停止失败：' + e.message); });
           }
           break;
         case '/usage':
           if (self.currentAgent) {
             var approxTokens = self.messages.reduce(function(sum, m) { return sum + Math.round((m.text || '').length / 4); }, 0);
-            self.messages.push({ id: ++msgId, role: 'system', text: '**Session Usage**\n- Messages: ' + self.messages.length + '\n- Approx tokens: ~' + approxTokens, meta: '', tools: [] });
+            self.messages.push({ id: ++msgId, role: 'system', text: '**会话使用情况**\n- 消息数: ' + self.messages.length + '\n- 近似 Token: ~' + approxTokens, meta: '', tools: [] });
             self.scrollToBottom();
           }
           break;
@@ -408,10 +408,10 @@ function chatPage() {
             else self.thinkingMode = 'off';
           }
           var modeLabel = self.thinkingMode === 'stream' ? 'enabled (streaming reasoning)' : (self.thinkingMode === 'on' ? 'enabled' : 'disabled');
-          self.messages.push({ id: ++msgId, role: 'system', text: 'Extended thinking **' + modeLabel + '**. ' +
-            (self.thinkingMode === 'stream' ? 'Reasoning tokens will appear in a collapsible panel.' :
-             self.thinkingMode === 'on' ? 'The agent will show its reasoning when supported by the model.' :
-             'Normal response mode.'), meta: '', tools: [] });
+          self.messages.push({ id: ++msgId, role: 'system', text: '扩展思考 **' + modeLabel + '**. ' +
+            (self.thinkingMode === 'stream' ? '推理令牌将显示在可折叠面板中。' :
+             self.thinkingMode === 'on' ? '在模型支持时，智能体将显示其推理过程。' :
+             '正常响应模式。'), meta: '', tools: [] });
           self.scrollToBottom();
           break;
         case '/context':
@@ -419,7 +419,7 @@ function chatPage() {
           if (self.currentAgent && OpenFangAPI.isWsConnected()) {
             OpenFangAPI.wsSend({ type: 'command', command: 'context', args: '' });
           } else {
-            self.messages.push({ id: ++msgId, role: 'system', text: 'Not connected. Connect to an agent first.', meta: '', tools: [] });
+            self.messages.push({ id: ++msgId, role: 'system', text: '未连接。请先连接到一个智能体。', meta: '', tools: [] });
             self.scrollToBottom();
           }
           break;
@@ -427,7 +427,7 @@ function chatPage() {
           if (self.currentAgent && OpenFangAPI.isWsConnected()) {
             OpenFangAPI.wsSend({ type: 'command', command: 'verbose', args: cmdArgs });
           } else {
-            self.messages.push({ id: ++msgId, role: 'system', text: 'Not connected. Connect to an agent first.', meta: '', tools: [] });
+            self.messages.push({ id: ++msgId, role: 'system', text: '未连接。请先连接到一个智能体。', meta: '', tools: [] });
             self.scrollToBottom();
           }
           break;
@@ -435,13 +435,13 @@ function chatPage() {
           if (self.currentAgent && OpenFangAPI.isWsConnected()) {
             OpenFangAPI.wsSend({ type: 'command', command: 'queue', args: '' });
           } else {
-            self.messages.push({ id: ++msgId, role: 'system', text: 'Not connected.', meta: '', tools: [] });
+            self.messages.push({ id: ++msgId, role: 'system', text: '未连接。', meta: '', tools: [] });
             self.scrollToBottom();
           }
           break;
         case '/status':
           OpenFangAPI.get('/api/status').then(function(s) {
-            self.messages.push({ id: ++msgId, role: 'system', text: '**System Status**\n- Agents: ' + (s.agent_count || 0) + '\n- Uptime: ' + (s.uptime_seconds || 0) + 's\n- Version: ' + (s.version || '?'), meta: '', tools: [] });
+            self.messages.push({ id: ++msgId, role: 'system', text: '**系统状态**\n- 智能体数量: ' + (s.agent_count || 0) + '\n- 运行时长: ' + (s.uptime_seconds || 0) + 's\n- 版本: ' + (s.version || '?'), meta: '', tools: [] });
             self.scrollToBottom();
           }).catch(function() {});
           break;
@@ -454,15 +454,15 @@ function chatPage() {
                 var resolvedProvider = (resp && resp.provider) || '';
                 self.currentAgent.model_name = resolvedModel;
                 if (resolvedProvider) { self.currentAgent.model_provider = resolvedProvider; }
-                self.messages.push({ id: ++msgId, role: 'system', text: 'Model switched to: `' + resolvedModel + '`' + (resolvedProvider ? ' (provider: `' + resolvedProvider + '`)' : ''), meta: '', tools: [] });
+                self.messages.push({ id: ++msgId, role: 'system', text: '模型已切换为：`' + resolvedModel + '`' + (resolvedProvider ? '（提供商：`' + resolvedProvider + '`）' : ''), meta: '', tools: [] });
                 self.scrollToBottom();
               }).catch(function(e) { OpenFangToast.error('Model switch failed: ' + e.message); });
             } else {
-              self.messages.push({ id: ++msgId, role: 'system', text: '**Current Model**\n- Provider: `' + (self.currentAgent.model_provider || '?') + '`\n- Model: `' + (self.currentAgent.model_name || '?') + '`', meta: '', tools: [] });
+              self.messages.push({ id: ++msgId, role: 'system', text: '**当前模型**\n- 提供商：`' + (self.currentAgent.model_provider || '?') + '`\n- 模型：`' + (self.currentAgent.model_name || '?') + '`', meta: '', tools: [] });
               self.scrollToBottom();
             }
           } else {
-            self.messages.push({ id: ++msgId, role: 'system', text: 'No agent selected.', meta: '', tools: [] });
+            self.messages.push({ id: ++msgId, role: 'system', text: '未选择智能体。', meta: '', tools: [] });
             self.scrollToBottom();
           }
           break;
@@ -478,19 +478,19 @@ function chatPage() {
           break;
         case '/budget':
           OpenFangAPI.get('/api/budget').then(function(b) {
-            var fmt = function(v) { return v > 0 ? '$' + v.toFixed(2) : 'unlimited'; };
-            self.messages.push({ id: ++msgId, role: 'system', text: '**Budget Status**\n' +
-              '- Hourly: $' + (b.hourly_spend||0).toFixed(4) + ' / ' + fmt(b.hourly_limit) + '\n' +
-              '- Daily: $' + (b.daily_spend||0).toFixed(4) + ' / ' + fmt(b.daily_limit) + '\n' +
-              '- Monthly: $' + (b.monthly_spend||0).toFixed(4) + ' / ' + fmt(b.monthly_limit), meta: '', tools: [] });
+            var fmt = function(v) { return v > 0 ? '$' + v.toFixed(2) : '无限制'; };
+            self.messages.push({ id: ++msgId, role: 'system', text: '**预算状态**\n' +
+              '- 每小时: $' + (b.hourly_spend||0).toFixed(4) + ' / ' + fmt(b.hourly_limit) + '\n' +
+              '- 每日: $' + (b.daily_spend||0).toFixed(4) + ' / ' + fmt(b.daily_limit) + '\n' +
+              '- 每月: $' + (b.monthly_spend||0).toFixed(4) + ' / ' + fmt(b.monthly_limit), meta: '', tools: [] });
             self.scrollToBottom();
           }).catch(function() {});
           break;
         case '/peers':
           OpenFangAPI.get('/api/network/status').then(function(ns) {
-            self.messages.push({ id: ++msgId, role: 'system', text: '**OFP Network**\n' +
-              '- Status: ' + (ns.enabled ? 'Enabled' : 'Disabled') + '\n' +
-              '- Connected peers: ' + (ns.connected_peers||0) + ' / ' + (ns.total_peers||0), meta: '', tools: [] });
+            self.messages.push({ id: ++msgId, role: 'system', text: '**OFP 网络**\n' +
+              '- 状态: ' + (ns.enabled ? '启用' : '禁用') + '\n' +
+              '- 已连接对等体: ' + (ns.connected_peers||0) + ' / ' + (ns.total_peers||0), meta: '', tools: [] });
             self.scrollToBottom();
           }).catch(function() {});
           break;
@@ -498,10 +498,10 @@ function chatPage() {
           OpenFangAPI.get('/api/a2a/agents').then(function(res) {
             var agents = res.agents || [];
             if (!agents.length) {
-              self.messages.push({ id: ++msgId, role: 'system', text: 'No external A2A agents discovered.', meta: '', tools: [] });
+              self.messages.push({ id: ++msgId, role: 'system', text: '未发现外部 A2A 智能体。', meta: '', tools: [] });
             } else {
               var lines = agents.map(function(a) { return '- **' + a.name + '** — ' + a.url; });
-              self.messages.push({ id: ++msgId, role: 'system', text: '**A2A Agents (' + agents.length + ')**\n' + lines.join('\n'), meta: '', tools: [] });
+              self.messages.push({ id: ++msgId, role: 'system', text: '**外部 A2A 智能体 (' + agents.length + ')**\n' + lines.join('\n'), meta: '', tools: [] });
             }
             self.scrollToBottom();
           }).catch(function() {});
@@ -662,7 +662,7 @@ function chatPage() {
         case 'typing':
           if (data.state === 'start') {
             if (!this.messages.length || !this.messages[this.messages.length - 1].thinking) {
-              this.messages.push({ id: ++msgId, role: 'agent', text: 'Processing...', meta: '', thinking: true, streaming: true, tools: [] });
+              this.messages.push({ id: ++msgId, role: 'agent', text: '正在处理中...', meta: '', thinking: true, streaming: true, tools: [] });
               this.scrollToBottom();
             }
             this._resetTypingTimeout();
@@ -670,7 +670,7 @@ function chatPage() {
             var toolTypIdx = this.messages.length - 1;
             var typingMsg = toolTypIdx >= 0 ? this.messages[toolTypIdx] : null;
             if (typingMsg && (typingMsg.thinking || typingMsg.streaming)) {
-              typingMsg.text = 'Using ' + (data.tool || 'tool') + '...';
+              typingMsg.text = '正在使用 ' + (data.tool || 'tool') + '...';
               this.messages.splice(toolTypIdx, 1, typingMsg);
             }
             this._resetTypingTimeout();
@@ -691,24 +691,24 @@ function chatPage() {
             }
             // Context warning: show prominently as a separate system message
             if (data.phase === 'context_warning') {
-              var cwDetail = data.detail || 'Context limit reached.';
+              var cwDetail = data.detail || '上下文已达到限制。';
               this.messages.push({ id: ++msgId, role: 'system', text: cwDetail, meta: '', tools: [] });
             } else if (data.phase === 'thinking' && this.thinkingMode === 'stream') {
               // Stream reasoning tokens to a collapsible panel
-              if (!phaseMsg._reasoning) phaseMsg._reasoning = '';
+            if (!phaseMsg._reasoning) phaseMsg._reasoning = '';
               phaseMsg._reasoning += (data.detail || '') + '\n';
-              phaseMsg.text = '<details><summary>Reasoning...</summary>\n\n' + phaseMsg._reasoning + '</details>';
+              phaseMsg.text = '<details><summary>推理...</summary>\n\n' + phaseMsg._reasoning + '</details>';
               this.messages.splice(phaseIdx, 1, phaseMsg);
             } else if (phaseMsg.thinking) {
               // Only update text on messages still in thinking state (not yet
               // receiving streamed content) to avoid overwriting accumulated text.
               var phaseDetail;
               if (data.phase === 'tool_use') {
-                phaseDetail = 'Using ' + (data.detail || 'tool') + '...';
+                phaseDetail = '正在使用 ' + (data.detail || 'tool') + '...';
               } else if (data.phase === 'thinking') {
-                phaseDetail = 'Thinking...';
+                phaseDetail = '思考中...';
               } else {
-                phaseDetail = data.detail || 'Working...';
+                phaseDetail = data.detail || '工作中...';
               }
               phaseMsg.text = phaseDetail;
               this.messages.splice(phaseIdx, 1, phaseMsg);
@@ -905,7 +905,7 @@ function chatPage() {
           if (data.context_pressure) {
             this.contextPressure = data.context_pressure;
           }
-          this.messages.push({ id: ++msgId, role: 'system', text: data.message || 'Command executed.', meta: '', tools: [] });
+          this.messages.push({ id: ++msgId, role: 'system', text: data.message || '命令已执行。', meta: '', tools: [] });
           this.scrollToBottom();
           break;
 
@@ -913,7 +913,7 @@ function chatPage() {
           // Agent presented an interactive canvas — render it in an iframe sandbox
           var canvasHtml = '<div class="canvas-panel" style="border:1px solid var(--border);border-radius:8px;margin:8px 0;overflow:hidden;">';
           canvasHtml += '<div style="padding:6px 12px;background:var(--surface);border-bottom:1px solid var(--border);font-size:0.85em;display:flex;justify-content:space-between;align-items:center;">';
-          canvasHtml += '<span>' + (data.title || 'Canvas') + '</span>';
+          canvasHtml += '<span>' + (data.title || '画布') + '</span>';
           canvasHtml += '<span style="opacity:0.5;font-size:0.8em;">' + (data.canvas_id || '').substring(0, 8) + '</span></div>';
           canvasHtml += '<iframe sandbox="allow-scripts" srcdoc="' + (data.html || '').replace(/"/g, '&quot;') + '" ';
           canvasHtml += 'style="width:100%;min-height:300px;border:none;background:#fff;" loading="lazy"></iframe></div>';
@@ -1051,7 +1051,7 @@ function chatPage() {
         this.messages.push({ id: ++msgId, role: 'agent', text: res.response, meta: httpMeta, tools: [], ts: Date.now() });
       } catch(e) {
         this.messages = this.messages.filter(function(m) { return !m.thinking; });
-        this.messages.push({ id: ++msgId, role: 'system', text: 'Error: ' + e.message, meta: '', tools: [], ts: Date.now() });
+        this.messages.push({ id: ++msgId, role: 'system', text: '错误：' + e.message, meta: '', tools: [], ts: Date.now() });
       }
       this.sending = false;
       this.scrollToBottom();
@@ -1115,7 +1115,7 @@ function chatPage() {
       for (var i = 0; i < files.length; i++) {
         var file = files[i];
         if (file.size > 10 * 1024 * 1024) {
-          OpenFangToast.warn('File "' + file.name + '" exceeds 10MB limit');
+          OpenFangToast.warn('文件 "' + file.name + '" 超过 10MB 限制');
           continue;
         }
         var typeOk = allowed.indexOf(file.type) !== -1;
@@ -1124,7 +1124,7 @@ function chatPage() {
           typeOk = allowedExts.indexOf(ext) !== -1 || file.type.startsWith('image/');
         }
         if (!typeOk) {
-          OpenFangToast.warn('File type not supported: ' + file.name);
+          OpenFangToast.warn('不支持的文件类型：' + file.name);
           continue;
         }
         var preview = null;
@@ -1203,7 +1203,7 @@ function chatPage() {
         this.recordingTime = 0;
         this._recordingTimer = setInterval(function() { self.recordingTime++; }, 1000);
       } catch(e) {
-        if (typeof OpenFangToast !== 'undefined') OpenFangToast.error('Microphone access denied');
+        if (typeof OpenFangToast !== 'undefined') OpenFangToast.error('麦克风访问被拒绝');
       }
     },
 
@@ -1223,7 +1223,7 @@ function chatPage() {
       if (blob.size < 100) return; // too small
 
       // Show a temporary "Transcribing..." message
-      this.messages.push({ id: ++msgId, role: 'system', text: 'Transcribing audio...', thinking: true, ts: Date.now(), tools: [] });
+      this.messages.push({ id: ++msgId, role: 'system', text: '音频转写中...', thinking: true, ts: Date.now(), tools: [] });
       this.scrollToBottom();
 
       try {
@@ -1238,11 +1238,11 @@ function chatPage() {
         // Use server-side transcription if available, otherwise fall back to placeholder
         var text = (upload.transcription && upload.transcription.trim())
           ? upload.transcription.trim()
-          : '[Voice message - audio: ' + upload.filename + ']';
+          : '[语音消息 - 音频: ' + upload.filename + ']';
         this._sendPayload(text, [upload], []);
       } catch(e) {
         this.messages = this.messages.filter(function(m) { return !m.thinking || m.role !== 'system'; });
-        if (typeof OpenFangToast !== 'undefined') OpenFangToast.error('Failed to upload audio: ' + (e.message || 'unknown error'));
+        if (typeof OpenFangToast !== 'undefined') OpenFangToast.error('音频上传失败：' + (e.message || '未知错误'));
       }
     },
 

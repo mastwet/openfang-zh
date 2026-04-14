@@ -37,7 +37,7 @@ function sessionsPage() {
         this.sessions = sessions;
       } catch(e) {
         this.sessions = [];
-        this.loadError = e.message || 'Could not load sessions.';
+        this.loadError = e.message || '无法加载会话。';
       }
       this.loading = false;
     },
@@ -66,15 +66,15 @@ function sessionsPage() {
       var self = this;
       var t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k) { return k; };
       OpenFangToast.confirm(
-        t('sessions.delete_session') || 'Delete Session',
-        t('sessions.delete_confirm') || 'This will permanently remove the session and its messages.',
+        t('sessions.delete_session') || '删除会话',
+        t('sessions.delete_confirm') || '这将永久删除该会话及其消息。',
         async function() {
           try {
             await OpenFangAPI.del('/api/sessions/' + sessionId);
             self.sessions = self.sessions.filter(function(s) { return s.session_id !== sessionId; });
-            OpenFangToast.success('Session deleted');
+            OpenFangToast.success('会话已删除');
           } catch(e) {
-            OpenFangToast.error('Failed to delete session: ' + e.message);
+            OpenFangToast.error('删除会话失败：' + e.message);
           }
         }
       );
@@ -90,7 +90,7 @@ function sessionsPage() {
         this.kvPairs = data.kv_pairs || [];
       } catch(e) {
         this.kvPairs = [];
-        this.memLoadError = e.message || 'Could not load memory data.';
+        this.memLoadError = e.message || '无法加载记忆数据。';
       }
       this.memLoading = false;
     },
@@ -102,7 +102,7 @@ function sessionsPage() {
       try {
         await OpenFangAPI.put('/api/memory/agents/' + this.memAgentId + '/kv/' + encodeURIComponent(this.newKey), { value: value });
         this.showAdd = false;
-        OpenFangToast.success('Key "' + this.newKey + '" saved');
+        OpenFangToast.success('键 "' + this.newKey + '" 已保存');
         this.newKey = '';
         this.newValue = '""';
         await this.loadKv();
@@ -115,15 +115,15 @@ function sessionsPage() {
       var self = this;
       var t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k) { return k; };
       OpenFangToast.confirm(
-        t('sessions.delete_key') || 'Delete Key',
-        (t('sessions.delete_key_confirm') || 'Delete key') + ' "' + key + '"? This cannot be undone.',
+        t('sessions.delete_key') || '删除密钥',
+        (t('sessions.delete_key_confirm') || '确认删除密钥') + ' "' + key + '"? 无法撤销。',
         async function() {
           try {
             await OpenFangAPI.del('/api/memory/agents/' + self.memAgentId + '/kv/' + encodeURIComponent(key));
-            OpenFangToast.success('Key "' + key + '" deleted');
+            OpenFangToast.success('键 "' + key + '" 已删除');
             await self.loadKv();
           } catch(e) {
-            OpenFangToast.error('Failed to delete key: ' + e.message);
+            OpenFangToast.error('删除键失败：' + e.message);
           }
         }
       );
@@ -145,12 +145,12 @@ function sessionsPage() {
       try { value = JSON.parse(this.editingValue); } catch(e) { value = this.editingValue; }
       try {
         await OpenFangAPI.put('/api/memory/agents/' + this.memAgentId + '/kv/' + encodeURIComponent(this.editingKey), { value: value });
-        OpenFangToast.success('Key "' + this.editingKey + '" updated');
+        OpenFangToast.success('键 "' + this.editingKey + '" 已更新');
         this.editingKey = null;
         this.editingValue = '';
         await this.loadKv();
       } catch(e) {
-        OpenFangToast.error('Failed to save: ' + e.message);
+        OpenFangToast.error('保存失败：' + e.message);
       }
     }
   };

@@ -41,7 +41,7 @@ function approvalsPage() {
         var data = await OpenFangAPI.get('/api/approvals');
         this.approvals = data.approvals || [];
       } catch(e) {
-        this.loadError = e.message || 'Could not load approvals.';
+        this.loadError = e.message || '无法加载审批。';
       }
       this.loading = false;
     },
@@ -49,7 +49,7 @@ function approvalsPage() {
     async approve(id) {
       try {
         await OpenFangAPI.post('/api/approvals/' + id + '/approve', {});
-        OpenFangToast.success('Approved');
+        OpenFangToast.success('已批准');
         await this.loadData();
       } catch(e) {
         OpenFangToast.error(e.message);
@@ -61,7 +61,7 @@ function approvalsPage() {
       OpenFangToast.confirm('Reject Action', 'Are you sure you want to reject this action?', async function() {
         try {
           await OpenFangAPI.post('/api/approvals/' + id + '/reject', {});
-          OpenFangToast.success('Rejected');
+          OpenFangToast.success('已拒绝');
           await self.loadData();
         } catch(e) {
           OpenFangToast.error(e.message);
@@ -73,10 +73,10 @@ function approvalsPage() {
       if (!dateStr) return '';
       var d = new Date(dateStr);
       var secs = Math.floor((Date.now() - d.getTime()) / 1000);
-      if (secs < 60) return secs + 's ago';
-      if (secs < 3600) return Math.floor(secs / 60) + 'm ago';
-      if (secs < 86400) return Math.floor(secs / 3600) + 'h ago';
-      return Math.floor(secs / 86400) + 'd ago';
+      if (secs < 60) return secs + ' 秒前';
+      if (secs < 3600) return Math.floor(secs / 60) + ' 分钟前';
+      if (secs < 86400) return Math.floor(secs / 3600) + ' 小时前';
+      return Math.floor(secs / 86400) + ' 天前';
     }
   };
 }

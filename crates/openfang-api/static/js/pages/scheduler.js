@@ -35,17 +35,17 @@ function schedulerPage() {
 
     // Cron presets
     cronPresets: [
-      { label: 'Every minute', cron: '* * * * *' },
-      { label: 'Every 5 minutes', cron: '*/5 * * * *' },
-      { label: 'Every 15 minutes', cron: '*/15 * * * *' },
-      { label: 'Every 30 minutes', cron: '*/30 * * * *' },
-      { label: 'Every hour', cron: '0 * * * *' },
-      { label: 'Every 6 hours', cron: '0 */6 * * *' },
-      { label: 'Daily at midnight', cron: '0 0 * * *' },
-      { label: 'Daily at 9am', cron: '0 9 * * *' },
-      { label: 'Weekdays at 9am', cron: '0 9 * * 1-5' },
-      { label: 'Every Monday 9am', cron: '0 9 * * 1' },
-      { label: 'First of month', cron: '0 0 1 * *' }
+      { label: '每分钟', cron: '* * * * *' },
+      { label: '每5分钟', cron: '*/5 * * * *' },
+      { label: '每15分钟', cron: '*/15 * * * *' },
+      { label: '每30分钟', cron: '*/30 * * * *' },
+      { label: '每小时', cron: '0 * * * *' },
+      { label: '每6小时', cron: '0 */6 * * *' },
+      { label: '每天午夜', cron: '0 0 * * *' },
+      { label: '每天上午9点', cron: '0 9 * * *' },
+      { label: '工作日9点', cron: '0 9 * * 1-5' },
+      { label: '每周一9点', cron: '0 9 * * 1' },
+      { label: '每月初', cron: '0 0 1 * *' }
     ],
 
     // ── Lifecycle ──
@@ -56,7 +56,7 @@ function schedulerPage() {
       try {
         await this.loadJobs();
       } catch(e) {
-        this.loadError = e.message || 'Could not load scheduler data.';
+        this.loadError = e.message || '无法加载调度数据。';
       }
       this.loading = false;
     },
@@ -95,7 +95,7 @@ function schedulerPage() {
         this.triggers = Array.isArray(data) ? data : [];
       } catch(e) {
         this.triggers = [];
-        this.trigLoadError = e.message || 'Could not load triggers.';
+        this.trigLoadError = e.message || '无法加载触发器。';
       }
       this.trigLoading = false;
     },
@@ -165,10 +165,10 @@ function schedulerPage() {
         await OpenFangAPI.post('/api/cron/jobs', body);
         this.showCreateForm = false;
         this.newJob = { name: '', cron: '', agent_id: '', message: '', enabled: true };
-        OpenFangToast.success('Schedule "' + jobName + '" created');
+        OpenFangToast.success('计划 "' + jobName + '" 已创建');
         await this.loadJobs();
       } catch(e) {
-        OpenFangToast.error('Failed to create schedule: ' + (e.message || e));
+        OpenFangToast.error('创建计划失败：' + (e.message || e));
       }
       this.creating = false;
     },
@@ -178,7 +178,7 @@ function schedulerPage() {
         var newState = !job.enabled;
         await OpenFangAPI.put('/api/cron/jobs/' + job.id + '/enable', { enabled: newState });
         job.enabled = newState;
-        OpenFangToast.success('Schedule ' + (newState ? 'enabled' : 'paused'));
+        OpenFangToast.success('计划已 ' + (newState ? '启用' : '暂停'));
       } catch(e) {
         OpenFangToast.error('Failed to toggle schedule: ' + (e.message || e));
       }
@@ -187,14 +187,14 @@ function schedulerPage() {
     deleteJob(job) {
       var self = this;
       var jobName = job.name || job.id;
-      OpenFangToast.confirm('Delete Schedule', 'Delete "' + jobName + '"? This cannot be undone.', async function() {
+      OpenFangToast.confirm('Delete Schedule', '删除计划 "' + jobName + '"? 此操作无法撤销。', async function() {
         try {
           await OpenFangAPI.del('/api/cron/jobs/' + job.id);
           self.jobs = self.jobs.filter(function(j) { return j.id !== job.id; });
-          OpenFangToast.success('Schedule "' + jobName + '" deleted');
-        } catch(e) {
-          OpenFangToast.error('Failed to delete schedule: ' + (e.message || e));
-        }
+          OpenFangToast.success('计划 "' + jobName + '" 已删除');
+      } catch(e) {
+        OpenFangToast.error('删除计划失败：' + (e.message || e));
+      }
       });
     },
 
@@ -203,15 +203,15 @@ function schedulerPage() {
       try {
         var result = await OpenFangAPI.post('/api/cron/jobs/' + job.id + '/run', {});
         if (result.status === 'triggered' || result.status === 'completed') {
-          OpenFangToast.success('Job "' + (job.name || 'job') + '" triggered');
+          OpenFangToast.success('计划 "' + (job.name || 'job') + '" 已触发');
           // Don't update job.last_run here — the job runs asynchronously in the
           // background. The real last_run is set by the server on completion and
           // will appear on the next data refresh.
         } else {
-          OpenFangToast.error('Run failed: ' + (result.error || 'Unknown error'));
+          OpenFangToast.error('执行失败：' + (result.error || 'Unknown error'));
         }
       } catch(e) {
-        OpenFangToast.error('Run failed: ' + (e.message || e));
+        OpenFangToast.error('执行失败：' + (e.message || e));
       }
       this.runningJobId = '';
     },
@@ -219,21 +219,21 @@ function schedulerPage() {
     // ── Trigger helpers ──
 
     triggerType(pattern) {
-      if (!pattern) return 'unknown';
+      if (!pattern) return '未知';
       if (typeof pattern === 'string') return pattern;
       var keys = Object.keys(pattern);
-      if (keys.length === 0) return 'unknown';
+      if (keys.length === 0) return '未知';
       var key = keys[0];
       var names = {
-        lifecycle: 'Lifecycle',
-        agent_spawned: 'Agent Spawned',
-        agent_terminated: 'Agent Terminated',
-        system: 'System',
-        system_keyword: 'System Keyword',
-        memory_update: 'Memory Update',
-        memory_key_pattern: 'Memory Key',
-        all: 'All Events',
-        content_match: 'Content Match'
+        lifecycle: '生命周期',
+        agent_spawned: '智能体已创建',
+        agent_terminated: '智能体已终止',
+        system: '系统',
+        system_keyword: '系统关键字',
+        memory_update: '内存更新',
+        memory_key_pattern: '内存键',
+        all: '所有事件',
+        content_match: '内容匹配'
       };
       return names[key] || key.replace(/_/g, ' ');
     },
@@ -243,21 +243,21 @@ function schedulerPage() {
         var newState = !trigger.enabled;
         await OpenFangAPI.put('/api/triggers/' + trigger.id, { enabled: newState });
         trigger.enabled = newState;
-        OpenFangToast.success('Trigger ' + (newState ? 'enabled' : 'disabled'));
+        OpenFangToast.success('触发器已 ' + (newState ? '启用' : '禁用'));
       } catch(e) {
-        OpenFangToast.error('Failed to toggle trigger: ' + (e.message || e));
+        OpenFangToast.error('切换触发器失败：' + (e.message || e));
       }
     },
 
     deleteTrigger(trigger) {
       var self = this;
-      OpenFangToast.confirm('Delete Trigger', 'Delete this trigger? This cannot be undone.', async function() {
+      OpenFangToast.confirm('Delete Trigger', '删除此触发器？此操作无法撤销。', async function() {
         try {
           await OpenFangAPI.del('/api/triggers/' + trigger.id);
           self.triggers = self.triggers.filter(function(t) { return t.id !== trigger.id; });
-          OpenFangToast.success('Trigger deleted');
+          OpenFangToast.success('触发器已删除');
         } catch(e) {
-          OpenFangToast.error('Failed to delete trigger: ' + (e.message || e));
+          OpenFangToast.error('删除触发器失败：' + (e.message || e));
         }
       });
     },
@@ -269,7 +269,7 @@ function schedulerPage() {
     },
 
     agentName(agentId) {
-      if (!agentId) return '(any)';
+      if (!agentId) return '(任意)';
       var agents = this.availableAgents;
       for (var i = 0; i < agents.length; i++) {
         if (agents[i].id === agentId) return agents[i].name;
@@ -285,27 +285,27 @@ function schedulerPage() {
       if (expr.indexOf('at ') === 0) return 'One-time: ' + expr.substring(3);
 
       var map = {
-        '* * * * *': 'Every minute',
-        '*/2 * * * *': 'Every 2 minutes',
-        '*/5 * * * *': 'Every 5 minutes',
-        '*/10 * * * *': 'Every 10 minutes',
-        '*/15 * * * *': 'Every 15 minutes',
-        '*/30 * * * *': 'Every 30 minutes',
-        '0 * * * *': 'Every hour',
-        '0 */2 * * *': 'Every 2 hours',
-        '0 */4 * * *': 'Every 4 hours',
-        '0 */6 * * *': 'Every 6 hours',
-        '0 */12 * * *': 'Every 12 hours',
-        '0 0 * * *': 'Daily at midnight',
-        '0 6 * * *': 'Daily at 6:00 AM',
-        '0 9 * * *': 'Daily at 9:00 AM',
-        '0 12 * * *': 'Daily at noon',
-        '0 18 * * *': 'Daily at 6:00 PM',
-        '0 9 * * 1-5': 'Weekdays at 9:00 AM',
-        '0 9 * * 1': 'Mondays at 9:00 AM',
-        '0 0 * * 0': 'Sundays at midnight',
-        '0 0 1 * *': '1st of every month',
-        '0 0 * * 1': 'Mondays at midnight'
+        '* * * * *': '每分钟',
+        '*/2 * * * *': '每2分钟',
+        '*/5 * * * *': '每5分钟',
+        '*/10 * * * *': '每10分钟',
+        '*/15 * * * *': '每15分钟',
+        '*/30 * * * *': '每30分钟',
+        '0 * * * *': '每小时',
+        '0 */2 * * *': '每2小时',
+        '0 */4 * * *': '每4小时',
+        '0 */6 * * *': '每6小时',
+        '0 */12 * * *': '每12小时',
+        '0 0 * * *': '每天午夜',
+        '0 6 * * *': '每天6:00 AM',
+        '0 9 * * *': '每天9:00 AM',
+        '0 12 * * *': '每天中午',
+        '0 18 * * *': '每天6:00 PM',
+        '0 9 * * 1-5': '工作日9:00 AM',
+        '0 9 * * 1': '周一9:00 AM',
+        '0 0 * * 0': '周日午夜',
+        '0 0 1 * *': '每月初',
+        '0 0 * * 1': '周一午夜'
       };
       if (map[expr]) return map[expr];
 
@@ -325,8 +325,10 @@ function schedulerPage() {
         return 'Every ' + hour.substring(2) + ' hours';
       }
 
-      var dowNames = { '0': 'Sun', '1': 'Mon', '2': 'Tue', '3': 'Wed', '4': 'Thu', '5': 'Fri', '6': 'Sat', '7': 'Sun',
-                       '1-5': 'Weekdays', '0,6': 'Weekends', '6,0': 'Weekends' };
+      var dowNames = {
+        '0': '周日', '1': '周一', '2': '周二', '3': '周三', '4': '周四', '5': '周五', '6': '周六', '7': '周日',
+        '1-5': '工作日', '0,6': '周末', '6,0': '周末'
+      };
 
       if (dom === '*' && mon === '*' && min.match(/^\d+$/) && hour.match(/^\d+$/)) {
         var h = parseInt(hour, 10);
@@ -364,15 +366,15 @@ function schedulerPage() {
         if (diff < 0) {
           // Future time
           var absDiff = Math.abs(diff);
-          if (absDiff < 60000) return 'in <1m';
-          if (absDiff < 3600000) return 'in ' + Math.floor(absDiff / 60000) + 'm';
-          if (absDiff < 86400000) return 'in ' + Math.floor(absDiff / 3600000) + 'h';
-          return 'in ' + Math.floor(absDiff / 86400000) + 'd';
+          if (absDiff < 60000) return '在 <1 分钟内';
+          if (absDiff < 3600000) return '在 ' + Math.floor(absDiff / 60000) + ' 分钟内';
+          if (absDiff < 86400000) return '在 ' + Math.floor(absDiff / 3600000) + ' 小时内';
+          return '在 ' + Math.floor(absDiff / 86400000) + ' 天内';
         }
-        if (diff < 60000) return 'just now';
-        if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
-        if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
-        return Math.floor(diff / 86400000) + 'd ago';
+        if (diff < 60000) return '刚刚';
+        if (diff < 3600000) return Math.floor(diff / 60000) + ' 分钟前';
+        if (diff < 86400000) return Math.floor(diff / 3600000) + ' 小时前';
+        return Math.floor(diff / 86400000) + ' 天前';
       } catch(e) { return 'never'; }
     },
 

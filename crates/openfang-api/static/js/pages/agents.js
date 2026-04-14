@@ -242,7 +242,7 @@ function agentsPage() {
       try {
         await Alpine.store('app').refreshAgents();
       } catch(e) {
-        this.loadError = e.message || 'Could not load agents.';
+        this.loadError = e.message || '无法加载智能体。';
       }
       this.loading = false;
     },
@@ -322,7 +322,7 @@ function agentsPage() {
         this.tplProviders = results[1].providers || [];
       } catch(e) {
         this.builtinTemplates = [];
-        this.tplLoadError = e.message || 'Could not load templates.';
+        this.tplLoadError = e.message || '无法加载模板。';
       }
       this.tplLoading = false;
     },
@@ -364,14 +364,14 @@ function agentsPage() {
 
     killAgent(agent) {
       var self = this;
-      OpenFangToast.confirm('Stop Agent', 'Stop agent "' + agent.name + '"? The agent will be shut down.', async function() {
+      OpenFangToast.confirm('停止智能体', '是否停止智能体 "' + agent.name + '"？该智能体将被关闭。', async function() {
         try {
           await OpenFangAPI.del('/api/agents/' + agent.id);
-          OpenFangToast.success('Agent "' + agent.name + '" stopped');
+          OpenFangToast.success('智能体“' + agent.name + '”已停止');
           self.showDetailModal = false;
           await Alpine.store('app').refreshAgents();
         } catch(e) {
-          OpenFangToast.error('Failed to stop agent: ' + e.message);
+          OpenFangToast.error('停止智能体失败：' + e.message);
         }
       });
     },
@@ -379,7 +379,7 @@ function agentsPage() {
     killAllAgents() {
       var list = this.filteredAgents;
       if (!list.length) return;
-      OpenFangToast.confirm('Stop All Agents', 'Stop ' + list.length + ' agent(s)? All agents will be shut down.', async function() {
+      OpenFangToast.confirm('停止所有智能体', '将停止 ' + list.length + ' 个智能体？所有智能体将被关闭。', async function() {
         var errors = [];
         for (var i = 0; i < list.length; i++) {
           try {
@@ -388,9 +388,9 @@ function agentsPage() {
         }
         await Alpine.store('app').refreshAgents();
         if (errors.length) {
-          OpenFangToast.error('Some agents failed to stop: ' + errors.join(', '));
+          OpenFangToast.error('部分智能体停止失败：' + errors.join(', '));
         } else {
-          OpenFangToast.success(list.length + ' agent(s) stopped');
+          OpenFangToast.success(list.length + ' 个智能体已停止');
         }
       });
     },
@@ -428,7 +428,7 @@ function agentsPage() {
 
     nextStep() {
       if (this.spawnStep === 1 && !this.spawnForm.name.trim()) {
-        OpenFangToast.warn('Please enter an agent name');
+        OpenFangToast.warn('请输入智能体名称');
         return;
       }
       if (this.spawnStep < 5) this.spawnStep++;
@@ -472,10 +472,10 @@ function agentsPage() {
       try {
         await OpenFangAPI.put('/api/agents/' + agent.id + '/mode', { mode: mode });
         agent.mode = mode;
-        OpenFangToast.success('Mode set to ' + mode);
+        OpenFangToast.success('模式设置为 ' + mode);
         await Alpine.store('app').refreshAgents();
       } catch(e) {
-        OpenFangToast.error('Failed to set mode: ' + e.message);
+        OpenFangToast.error('设置模式失败：' + e.message);
       }
     },
 
@@ -484,7 +484,7 @@ function agentsPage() {
       var toml = this.spawnMode === 'wizard' ? this.generateToml() : this.spawnToml;
       if (!toml.trim()) {
         this.spawning = false;
-        OpenFangToast.warn('Manifest is empty \u2014 enter agent config first');
+        OpenFangToast.warn('清单为空 — 请先输入智能体配置。');
         return;
       }
 
@@ -509,14 +509,14 @@ function agentsPage() {
           this.spawnForm.name = '';
           this.spawnToml = '';
           this.spawnStep = 1;
-          OpenFangToast.success('Agent "' + (res.name || 'new') + '" spawned');
+          OpenFangToast.success('智能体 "' + (res.name || '新建') + '" 已派生');
           await Alpine.store('app').refreshAgents();
           this.chatWithAgent({ id: res.agent_id, name: res.name, model_provider: '?', model_name: '?' });
         } else {
           OpenFangToast.error('Spawn failed: ' + (res.error || 'Unknown error'));
         }
       } catch(e) {
-        OpenFangToast.error('Failed to spawn agent: ' + e.message);
+        OpenFangToast.error('派生智能体失败：' + e.message);
       }
       this.spawning = false;
     },
@@ -530,7 +530,7 @@ function agentsPage() {
         this.agentFiles = data.files || [];
       } catch(e) {
         this.agentFiles = [];
-        OpenFangToast.error('Failed to load files: ' + e.message);
+        OpenFangToast.error('读取文件失败：' + e.message);
       }
       this.filesLoading = false;
     },
@@ -547,7 +547,7 @@ function agentsPage() {
         this.editingFile = file.name;
         this.fileContent = data.content || '';
       } catch(e) {
-        OpenFangToast.error('Failed to read file: ' + e.message);
+        OpenFangToast.error('读取文件失败：' + e.message);
       }
     },
 
@@ -556,7 +556,7 @@ function agentsPage() {
       this.fileSaving = true;
       try {
         await OpenFangAPI.put('/api/agents/' + this.detailAgent.id + '/files/' + encodeURIComponent(this.editingFile), { content: this.fileContent });
-        OpenFangToast.success(this.editingFile + ' saved');
+        OpenFangToast.success(this.editingFile + ' 已保存');
         await this.loadAgentFiles();
       } catch(e) {
         OpenFangToast.error('Failed to save file: ' + e.message);
@@ -575,10 +575,10 @@ function agentsPage() {
       this.configSaving = true;
       try {
         await OpenFangAPI.patch('/api/agents/' + this.detailAgent.id + '/config', this.configForm);
-        OpenFangToast.success('Config updated');
+        OpenFangToast.success('配置已更新');
         await Alpine.store('app').refreshAgents();
       } catch(e) {
-        OpenFangToast.error('Failed to save config: ' + e.message);
+        OpenFangToast.error('保存配置失败：' + e.message);
       }
       this.configSaving = false;
     },
@@ -589,12 +589,12 @@ function agentsPage() {
       try {
         var res = await OpenFangAPI.post('/api/agents/' + agent.id + '/clone', { new_name: newName });
         if (res.agent_id) {
-          OpenFangToast.success('Cloned as "' + res.name + '"');
+          OpenFangToast.success('智能体克隆成功，名称为 "' + (res.name || '') + '"');
           await Alpine.store('app').refreshAgents();
           this.showDetailModal = false;
         }
       } catch(e) {
-        OpenFangToast.error('Clone failed: ' + e.message);
+        OpenFangToast.error('克隆失败：' + e.message);
       }
     },
 
@@ -610,25 +610,25 @@ function agentsPage() {
         if (manifestToml) {
           var res = await OpenFangAPI.post('/api/agents', { manifest_toml: manifestToml });
           if (res.agent_id) {
-            OpenFangToast.success('Agent "' + (res.name || template.name) + '" spawned from template');
+            OpenFangToast.success('智能体 "' + (res.name || template.name) + '" 已从模板派生');
             await Alpine.store('app').refreshAgents();
             this.chatWithAgent({ id: res.agent_id, name: res.name || template.name, model_provider: '?', model_name: '?' });
           }
         }
       } catch(e) {
-        OpenFangToast.error('Failed to spawn from template: ' + e.message);
+        OpenFangToast.error('从模板派生智能体失败：' + e.message);
       }
     },
 
     // ── Clear agent history ──
     async clearHistory(agent) {
       var self = this;
-      OpenFangToast.confirm('Clear History', 'Clear all conversation history for "' + agent.name + '"? This cannot be undone.', async function() {
+      OpenFangToast.confirm('清除历史', '清除智能体 "' + agent.name + '" 的所有对话历史？此操作无法撤销。', async function() {
         try {
           await OpenFangAPI.del('/api/agents/' + agent.id + '/history');
-          OpenFangToast.success('History cleared for "' + agent.name + '"');
+          OpenFangToast.success('已清除智能体 "' + agent.name + '" 的历史');
         } catch(e) {
-          OpenFangToast.error('Failed to clear history: ' + e.message);
+          OpenFangToast.error('清除历史失败：' + e.message);
         }
       });
     },
@@ -769,7 +769,7 @@ function agentsPage() {
       try {
         var res = await OpenFangAPI.post('/api/agents', { manifest_toml: toml });
         if (res.agent_id) {
-          OpenFangToast.success('Agent "' + t.name + '" spawned');
+          OpenFangToast.success('智能体 "' + t.name + '" 已派生');
           await Alpine.store('app').refreshAgents();
           this.chatWithAgent({ id: res.agent_id, name: t.name, model_provider: t.provider, model_name: t.model });
         }

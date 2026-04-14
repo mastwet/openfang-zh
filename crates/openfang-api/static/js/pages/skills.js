@@ -38,24 +38,24 @@ function skillsPage() {
     get categories() {
       var t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k) { return k; };
       return [
-        { id: 'coding', name: t('skills.cat_coding') || 'Coding & IDEs' },
-        { id: 'git', name: t('skills.cat_git') || 'Git & GitHub' },
-        { id: 'web', name: t('skills.cat_frontend') || 'Web & Frontend' },
-        { id: 'devops', name: t('skills.cat_devops') || 'DevOps & Cloud' },
-        { id: 'browser', name: t('skills.cat_browser') || 'Browser & Automation' },
-        { id: 'search', name: t('skills.cat_search') || 'Search & Research' },
-        { id: 'ai', name: t('skills.cat_ai') || 'AI & ML' },
-        { id: 'data', name: t('skills.cat_data') || 'Data & Analytics' },
-        { id: 'productivity', name: t('skills.cat_productivity') || 'Productivity' },
-        { id: 'communication', name: t('skills.cat_communication') || 'Communication' },
-        { id: 'media', name: t('skills.cat_media') || 'Media & Streaming' },
-        { id: 'notes', name: t('skills.cat_notes') || 'Notes & PKM' },
-        { id: 'security', name: t('skills.cat_security') || 'Security' },
-        { id: 'cli', name: t('skills.cat_cli') || 'CLI Utilities' },
-        { id: 'marketing', name: t('skills.cat_marketing') || 'Marketing & Sales' },
-        { id: 'finance', name: t('skills.cat_finance') || 'Finance' },
-        { id: 'smart-home', name: t('skills.cat_smarthome') || 'Smart Home & IoT' },
-        { id: 'docs', name: t('skills.cat_docs') || 'Documentation' },
+        { id: 'coding', name: t('skills.cat_coding') || '编程与 IDE' },
+        { id: 'git', name: t('skills.cat_git') || 'Git 与 GitHub' },
+        { id: 'web', name: t('skills.cat_frontend') || 'Web 与前端' },
+        { id: 'devops', name: t('skills.cat_devops') || 'DevOps 与云' },
+        { id: 'browser', name: t('skills.cat_browser') || '浏览器与自动化' },
+        { id: 'search', name: t('skills.cat_search') || '搜索与研究' },
+        { id: 'ai', name: t('skills.cat_ai') || 'AI 与 ML' },
+        { id: 'data', name: t('skills.cat_data') || '数据与分析' },
+        { id: 'productivity', name: t('skills.cat_productivity') || '生产力' },
+        { id: 'communication', name: t('skills.cat_communication') || '通信' },
+        { id: 'media', name: t('skills.cat_media') || '媒体与流媒体' },
+        { id: 'notes', name: t('skills.cat_notes') || '笔记与知识管理' },
+        { id: 'security', name: t('skills.cat_security') || '安全' },
+        { id: 'cli', name: t('skills.cat_cli') || 'CLI 工具' },
+        { id: 'marketing', name: t('skills.cat_marketing') || '市场与销售' },
+        { id: 'finance', name: t('skills.cat_finance') || '财务' },
+        { id: 'smart-home', name: t('skills.cat_smarthome') || '智能家居与物联网' },
+        { id: 'docs', name: t('skills.cat_docs') || '文档' },
       ];
     },
 
@@ -106,7 +106,7 @@ function skillsPage() {
         });
       } catch(e) {
         this.skills = [];
-        this.loadError = e.message || 'Could not load skills.';
+        this.loadError = e.message || '无法加载技能。';
       }
       this.loading = false;
     },
@@ -204,7 +204,7 @@ function skillsPage() {
         var data = await OpenFangAPI.get('/api/clawhub/skill/' + encodeURIComponent(slug));
         this.skillDetail = data;
       } catch(e) {
-        OpenFangToast.error('Failed to load skill details');
+        OpenFangToast.error('无法加载技能详情');
       }
       this.detailLoading = false;
     },
@@ -229,7 +229,7 @@ function skillsPage() {
         this.skillCodeFilename = data.filename || 'source';
         this.showSkillCode = true;
       } catch(e) {
-        OpenFangToast.error('Could not load skill source code');
+        OpenFangToast.error('无法加载技能源代码');
       }
       this.skillCodeLoading = false;
     },
@@ -242,9 +242,9 @@ function skillsPage() {
         var data = await OpenFangAPI.post('/api/clawhub/install', { slug: slug });
         this.installResult = data;
         if (data.warnings && data.warnings.length > 0) {
-          OpenFangToast.success('Skill "' + data.name + '" installed with ' + data.warnings.length + ' warning(s)');
+          OpenFangToast.success('技能 "' + data.name + '" 安装完成，包含 ' + data.warnings.length + ' 条警告');
         } else {
-          OpenFangToast.success('Skill "' + data.name + '" installed successfully');
+          OpenFangToast.success('技能 "' + data.name + '" 已安装');
         }
         // Update installed state in detail modal if open
         if (this.skillDetail && this.skillDetail.slug === slug) {
@@ -252,13 +252,13 @@ function skillsPage() {
         }
         await this.loadSkills();
       } catch(e) {
-        var msg = e.message || 'Install failed';
+        var msg = e.message || '安装失败';
         if (msg.includes('already_installed')) {
-          OpenFangToast.error('Skill is already installed');
+          OpenFangToast.error('技能已安装');
         } else if (msg.includes('SecurityBlocked')) {
-          OpenFangToast.error('Skill blocked by security scan');
+          OpenFangToast.error('技能因安全检查被阻止');
         } else {
-          OpenFangToast.error('Install failed: ' + msg);
+          OpenFangToast.error('安装失败：' + msg);
         }
       }
       this.installingSlug = null;
@@ -269,15 +269,15 @@ function skillsPage() {
       var self = this;
       var t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k) { return k; };
       OpenFangToast.confirm(
-        t('skills.uninstall_skill') || 'Uninstall Skill',
-        t('skills.uninstall_confirm') + ' "' + name + '"? This cannot be undone.',
+        t('skills.uninstall_skill') || '卸载技能',
+        (t('skills.uninstall_confirm') || '确认卸载技能') + ' "' + name + '"? 无法撤销。',
         async function() {
           try {
             await OpenFangAPI.post('/api/skills/uninstall', { name: name });
-            OpenFangToast.success('Skill "' + name + '" uninstalled');
+            OpenFangToast.success('技能 "' + name + '" 已卸载');
             await self.loadSkills();
           } catch(e) {
-            OpenFangToast.error('Failed to uninstall skill: ' + e.message);
+            OpenFangToast.error('卸载技能失败：' + e.message);
           }
         }
       );
@@ -292,11 +292,11 @@ function skillsPage() {
           runtime: 'prompt_only',
           prompt_context: skill.prompt_context || skill.description
         });
-        OpenFangToast.success('Skill "' + skill.name + '" created');
+        OpenFangToast.success('技能 "' + skill.name + '" 已创建');
         this.tab = 'installed';
         await this.loadSkills();
       } catch(e) {
-        OpenFangToast.error('Failed to create skill: ' + e.message);
+        OpenFangToast.error('创建技能失败：' + e.message);
       }
     },
 
@@ -320,10 +320,10 @@ function skillsPage() {
 
     // Quick start skills (prompt-only, zero deps)
     quickStartSkills: [
-      { name: 'code-review-guide', description: 'Adds code review best practices and checklist to agent context.', prompt_context: 'You are an expert code reviewer. When reviewing code:\n1. Check for bugs and logic errors\n2. Evaluate code style and readability\n3. Look for security vulnerabilities\n4. Suggest performance improvements\n5. Verify error handling\n6. Check test coverage' },
-      { name: 'writing-style', description: 'Configurable writing style guide for content generation.', prompt_context: 'Follow these writing guidelines:\n- Use clear, concise language\n- Prefer active voice over passive voice\n- Keep paragraphs short (3-4 sentences)\n- Use bullet points for lists\n- Maintain consistent tone throughout' },
-      { name: 'api-design', description: 'REST API design patterns and conventions.', prompt_context: 'When designing REST APIs:\n- Use nouns for resources, not verbs\n- Use HTTP methods correctly (GET, POST, PUT, DELETE)\n- Return appropriate status codes\n- Use pagination for list endpoints\n- Version your API\n- Document all endpoints' },
-      { name: 'security-checklist', description: 'OWASP-aligned security review checklist.', prompt_context: 'Security review checklist (OWASP aligned):\n- Input validation on all user inputs\n- Output encoding to prevent XSS\n- Parameterized queries to prevent SQL injection\n- Authentication and session management\n- Access control checks\n- CSRF protection\n- Security headers\n- Error handling without information leakage' },
+      { name: 'code-review-guide', description: '将代码审查的最佳实践和检查清单加入到智能体上下文。', prompt_context: '你是一个资深的代码审阅者。审阅代码时：\n1. 检查错误和逻辑错误\n2. 评估代码风格和可读性\n3. 查找安全漏洞\n4. 提出性能改进建议\n5. 验证错误处理\n6. 检查测试覆盖' },
+      { name: 'writing-style', description: '用于内容生成的可配置写作风格指南。', prompt_context: '请遵循以下写作准则：\n- 使用清晰、简洁的语言\n- 尽量使用主动语态\n- 段落简短（3-4句）\n- 使用要点列出要点\n- 保持统一的语气' },
+      { name: 'api-design', description: 'REST API 设计模式与约定。', prompt_context: '在设计 REST API 时：\n- 使用名词来表示资源，而非动词\n- 正确使用 HTTP 方法（GET、POST、PUT、DELETE）\n- 返回适当的状态码\n- 为列表端点使用分页\n- 给 API 版本化\n- 记录所有端点' },
+      { name: 'security-checklist', description: '符合 OWASP 的安全审查清单。', prompt_context: '安全审查清单（OWASP 对齐）：\n- 对所有用户输入进行校验\n- 输出进行编码以防止 XSS\n- 使用参数化查询防止 SQL 注入\n- 身份验证与会话管理\n- 访问控制检查\n- CSRF 防护\n- 安全头部\n- 错误处理不泄漏信息' },
     ],
 
     // Check if skill is installed by slug

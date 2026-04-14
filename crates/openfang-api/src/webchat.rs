@@ -58,6 +58,11 @@ const MANIFEST_JSON: &str = include_str!("../static/manifest.json");
 /// Embedded service worker for PWA support.
 const SW_JS: &str = include_str!("../static/sw.js");
 
+/// Embedded i18n translation files for dashboard localization.
+const I18N_EN_JSON: &str = include_str!("../static/i18n/en.json");
+const I18N_ZH_JSON: &str = include_str!("../static/i18n/zh.json");
+const I18N_RU_JSON: &str = include_str!("../static/i18n/ru.json");
+
 /// GET /manifest.json — Serve the PWA web app manifest.
 pub async fn manifest_json() -> impl IntoResponse {
     (
@@ -77,6 +82,39 @@ pub async fn sw_js() -> impl IntoResponse {
             (header::CACHE_CONTROL, "no-cache"),
         ],
         SW_JS,
+    )
+}
+
+/// GET /i18n/en.json — Serve the English translation file.
+pub async fn i18n_en_json() -> impl IntoResponse {
+    (
+        [
+            (header::CONTENT_TYPE, "application/json; charset=utf-8"),
+            (header::CACHE_CONTROL, "public, max-age=86400, immutable"),
+        ],
+        I18N_EN_JSON,
+    )
+}
+
+/// GET /i18n/zh.json — Serve the Chinese translation file.
+pub async fn i18n_zh_json() -> impl IntoResponse {
+    (
+        [
+            (header::CONTENT_TYPE, "application/json; charset=utf-8"),
+            (header::CACHE_CONTROL, "public, max-age=86400, immutable"),
+        ],
+        I18N_ZH_JSON,
+    )
+}
+
+/// GET /i18n/ru.json — Serve the Russian translation file.
+pub async fn i18n_ru_json() -> impl IntoResponse {
+    (
+        [
+            (header::CONTENT_TYPE, "application/json; charset=utf-8"),
+            (header::CACHE_CONTROL, "public, max-age=86400, immutable"),
+        ],
+        I18N_RU_JSON,
     )
 }
 

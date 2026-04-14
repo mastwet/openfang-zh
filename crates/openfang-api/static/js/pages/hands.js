@@ -46,7 +46,8 @@ function handsPage() {
         this.hands = data.hands || [];
       } catch(e) {
         this.hands = [];
-        this.loadError = e.message || 'Could not load hands.';
+        // 中文提示：无法加载工具包
+        this.loadError = e.message || '无法加载工具包。';
       }
       this.loading = false;
     },
@@ -129,7 +130,8 @@ function handsPage() {
         var hasReqs = data.requirements && data.requirements.length > 0;
         this.setupStep = hasReqs ? 1 : 2;
       } catch(e) {
-        this.showToast('Could not load hand details: ' + (e.message || 'unknown error'));
+        // 中文提示：加载工具包详情失败
+        this.showToast('无法加载工具包详情：' + (e.message || '未知错误'));
       }
       this.setupLoading = false;
     },
@@ -153,7 +155,7 @@ function handsPage() {
       var handId = this.setupWizard.id;
       var missing = (this.setupWizard.requirements || []).filter(function(r) { return !r.satisfied; });
       if (missing.length === 0) {
-        this.showToast('All dependencies already installed!');
+        this.showToast('所有依赖已安装完毕！');
         return;
       }
 
@@ -191,7 +193,7 @@ function handsPage() {
         var failed = results.filter(function(r) { return r.status === 'error' || r.status === 'timeout'; }).length;
 
         if (data.requirements_met) {
-          this.showToast('All dependencies installed successfully!');
+          this.showToast('所有依赖已成功安装！');
           // Auto-advance to step 2 after a short delay
           var self = this;
           setTimeout(function() {
@@ -199,7 +201,7 @@ function handsPage() {
             self.setupNextStep();
           }, 1500);
         } else if (failed > 0) {
-          this.installProgress.error = failed + ' dependency(ies) failed to install. Check the details below.';
+          this.installProgress.error = failed + ' 依赖项安装失败。请查看下方详情。';
         }
       } catch(e) {
         this.installProgress = {
@@ -208,7 +210,7 @@ function handsPage() {
           total: missing.length,
           currentLabel: '',
           results: [],
-          error: e.message || 'Installation request failed'
+          error: e.message || '安装请求失败'
         };
       }
     },
@@ -417,12 +419,12 @@ function handsPage() {
         }
         var data = await OpenFangAPI.post('/api/hands/' + handId + '/activate', payload);
         var label = data.instance_name || data.agent_name || data.instance_id;
-        this.showToast('Hand "' + handId + '" activated as ' + label);
+        this.showToast('工具包 "' + handId + '" 已激活，显示名称为 ' + label);
         this.closeSetupWizard();
         await this.loadActive();
         this.tab = 'active';
       } catch(e) {
-        this.showToast('Activation failed: ' + (e.message || 'unknown error'));
+        this.showToast('激活失败：' + (e.message || '未知错误'));
       }
       this.activatingId = null;
     },
@@ -449,31 +451,31 @@ function handsPage() {
     async pauseHand(inst) {
       try {
         await OpenFangAPI.post('/api/hands/instances/' + inst.instance_id + '/pause', {});
-        inst.status = 'Paused';
+        inst.status = '已暂停';
       } catch(e) {
-        this.showToast('Pause failed: ' + (e.message || 'unknown error'));
+        this.showToast('暂停失败：' + (e.message || '未知错误'));
       }
     },
 
     async resumeHand(inst) {
       try {
         await OpenFangAPI.post('/api/hands/instances/' + inst.instance_id + '/resume', {});
-        inst.status = 'Active';
+        inst.status = '活跃';
       } catch(e) {
-        this.showToast('Resume failed: ' + (e.message || 'unknown error'));
+        this.showToast('恢复失败：' + (e.message || '未知错误'));
       }
     },
 
     async deactivate(inst) {
       var self = this;
       var handName = inst.agent_name || inst.hand_id;
-      OpenFangToast.confirm('Deactivate Hand', 'Deactivate hand "' + handName + '"? This will kill its agent.', async function() {
+      OpenFangToast.confirm('停用工具包', '停用工具包 "' + handName + '"? 这将终止其代理。', async function() {
         try {
           await OpenFangAPI.delete('/api/hands/instances/' + inst.instance_id);
           self.instances = self.instances.filter(function(i) { return i.instance_id !== inst.instance_id; });
-          OpenFangToast.success('Hand deactivated.');
+          OpenFangToast.success('工具包已停用。');
         } catch(e) {
-          OpenFangToast.error('Deactivation failed: ' + (e.message || 'unknown error'));
+          OpenFangToast.error('停用失败：' + (e.message || '未知错误'));
         }
       });
     },
@@ -483,7 +485,7 @@ function handsPage() {
         var data = await OpenFangAPI.get('/api/hands/instances/' + inst.instance_id + '/stats');
         inst._stats = data.metrics || {};
       } catch(e) {
-        inst._stats = { 'Error': { value: e.message || 'Could not load stats', format: 'text' } };
+        inst._stats = { 'Error': { value: e.message || '无法加载统计数据', format: 'text' } };
       }
     },
 
@@ -549,11 +551,11 @@ function handsPage() {
           this.browserViewer.content = data.content || '';
           this.browserViewer.error = '';
         } else {
-          this.browserViewer.error = 'No active browser session';
+          this.browserViewer.error = '没有活动的浏览器会话';
           this.browserViewer.screenshot = '';
         }
       } catch(e) {
-        this.browserViewer.error = e.message || 'Could not load browser state';
+        this.browserViewer.error = e.message || '无法加载浏览器状态';
       }
       this.browserViewer.loading = false;
     },

@@ -116,7 +116,7 @@ function logsPage() {
         if (this.loading) this.loading = false;
       } catch(e) {
         if (this.loading) {
-          this.loadError = e.message || 'Could not load logs.';
+          this.loadError = e.message || '无法加载日志。';
           this.loading = false;
         }
       }
@@ -166,10 +166,10 @@ function logsPage() {
     },
 
     get connectionLabel() {
-      if (this.streamPaused) return 'Paused';
-      if (this.streamConnected) return 'Live';
-      if (this._pollTimer) return 'Polling';
-      return 'Disconnected';
+      if (this.streamPaused) return '暂停';
+      if (this.streamConnected) return '实时';
+      if (this._pollTimer) return '轮询';
+      return '已断开连接';
     },
 
     get connectionClass() {

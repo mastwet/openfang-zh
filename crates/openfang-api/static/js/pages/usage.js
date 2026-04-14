@@ -34,7 +34,7 @@ function analyticsPage() {
           this.loadDailyCosts()
         ]);
       } catch(e) {
-        this.loadError = e.message || 'Could not load usage data.';
+        this.loadError = e.message || '无法加载使用数据。';
       }
       this.loading = false;
     },

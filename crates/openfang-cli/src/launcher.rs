@@ -79,33 +79,33 @@ struct MenuItem {
 // Menu for first-time users: "Get started" is first and prominent
 const MENU_FIRST_RUN: &[MenuItem] = &[
     MenuItem {
-        label: "Get started",
-        hint: "Providers, API keys, models, migration",
+        label: "开始使用",
+        hint: "供应商、API密钥、模型、迁移",
         choice: LauncherChoice::GetStarted,
     },
     MenuItem {
-        label: "Chat with an agent",
-        hint: "Quick chat in the terminal",
+        label: "与智能体对话",
+        hint: "在终端快速对话",
         choice: LauncherChoice::Chat,
     },
     MenuItem {
-        label: "Open dashboard",
-        hint: "Launch the web UI in your browser",
+        label: "打开控制台",
+        hint: "在浏览器中打开Web界面",
         choice: LauncherChoice::Dashboard,
     },
     MenuItem {
-        label: "Open desktop app",
-        hint: "Launch the native desktop app",
+        label: "打开桌面应用",
+        hint: "启动原生桌面应用",
         choice: LauncherChoice::DesktopApp,
     },
     MenuItem {
-        label: "Launch terminal UI",
-        hint: "Full interactive TUI dashboard",
+        label: "启动终端UI",
+        hint: "完整的交互式TUI控制台",
         choice: LauncherChoice::TerminalUI,
     },
     MenuItem {
-        label: "Show all commands",
-        hint: "Print full --help output",
+        label: "显示所有命令",
+        hint: "打印完整帮助信息",
         choice: LauncherChoice::ShowHelp,
     },
 ];
@@ -113,33 +113,33 @@ const MENU_FIRST_RUN: &[MenuItem] = &[
 // Menu for returning users: action-first, setup at the bottom
 const MENU_RETURNING: &[MenuItem] = &[
     MenuItem {
-        label: "Chat with an agent",
-        hint: "Quick chat in the terminal",
+        label: "与智能体对话",
+        hint: "在终端快速对话",
         choice: LauncherChoice::Chat,
     },
     MenuItem {
-        label: "Open dashboard",
-        hint: "Launch the web UI in your browser",
+        label: "打开控制台",
+        hint: "在浏览器中打开Web界面",
         choice: LauncherChoice::Dashboard,
     },
     MenuItem {
-        label: "Launch terminal UI",
-        hint: "Full interactive TUI dashboard",
+        label: "启动终端UI",
+        hint: "完整的交互式TUI控制台",
         choice: LauncherChoice::TerminalUI,
     },
     MenuItem {
-        label: "Open desktop app",
-        hint: "Launch the native desktop app",
+        label: "打开桌面应用",
+        hint: "启动原生桌面应用",
         choice: LauncherChoice::DesktopApp,
     },
     MenuItem {
-        label: "Settings",
-        hint: "Providers, API keys, models, routing",
+        label: "设置",
+        hint: "供应商、API密钥、模型、路由",
         choice: LauncherChoice::GetStarted,
     },
     MenuItem {
-        label: "Show all commands",
-        hint: "Print full --help output",
+        label: "显示所有命令",
+        hint: "打印完整帮助信息",
         choice: LauncherChoice::ShowHelp,
     },
 ];
@@ -370,7 +370,7 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
             ]),
             Line::from(""),
             Line::from(vec![Span::styled(
-                "Welcome! Let's get you set up.",
+                "欢迎！让我们开始设置。",
                 Style::default().fg(theme::TEXT_PRIMARY),
             )]),
         ];
@@ -399,7 +399,7 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
         let spinner = theme::SPINNER_FRAMES[state.tick % theme::SPINNER_FRAMES.len()];
         let line = Line::from(vec![
             Span::styled(format!("{spinner} "), Style::default().fg(theme::YELLOW)),
-            Span::styled("Checking for daemon\u{2026}", theme::dim_style()),
+            Span::styled("正在检测守护进程\u{2026}", theme::dim_style()),
         ]);
         frame.render_widget(Paragraph::new(line), chunks[3]);
     } else {
@@ -408,11 +408,7 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
         // Daemon status
         if let Some(ref url) = state.daemon_url {
             let agent_suffix = if state.daemon_agents > 0 {
-                format!(
-                    " ({} agent{})",
-                    state.daemon_agents,
-                    if state.daemon_agents == 1 { "" } else { "s" }
-                )
+                format!("（{} 个智能体）", state.daemon_agents)
             } else {
                 String::new()
             };
@@ -424,7 +420,7 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
                         .add_modifier(Modifier::BOLD),
                 ),
                 Span::styled(
-                    format!("Daemon running at {url}"),
+                    format!("守护进程运行于 {url}"),
                     Style::default().fg(theme::TEXT_PRIMARY),
                 ),
                 Span::styled(agent_suffix, Style::default().fg(theme::GREEN)),
@@ -432,7 +428,7 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
         } else {
             lines.push(Line::from(vec![
                 Span::styled("\u{25cb} ", theme::dim_style()),
-                Span::styled("No daemon running", theme::dim_style()),
+                Span::styled("守护进程未运行", theme::dim_style()),
             ]));
         }
 
@@ -446,7 +442,7 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
                         .add_modifier(Modifier::BOLD),
                 ),
                 Span::styled(
-                    format!("Provider: {provider}"),
+                    format!("供应商: {provider}"),
                     Style::default().fg(theme::TEXT_PRIMARY),
                 ),
                 Span::styled(format!(" ({env_var})"), theme::dim_style()),
@@ -454,16 +450,16 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
         } else {
             lines.push(Line::from(vec![
                 Span::styled("\u{25cb} ", Style::default().fg(theme::YELLOW)),
-                Span::styled("No API keys detected", Style::default().fg(theme::YELLOW)),
+                Span::styled("未检测到API密钥", Style::default().fg(theme::YELLOW)),
             ]));
             if !state.first_run {
                 lines.push(Line::from(vec![Span::styled(
-                    "  Run 'Re-run setup' to configure a provider",
+                    "  运行「重新设置」来配置供应商",
                     theme::hint_style(),
                 )]));
             } else {
                 lines.push(Line::from(vec![Span::styled(
-                    "  Select 'Get started' to configure",
+                    "  选择「开始使用」来配置",
                     theme::hint_style(),
                 )]));
             }
@@ -514,11 +510,8 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
             Line::from(""),
             Line::from(vec![
                 Span::styled("\u{2192} ", Style::default().fg(theme::BLUE)),
-                Span::styled("Coming from OpenClaw? ", Style::default().fg(theme::BLUE)),
-                Span::styled(
-                    "'Get started' includes automatic migration.",
-                    theme::hint_style(),
-                ),
+                Span::styled("来自 OpenClaw？ ", Style::default().fg(theme::BLUE)),
+                Span::styled("「开始使用」包含自动迁移功能。", theme::hint_style()),
             ]),
         ];
         frame.render_widget(Paragraph::new(hint_lines), chunks[6]);
@@ -526,7 +519,7 @@ fn draw(frame: &mut ratatui::Frame, state: &mut LauncherState) {
 
     // ── Keybind hints ───────────────────────────────────────────────────────
     let hints = Line::from(vec![Span::styled(
-        "\u{2191}\u{2193} navigate  enter select  q quit",
+        "\u{2191}\u{2193} 导航  回车 选择  q 退出",
         theme::hint_style(),
     )]);
     frame.render_widget(Paragraph::new(hints), chunks[7]);
@@ -571,21 +564,18 @@ pub fn launch_desktop_app() {
                 .spawn()
             {
                 Ok(_) => {
-                    ui::success("Desktop app launched.");
+                    ui::success("桌面应用已启动。");
                 }
                 Err(e) => {
                     ui::error_with_fix(
-                        &format!("Failed to launch desktop app: {e}"),
-                        "Build it: cargo build -p openfang-desktop",
+                        &format!("启动桌面应用失败: {e}"),
+                        "请构建: cargo build -p openfang-desktop",
                     );
                 }
             }
         }
         _ => {
-            ui::error_with_fix(
-                "Desktop app not found",
-                "Build it: cargo build -p openfang-desktop",
-            );
+            ui::error_with_fix("未找到桌面应用", "请构建: cargo build -p openfang-desktop");
         }
     }
 }

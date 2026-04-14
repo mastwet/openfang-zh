@@ -244,9 +244,9 @@ function settingsPage() {
     },
 
     async addCustomModel() {
-      var id = this.customModelId.trim();
+  var id = this.customModelId.trim();
       if (!id) return;
-      this.customModelStatus = 'Adding...';
+      this.customModelStatus = '正在添加...';
       try {
         await OpenFangAPI.post('/api/models/custom', {
           id: id,
@@ -254,23 +254,23 @@ function settingsPage() {
           context_window: this.customModelContext || 128000,
           max_output_tokens: this.customModelMaxOutput || 8192,
         });
-        this.customModelStatus = 'Added!';
+        this.customModelStatus = '已添加！';
         this.customModelId = '';
         this.showCustomModelForm = false;
         await this.loadModels();
       } catch(e) {
-        this.customModelStatus = 'Error: ' + (e.message || 'Failed');
+        this.customModelStatus = '错误：' + (e.message || '失败');
       }
     },
 
     async deleteCustomModel(modelId) {
-      if (!confirm('Delete custom model "' + modelId + '"?')) return;
+      if (!confirm('删除自定义模型 "' + modelId + '"？')) return;
       try {
         await OpenFangAPI.del('/api/models/custom/' + encodeURIComponent(modelId));
-        OpenFangToast.success('Model deleted');
+        OpenFangToast.success('模型已删除');
         await this.loadModels();
       } catch(e) {
-        OpenFangToast.error('Failed to delete: ' + (e.message || 'Unknown error'));
+        OpenFangToast.error('删除失败：' + (e.message || '未知错误'));
       }
     },
 
@@ -302,9 +302,9 @@ function settingsPage() {
       try {
         await OpenFangAPI.post('/api/config/set', { path: path, value: value });
         this.configDirty[key] = false;
-        OpenFangToast.success('Saved ' + field);
+        OpenFangToast.success('已保存 ' + field);
       } catch(e) {
-        OpenFangToast.error('Failed to save: ' + e.message);
+        OpenFangToast.error('保存失败：' + e.message);
       }
       this.configSaving[key] = false;
     },
@@ -351,12 +351,12 @@ function settingsPage() {
     },
 
     providerAuthText(p) {
-      if (p.auth_status === 'configured') return 'Configured';
+      if (p.auth_status === 'configured') return '已配置';
       if (p.auth_status === 'not_set' || p.auth_status === 'missing') {
-        if (p.id === 'claude-code') return 'Not Installed';
-        return 'Not Set';
+        if (p.id === 'claude-code') return '未安装';
+        return '未设置';
       }
-      return 'No Key Needed';
+      return '无需密钥';
     },
 
     providerCardClass(p) {
@@ -399,30 +399,30 @@ function settingsPage() {
 
     async saveProviderKey(provider) {
       var key = this.providerKeyInputs[provider.id];
-      if (!key || !key.trim()) { OpenFangToast.error('Please enter an API key'); return; }
+      if (!key || !key.trim()) { OpenFangToast.error('请输入 API 密钥'); return; }
       try {
         var resp = await OpenFangAPI.post('/api/providers/' + encodeURIComponent(provider.id) + '/key', { key: key.trim() });
         if (resp && resp.switched_default) {
-          OpenFangToast.warning(resp.message || 'Default provider was switched to ' + provider.display_name);
+          OpenFangToast.warning(resp.message || '默认供应商已切换为 ' + provider.display_name);
         } else {
-          OpenFangToast.success('API key saved for ' + provider.display_name);
+          OpenFangToast.success('已为 ' + provider.display_name + ' 保存 API 密钥');
         }
         this.providerKeyInputs[provider.id] = '';
         await this.loadProviders();
         await this.loadModels();
       } catch(e) {
-        OpenFangToast.error('Failed to save key: ' + e.message);
+        OpenFangToast.error('保存密钥失败：' + e.message);
       }
     },
 
     async removeProviderKey(provider) {
       try {
         await OpenFangAPI.del('/api/providers/' + encodeURIComponent(provider.id) + '/key');
-        OpenFangToast.success('API key removed for ' + provider.display_name);
+        OpenFangToast.success('已移除 ' + provider.display_name + ' 的 API 密钥');
         await this.loadProviders();
         await this.loadModels();
       } catch(e) {
-        OpenFangToast.error('Failed to remove key: ' + e.message);
+        OpenFangToast.error('移除密钥失败：' + e.message);
       }
     },
 
@@ -438,7 +438,7 @@ function settingsPage() {
         window.open(resp.verification_uri, '_blank');
         this.pollCopilotOAuth();
       } catch(e) {
-        OpenFangToast.error('Failed to start Copilot login: ' + e.message);
+        OpenFangToast.error('启动 Copilot 登录失败：' + e.message);
         this.copilotOAuth.polling = false;
       }
     },
@@ -449,26 +449,26 @@ function settingsPage() {
         if (!self.copilotOAuth.pollId) return;
         try {
           var resp = await OpenFangAPI.get('/api/providers/github-copilot/oauth/poll/' + self.copilotOAuth.pollId);
-          if (resp.status === 'complete') {
-            OpenFangToast.success('GitHub Copilot authenticated successfully!');
+        if (resp.status === 'complete') {
+            OpenFangToast.success('GitHub Copilot 已认证成功！');
             self.copilotOAuth = { polling: false, userCode: '', verificationUri: '', pollId: '', interval: 5 };
             await self.loadProviders();
             await self.loadModels();
           } else if (resp.status === 'pending') {
             if (resp.interval) self.copilotOAuth.interval = resp.interval;
             self.pollCopilotOAuth();
-          } else if (resp.status === 'expired') {
-            OpenFangToast.error('Device code expired. Please try again.');
+            } else if (resp.status === 'expired') {
+            OpenFangToast.error('设备代码已过期。请重试。');
             self.copilotOAuth = { polling: false, userCode: '', verificationUri: '', pollId: '', interval: 5 };
           } else if (resp.status === 'denied') {
-            OpenFangToast.error('Access denied by user.');
+            OpenFangToast.error('用户已拒绝访问。');
             self.copilotOAuth = { polling: false, userCode: '', verificationUri: '', pollId: '', interval: 5 };
           } else {
-            OpenFangToast.error('OAuth error: ' + (resp.error || resp.status));
+            OpenFangToast.error('OAuth 错误：' + (resp.error || resp.status));
             self.copilotOAuth = { polling: false, userCode: '', verificationUri: '', pollId: '', interval: 5 };
           }
         } catch(e) {
-          OpenFangToast.error('Poll error: ' + e.message);
+          OpenFangToast.error('轮询错误：' + e.message);
           self.copilotOAuth = { polling: false, userCode: '', verificationUri: '', pollId: '', interval: 5 };
         }
       }, self.copilotOAuth.interval * 1000);
@@ -481,13 +481,13 @@ function settingsPage() {
         var result = await OpenFangAPI.post('/api/providers/' + encodeURIComponent(provider.id) + '/test', {});
         this.providerTestResults[provider.id] = result;
         if (result.status === 'ok') {
-          OpenFangToast.success(provider.display_name + ' connected (' + (result.latency_ms || '?') + 'ms)');
+          OpenFangToast.success(provider.display_name + ' 已连接 (' + (result.latency_ms || '?') + 'ms)');
         } else {
-          OpenFangToast.error(provider.display_name + ': ' + (result.error || 'Connection failed'));
+          OpenFangToast.error(provider.display_name + '：' + (result.error || '连接失败'));
         }
       } catch(e) {
         this.providerTestResults[provider.id] = { status: 'error', error: e.message };
-        OpenFangToast.error('Test failed: ' + e.message);
+        OpenFangToast.error('测试失败：' + e.message);
       }
       this.providerTesting[provider.id] = false;
     },
@@ -503,24 +503,24 @@ function settingsPage() {
       try {
         var result = await OpenFangAPI.put('/api/providers/' + encodeURIComponent(provider.id) + '/url', { base_url: url });
         if (result.reachable) {
-          OpenFangToast.success(provider.display_name + ' URL saved &mdash; reachable (' + (result.latency_ms || '?') + 'ms)');
+          OpenFangToast.success(provider.display_name + ' URL 已保存且可访问 (' + (result.latency_ms || '?') + 'ms)');
         } else {
-          OpenFangToast.warning(provider.display_name + ' URL saved but not reachable');
+          OpenFangToast.warning(provider.display_name + ' URL 已保存但不可访问');
         }
         await this.loadProviders();
       } catch(e) {
-        OpenFangToast.error('Failed to save URL: ' + e.message);
+        OpenFangToast.error('保存 URL 失败：' + e.message);
       }
       this.providerUrlSaving[provider.id] = false;
     },
 
     async addCustomProvider() {
       var name = this.customProviderName.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
-      if (!name) { OpenFangToast.error('Please enter a provider name'); return; }
+      if (!name) { OpenFangToast.error('请输入供应商名称'); return; }
       var url = this.customProviderUrl.trim();
-      if (!url) { OpenFangToast.error('Please enter a base URL'); return; }
+      if (!url) { OpenFangToast.error('请输入基础 URL'); return; }
       if (url.indexOf('http://') !== 0 && url.indexOf('https://') !== 0) {
-        OpenFangToast.error('URL must start with http:// or https://'); return;
+        OpenFangToast.error('URL 必须以 http:// 或 https:// 开头'); return;
       }
       this.addingCustomProvider = true;
       this.customProviderStatus = '';
@@ -533,11 +533,11 @@ function settingsPage() {
         this.customProviderUrl = '';
         this.customProviderKey = '';
         this.customProviderStatus = '';
-        OpenFangToast.success('Provider "' + name + '" added' + (result.reachable ? ' (reachable)' : ' (not reachable yet)'));
+        OpenFangToast.success('供应商 "' + name + '" 已添加' + (result.reachable ? ' (可访问)' : ' (尚不可访问)'));
         await this.loadProviders();
       } catch(e) {
-        this.customProviderStatus = 'Error: ' + (e.message || 'Failed');
-        OpenFangToast.error('Failed to add provider: ' + e.message);
+        this.customProviderStatus = '错误：' + (e.message || '失败');
+        OpenFangToast.error('添加供应商失败：' + e.message);
       }
       this.addingCustomProvider = false;
     },
@@ -577,13 +577,13 @@ function settingsPage() {
       if (!val) return feature.configHint;
       switch (feature.valueKey) {
         case 'rate_limiter':
-          return 'Algorithm: ' + (val.algorithm || 'GCRA') + ' | ' + (val.tokens_per_minute || 500) + ' tokens/min per IP';
+          return '算法: ' + (val.algorithm || 'GCRA') + ' | ' + (val.tokens_per_minute || 500) + ' 令牌/分钟/每个 IP';
         case 'websocket_limits':
-          return 'Max ' + (val.max_per_ip || 5) + ' conn/IP | ' + Math.round((val.idle_timeout_secs || 1800) / 60) + 'min idle timeout | ' + Math.round((val.max_message_size || 65536) / 1024) + 'KB max msg';
+          return '最大连接数: ' + (val.max_per_ip || 5) + ' /IP | ' + Math.round((val.idle_timeout_secs || 1800) / 60) + '分钟空闲超时 | ' + Math.round((val.max_message_size || 65536) / 1024) + 'KB 最大消息';
         case 'wasm_sandbox':
-          return 'Fuel: ' + (val.fuel_metering ? 'ON' : 'OFF') + ' | Epoch: ' + (val.epoch_interruption ? 'ON' : 'OFF') + ' | Timeout: ' + (val.default_timeout_secs || 30) + 's';
+          return '燃料计量: ' + (val.fuel_metering ? '开启' : '关闭') + ' | 纪元中断: ' + (val.epoch_interruption ? '开启' : '关闭') + ' | 超时: ' + (val.default_timeout_secs || 30) + 's';
         case 'auth':
-          return 'Mode: ' + (val.mode || 'unknown') + (val.api_key_set ? ' (key configured)' : ' (no key set)');
+          return '模式: ' + (val.mode || '未知') + (val.api_key_set ? ' (密钥已配置)' : ' (未设置密钥)');
         default:
           return feature.configHint;
       }
@@ -594,12 +594,12 @@ function settingsPage() {
       if (!val) return feature.configHint;
       switch (feature.valueKey) {
         case 'audit_trail':
-          return (val.enabled ? 'Active' : 'Disabled') + ' | ' + (val.algorithm || 'SHA-256') + ' | ' + (val.entry_count || 0) + ' entries logged';
+          return (val.enabled ? '开启' : '关闭') + ' | ' + (val.algorithm || 'SHA-256') + ' | ' + (val.entry_count || 0) + ' 条日志记录';
         case 'taint_tracking':
           var labels = val.tracked_labels || [];
-          return (val.enabled ? 'Active' : 'Disabled') + ' | Tracking: ' + labels.join(', ');
+          return (val.enabled ? '开启' : '关闭') + ' | 跟踪: ' + labels.join(', ');
         case 'manifest_signing':
-          return 'Algorithm: ' + (val.algorithm || 'Ed25519') + ' | ' + (val.available ? 'Available' : 'Not available');
+          return '算法: ' + (val.algorithm || 'Ed25519') + ' | ' + (val.available ? '可用' : '不可用');
         default:
           return feature.configHint;
       }
@@ -635,7 +635,7 @@ function settingsPage() {
         });
       } catch(e) {
         this.peers = [];
-        this.peersLoadError = e.message || 'Could not load peers.';
+        this.peersLoadError = e.message || '无法加载对等节点。';
       }
       this.peersLoading = false;
     },
@@ -689,14 +689,14 @@ function settingsPage() {
       try {
         var data = await OpenFangAPI.post('/api/migrate/scan', { path: this.sourcePath });
         if (data.error) {
-          OpenFangToast.error('Scan error: ' + data.error);
+          OpenFangToast.error('扫描错误：' + data.error);
           this.scanning = false;
           return;
         }
         this.scanResult = data;
         this.migStep = 'preview';
       } catch(e) {
-        OpenFangToast.error('Scan failed: ' + e.message);
+        OpenFangToast.error('扫描失败：' + e.message);
       }
       this.scanning = false;
     },

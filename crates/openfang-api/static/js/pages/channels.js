@@ -35,12 +35,12 @@ function channelsPage() {
     qrPollTimer: null,
 
     categories: [
-      { key: 'all', label: 'All' },
-      { key: 'messaging', label: 'Messaging' },
-      { key: 'social', label: 'Social' },
-      { key: 'enterprise', label: 'Enterprise' },
-      { key: 'developer', label: 'Developer' },
-      { key: 'notifications', label: 'Notifications' }
+      { key: 'all', label: '全部' },
+      { key: 'messaging', label: '消息' },
+      { key: 'social', label: '社交' },
+      { key: 'enterprise', label: '企业' },
+      { key: 'developer', label: '开发者' },
+      { key: 'notifications', label: '通知' }
     ],
 
     get filteredChannels() {
@@ -127,10 +127,10 @@ function channelsPage() {
     },
 
     statusBadge(ch) {
-      if (!ch.configured) return { text: 'Not Configured', cls: 'badge-muted' };
-      if (!ch.has_token) return { text: 'Missing Token', cls: 'badge-warn' };
-      if (ch.connected) return { text: 'Ready', cls: 'badge-success' };
-      return { text: 'Configured', cls: 'badge-info' };
+      if (!ch.configured) return { text: '未配置', cls: 'badge-muted' };
+      if (!ch.has_token) return { text: '缺少凭据', cls: 'badge-warn' };
+      if (ch.connected) return { text: '就绪', cls: 'badge-success' };
+      return { text: '已配置', cls: 'badge-info' };
     },
 
     difficultyClass(d) {
@@ -189,11 +189,11 @@ function channelsPage() {
           this.pollQR();
         }
         if (this.qr.connected) {
-          OpenFangToast.success('WhatsApp connected!');
+          OpenFangToast.success('WhatsApp 已连接。');
           await this.refreshStatus();
         }
       } catch(e) {
-        this.qr.error = e.message || 'Could not start QR login';
+        this.qr.error = e.message || '无法启动二维码登录';
       }
       this.qr.loading = false;
     },
@@ -208,7 +208,7 @@ function channelsPage() {
             clearInterval(self.qrPollTimer);
             self.qrPollTimer = null;
             self.qr.connected = true;
-            self.qr.message = result.message || 'Connected!';
+            self.qr.message = result.message || '已连接！';
             OpenFangToast.success('WhatsApp linked successfully!');
             await self.refreshStatus();
           } else if (result.expired) {
@@ -295,9 +295,9 @@ function channelsPage() {
       if (!tpl) return;
       try {
         await navigator.clipboard.writeText(tpl);
-        OpenFangToast.success('Copied to clipboard');
+        OpenFangToast.success('已复制到剪贴板');
       } catch(e) {
-        OpenFangToast.error('Copy failed');
+        OpenFangToast.error('复制失败');
       }
     },
 

@@ -24,7 +24,7 @@ function workflowsPage() {
         this.workflows = await OpenFangAPI.get('/api/workflows');
       } catch(e) {
         this.workflows = [];
-        this.loadError = e.message || 'Could not load workflows.';
+        this.loadError = e.message || '无法加载工作流。';
       }
       this.loading = false;
     },
@@ -40,10 +40,10 @@ function workflowsPage() {
         await OpenFangAPI.post('/api/workflows', { name: wfName, description: this.newWf.description, steps: steps });
         this.showCreateModal = false;
         this.newWf = { name: '', description: '', steps: [{ name: '', agent_name: '', mode: 'sequential', prompt: '{{input}}' }] };
-        OpenFangToast.success('Workflow "' + wfName + '" created');
+        OpenFangToast.success('工作流 "' + wfName + '" 已创建');
         await this.loadWorkflows();
       } catch(e) {
-        OpenFangToast.error('Failed to create workflow: ' + e.message);
+        OpenFangToast.error('创建工作流失败: ' + e.message);
       }
     },
 
@@ -60,10 +60,10 @@ function workflowsPage() {
       try {
         var res = await OpenFangAPI.post('/api/workflows/' + this.runModal.id + '/run', { input: this.runInput });
         this.runResult = res.output || JSON.stringify(res, null, 2);
-        OpenFangToast.success('Workflow completed');
+        OpenFangToast.success('工作流已完成');
       } catch(e) {
         this.runResult = 'Error: ' + e.message;
-        OpenFangToast.error('Workflow failed: ' + e.message);
+        OpenFangToast.error('工作流失败: ' + e.message);
       }
       this.running = false;
     },
@@ -74,18 +74,18 @@ function workflowsPage() {
         this.runResult = JSON.stringify(runs, null, 2);
         this.runModal = wf;
       } catch(e) {
-        OpenFangToast.error('Failed to load run history: ' + e.message);
+        OpenFangToast.error('加载运行历史失败: ' + e.message);
       }
     },
 
     async deleteWorkflow(wf) {
-      if (!confirm('Delete workflow "' + wf.name + '"? This cannot be undone.')) return;
+      if (!confirm('删除工作流 "' + wf.name + '"？此操作无法撤销。')) return;
       try {
         await OpenFangAPI.delete('/api/workflows/' + wf.id);
-        OpenFangToast.success('Workflow "' + wf.name + '" deleted');
+        OpenFangToast.success('工作流 "' + wf.name + '" 已删除');
         await this.loadWorkflows();
       } catch(e) {
-        OpenFangToast.error('Failed to delete workflow: ' + e.message);
+        OpenFangToast.error('删除工作流失败: ' + e.message);
       }
     },
 
@@ -109,7 +109,7 @@ function workflowsPage() {
         }
         this.editModal = wf;
       } catch(e) {
-        OpenFangToast.error('Failed to load workflow: ' + e.message);
+        OpenFangToast.error('加载工作流失败: ' + e.message);
       }
     },
 
@@ -122,10 +122,10 @@ function workflowsPage() {
         var wfName = this.editWf.name;
         await OpenFangAPI.put('/api/workflows/' + this.editModal.id, { name: wfName, description: this.editWf.description, steps: steps });
         this.editModal = null;
-        OpenFangToast.success('Workflow "' + wfName + '" updated');
+        OpenFangToast.success('工作流 "' + wfName + '" 已更新');
         await this.loadWorkflows();
       } catch(e) {
-        OpenFangToast.error('Failed to update workflow: ' + e.message);
+        OpenFangToast.error('更新工作流失败: ' + e.message);
       }
     }
   };

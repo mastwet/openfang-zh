@@ -2,19 +2,21 @@
  * OpenFang i18n (Internationalization) Module
  * 
  * Provides runtime language switching for the OpenFang dashboard UI.
- * Supports English (default) and Russian.
+ * Supports Chinese (default), English, and Russian.
  * 
  * Usage:
  *   - HTML: <span data-i18n="nav.overview">Overview</span>
- *   - JS:   window.t('nav.overview')
+ *   - JS:   window.i18n.t('nav.overview')
+ *   - Alpine: x-text="window.i18n.t('nav.overview')"
  *   - Auto-applies translations on load based on stored/preferred language
+ *   - Re-applies after Alpine.js initialization
  */
 
 (function() {
   'use strict';
 
-  // Language store
-  let currentLang = 'en';
+  // Language store — default to Chinese (this is a zh-localized build)
+  let currentLang = 'zh';
   let translations = {};
   let isInitialized = false;
 
@@ -30,24 +32,25 @@
         return window.__i18nCache[lang];
       }
 
-      const response = await fetch(`/i18n/${lang}.json`);
+      const response = await fetch('/i18n/' + lang + '.json');
       if (!response.ok) {
-        console.warn(`[i18n] Failed to load ${lang}.json, falling back to en`);
+        console.warn('[i18n] Failed to load ' + lang + '.json (status ' + response.status + '), falling back to en');
         if (lang !== 'en') {
           return loadTranslations('en');
         }
         return {};
       }
 
-      const data = await response.json();
+      var data = await response.json();
       
       // Cache for future use
       if (!window.__i18nCache) window.__i18nCache = {};
       window.__i18nCache[lang] = data;
       
+      console.log('[i18n] Loaded ' + Object.keys(data).length + ' translations for ' + lang);
       return data;
     } catch (error) {
-      console.error(`[i18n] Error loading translations for ${lang}:`, error);
+      console.error('[i18n] Error loading translations for ' + lang + ':', error);
       if (lang !== 'en') {
         return loadTranslations('en');
       }
@@ -62,17 +65,17 @@
    * @returns {string} Translated string or key if not found
    */
   function t(key, params) {
-    if (!isInitialized) {
-      console.warn('[i18n] Not initialized, returning key');
-      return key;
+    // If not initialized yet, try using cached translations from a previous session
+    var text = translations[key];
+    if (!text) {
+      // Return the key as fallback — this is better than showing nothing
+      text = key;
     }
-
-    let text = translations[key] || key;
 
     // Handle interpolation (e.g., 'Hello, {{name}}')
     if (params && typeof params === 'object') {
-      Object.keys(params).forEach(param => {
-        text = text.replace(new RegExp(`{{${param}}}`, 'g'), params[param]);
+      Object.keys(params).forEach(function(param) {
+        text = text.replace(new RegExp('{{' + param + '}}', 'g'), params[param]);
       });
     }
 
@@ -88,15 +91,18 @@
     document.documentElement.lang = currentLang;
     
     // Find and translate all elements with data-i18n attribute
-    const elements = document.querySelectorAll('[data-i18n]');
-    elements.forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      const translation = t(key);
+    var elements = document.querySelectorAll('[data-i18n]');
+    elements.forEach(function(el) {
+      var key = el.getAttribute('data-i18n');
+      var translation = t(key);
       
+      // Skip if translation equals key (not found) — keep original text
+      if (translation === key) return;
+
       // Check if element is a form input/textarea
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-        // For form elements, only update if it's a placeholder or aria-label
-        if (el.hasAttribute('placeholder')) {
+        // For form elements, only update if it has a placeholder or aria-label
+        if (el.hasAttribute('data-i18n-placeholder') || el.hasAttribute('placeholder')) {
           el.placeholder = translation;
         }
         if (el.hasAttribute('aria-label')) {
@@ -111,30 +117,37 @@
       }
     });
 
-    // Update elements with data-i18n-* attributes for attributes
-    const attrElements = document.querySelectorAll('[data-i18n-placeholder], [data-i18n-title], [data-i18n-aria-label]');
-    attrElements.forEach(el => {
-      if (el.hasAttribute('data-i18n-placeholder')) {
-        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
-      }
-      if (el.hasAttribute('data-i18n-title')) {
-        el.title = t(el.getAttribute('data-i18n-title'));
-      }
-      if (el.hasAttribute('data-i18n-aria-label')) {
-        el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label')));
+    // Update elements with data-i18n-placeholder attribute
+    var placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+    placeholderElements.forEach(function(el) {
+      var key = el.getAttribute('data-i18n-placeholder');
+      var translation = t(key);
+      if (translation !== key) {
+        el.placeholder = translation;
       }
     });
 
-    // Update meta tags
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      const desc = t('app.description', { name: 'OpenFang' });
-      if (desc !== 'app.description') {
-        metaDesc.content = desc;
+    // Update elements with data-i18n-title attribute
+    var titleElements = document.querySelectorAll('[data-i18n-title]');
+    titleElements.forEach(function(el) {
+      var key = el.getAttribute('data-i18n-title');
+      var translation = t(key);
+      if (translation !== key) {
+        el.title = translation;
       }
-    }
+    });
 
-    console.log(`[i18n] Applied translations for language: ${currentLang}`);
+    // Update elements with data-i18n-aria-label attribute
+    var ariaElements = document.querySelectorAll('[data-i18n-aria-label]');
+    ariaElements.forEach(function(el) {
+      var key = el.getAttribute('data-i18n-aria-label');
+      var translation = t(key);
+      if (translation !== key) {
+        el.setAttribute('aria-label', translation);
+      }
+    });
+
+    console.log('[i18n] Applied translations for language: ' + currentLang);
   }
 
   /**
@@ -142,10 +155,11 @@
    * @param {string} lang - Language code (en, ru, zh)
    * @param {boolean} persist - Whether to save to localStorage
    */
-  async function setLanguage(lang, persist = true) {
+  async function setLanguage(lang, persist) {
+    if (persist === undefined) persist = true;
     if (!['en', 'ru', 'zh'].includes(lang)) {
-      console.warn(`[i18n] Unknown language: ${lang}, defaulting to en`);
-      lang = 'en';
+      console.warn('[i18n] Unknown language: ' + lang + ', defaulting to zh');
+      lang = 'zh';
     }
 
     currentLang = lang;
@@ -182,23 +196,50 @@
     // Determine language priority:
     // 1. localStorage (user preference)
     // 2. Browser language
-    // 3. Default to English
+    // 3. Default to Chinese (this is a zh-localized build)
 
-    let lang = localStorage.getItem('openfang_language');
+    var lang = localStorage.getItem('openfang_language');
     
     if (!lang) {
       // Try to detect browser language
-      const browserLang = navigator.language || navigator.userLanguage || '';
-      if (browserLang.startsWith('ru')) {
-        lang = 'ru';
-      } else if (browserLang.startsWith('zh')) {
+      var browserLang = navigator.language || navigator.userLanguage || '';
+      if (browserLang.startsWith('zh')) {
         lang = 'zh';
+      } else if (browserLang.startsWith('ru')) {
+        lang = 'ru';
       } else {
-        lang = 'en';
+        lang = 'zh'; // Default to Chinese for this build
       }
     }
 
     await setLanguage(lang, false);
+
+    // Re-apply translations after Alpine.js has initialized
+    // Alpine renders x-if/x-for templates after init, so we need
+    // to re-apply translations to catch newly rendered elements.
+    if (typeof Alpine !== 'undefined') {
+      // Alpine is already loaded — re-apply after a tick
+      setTimeout(applyTranslations, 100);
+      setTimeout(applyTranslations, 500);
+      setTimeout(applyTranslations, 1500);
+    } else {
+      // Alpine not yet loaded — listen for its init event
+      document.addEventListener('alpine:init', function() {
+        // Alpine is about to initialize — schedule re-apply
+        setTimeout(applyTranslations, 200);
+      });
+      document.addEventListener('alpine:initialized', function() {
+        // Alpine has finished initializing — final re-apply
+        setTimeout(applyTranslations, 100);
+        setTimeout(applyTranslations, 500);
+      });
+    }
+
+    // Also re-apply on any page navigation (hash change)
+    window.addEventListener('hashchange', function() {
+      setTimeout(applyTranslations, 150);
+      setTimeout(applyTranslations, 500);
+    });
   }
 
   /**
@@ -207,21 +248,25 @@
    */
   function getAvailableLanguages() {
     return [
+      { code: 'zh', name: '简体中文' },
       { code: 'en', name: 'English' },
-      { code: 'ru', name: 'Русский' },
-      { code: 'zh', name: '简体中文' }
+      { code: 'ru', name: 'Русский' }
     ];
   }
 
   // Expose to global scope
   window.i18n = {
-    t,
-    setLanguage,
-    getLanguage,
-    getAvailableLanguages,
-    init,
-    isInitialized: () => isInitialized
+    t: t,
+    setLanguage: setLanguage,
+    getLanguage: getLanguage,
+    getAvailableLanguages: getAvailableLanguages,
+    init: init,
+    isInitialized: function() { return isInitialized; },
+    applyTranslations: applyTranslations
   };
+
+  // Also expose as window.t for convenient Alpine usage
+  window.t = t;
 
   // Auto-initialize when DOM is ready
   if (document.readyState === 'loading') {

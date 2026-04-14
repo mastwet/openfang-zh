@@ -28,13 +28,13 @@ function workflowBuilder() {
 
     // Node types with their configs
     nodeTypes: [
-      { type: 'agent', label: 'Agent Step', color: '#6366f1', icon: 'A', ports: { in: 1, out: 1 } },
-      { type: 'parallel', label: 'Parallel Fan-out', color: '#f59e0b', icon: 'P', ports: { in: 1, out: 3 } },
-      { type: 'condition', label: 'Condition', color: '#10b981', icon: '?', ports: { in: 1, out: 2 } },
-      { type: 'loop', label: 'Loop', color: '#ef4444', icon: 'L', ports: { in: 1, out: 1 } },
-      { type: 'collect', label: 'Collect', color: '#8b5cf6', icon: 'C', ports: { in: 3, out: 1 } },
-      { type: 'start', label: 'Start', color: '#22c55e', icon: 'S', ports: { in: 0, out: 1 } },
-      { type: 'end', label: 'End', color: '#ef4444', icon: 'E', ports: { in: 1, out: 0 } }
+      { type: 'agent', label: '智能体', color: '#6366f1', icon: 'A', ports: { in: 1, out: 1 } },
+      { type: 'parallel', label: '扇出', color: '#f59e0b', icon: 'P', ports: { in: 1, out: 3 } },
+      { type: 'condition', label: '条件执行', color: '#10b981', icon: '?', ports: { in: 1, out: 2 } },
+      { type: 'loop', label: '循环', color: '#ef4444', icon: 'L', ports: { in: 1, out: 1 } },
+      { type: 'collect', label: '收集', color: '#8b5cf6', icon: 'C', ports: { in: 3, out: 1 } },
+      { type: 'start', label: '开始', color: '#22c55e', icon: 'S', ports: { in: 0, out: 1 } },
+      { type: 'end', label: '结束', color: '#ef4444', icon: 'E', ports: { in: 1, out: 0 } }
     ],
 
     _renderScheduled: false,
@@ -169,11 +169,11 @@ function workflowBuilder() {
         subLabel.setAttribute('x', '50'); subLabel.setAttribute('y', node.height / 2 + 12);
         subLabel.setAttribute('fill', 'var(--text-dim)');
         subLabel.setAttribute('style', 'font-size:10px;pointer-events:none');
-        if (node.type === 'agent') subLabel.textContent = node.config.agent_name || 'No agent';
-        else if (node.type === 'condition') subLabel.textContent = node.config.expression || 'No condition';
-        else if (node.type === 'loop') subLabel.textContent = 'max ' + (node.config.max_iterations || 5) + ' iters';
-        else if (node.type === 'parallel') subLabel.textContent = (node.config.fan_count || 3) + ' branches';
-        else if (node.type === 'collect') subLabel.textContent = node.config.strategy || 'all';
+        if (node.type === 'agent') subLabel.textContent = node.config.agent_name || '无智能体';
+        else if (node.type === 'condition') subLabel.textContent = node.config.expression || '无表达式';
+        else if (node.type === 'loop') subLabel.textContent = '最大迭代次数: ' + (node.config.max_iterations || 5);
+        else if (node.type === 'parallel') subLabel.textContent = (node.config.fan_count || 3) + ' 分支';
+        else if (node.type === 'collect') { var strat = node.config.strategy || 'all'; subLabel.textContent = (strat === 'all' ? '全部' : strat); }
         g.appendChild(subLabel);
 
         // Input ports
